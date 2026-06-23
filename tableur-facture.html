@@ -119,25 +119,36 @@ function val(id){ return document.getElementById(id).value.trim(); }
 // --- moteur tableur ---
 var FORMULA_CELLS=['B7','B8','B9','B10','B11'];
 function rawOf(ref){ return document.getElementById(ref).value.trim().replace(',','.'); }
-function valueOf(ref,seen){
+function valueOf(ref,cache,stack){
+  if(Object.prototype.hasOwnProperty.call(cache,ref)) return cache[ref];
   var raw=rawOf(ref);
   if(raw==='') return NaN;
   if(raw.charAt(0)==='='){
-    if(seen[ref]) return NaN; seen[ref]=true;
-    var expr=raw.slice(1).toUpperCase();
-    expr=expr.replace(/B[0-9]+/g,function(m){ var v=valueOf(m,seen); return '('+(isNaN(v)?'0':v)+')'; });
-    if(!/^[-+*/(). 0-9]+$/.test(expr)) return NaN;
-    try{ var r=Function('return ('+expr+')')(); return (typeof r==='number'&&isFinite(r))?r:NaN; }catch(e){ return NaN; }
+    if(stack.indexOf(ref)>=0){ cache[ref]=NaN; return NaN; }   // cycle
+    stack.push(ref);
+    var bad=false;
+    var expr=raw.slice(1).toUpperCase().replace(/B[0-9]+/g,function(m){
+      var v=valueOf(m,cache,stack);
+      if(isNaN(v)){ bad=true; return '(0)'; }
+      return '('+v+')';
+    });
+    stack.pop();
+    var res=NaN;
+    if(!bad && /^[-+*/(). 0-9]+$/.test(expr)){
+      try{ var r=Function('return ('+expr+')')(); if(typeof r==='number'&&isFinite(r)) res=r; }catch(e){}
+    }
+    cache[ref]=res; return res;
   }
-  var num=parseFloat(raw); return isNaN(num)?NaN:num;
+  var num=parseFloat(raw); var out=isNaN(num)?NaN:num; cache[ref]=out; return out;
 }
 function fmt(x){ return isNaN(x)?'?':x.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function recompute(){
+  var cache={};
   FORMULA_CELLS.forEach(function(ref){
     var chip=document.getElementById('c'+ref.slice(1));
     var raw=rawOf(ref);
     if(raw===''){ chip.textContent=''; return; }
-    var v=valueOf(ref,{});
+    var v=valueOf(ref,cache,[]);
     chip.textContent=isNaN(v)?'?':fmt(v)+' €';
   });
 }
@@ -153,9 +164,9 @@ function expected(){
 function near(a,b){ return !isNaN(a)&&Math.abs(a-b)<0.01; }
 var lastScore=0;
 document.getElementById('checkBtn').addEventListener('click',function(){
-  var exp=expected(), good=0, details=[];
+  var exp=expected(), good=0, details=[], cache={};
   FORMULA_CELLS.forEach(function(ref){
-    var v=valueOf(ref,{}); var ok=near(v,exp[ref]); if(ok)good++;
+    var v=valueOf(ref,cache,[]); var ok=near(v,exp[ref]); if(ok)good++;
     details.push(ref+(ok?' ✔':' ✗'));
   });
   lastScore=good;
@@ -179,8 +190,4 @@ document.getElementById('sendBtn').addEventListener('click',function(){
   if(!SCRIPT_URL){ msg.className='msg info'; msg.innerHTML='ℹ️ Envoi non configuré pour l’instant (SCRIPT_URL vide). Une fois ton script Google déployé, les résultats arriveront automatiquement dans ta feuille.'; return; }
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
     .then(function(){ msg.className='msg ok'; msg.textContent='✅ Résultats envoyés au professeur. Merci !'; })
-    .catch(function(){ msg.className='msg ko'; msg.textContent='Envoi impossible (vérifie la connexion ou l’URL du script).'; });
-});
-</script>
-</body>
-</html>
+    .catch(function(){ msg.className='msg ko'; msg.
