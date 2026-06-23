@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Mini-tableur : la facture d'eau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--orange:#F6C66B;--orangebg:#FDF1DC;--ok:#1E8E5A;--ko:#C0392B;--grey:#6b7280}
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.5}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 16px 60px}
+  header.band{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
+  header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
+  header.band h1{margin:6px 0 0;font-size:22px;font-weight:800}
+  header.band p{margin:6px 0 0;color:#dce8f8;font-size:14px}
+  .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  h2{color:var(--blue);font-size:16px;margin:0 0 12px;border-bottom:2px solid var(--light);padding-bottom:8px}
+  label{display:block;font-weight:600;color:var(--navy);font-size:13px;margin:10px 0 4px}
+  .idrow{display:flex;gap:12px;flex-wrap:wrap}
+  .idrow>div{flex:1;min-width:150px}
+  input,select{width:100%;padding:9px 11px;border:1px solid #cbd6e4;border-radius:9px;font-size:14px;font-family:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.15)}
+  /* tableur */
+  table.ss{border-collapse:collapse;width:100%;margin-top:6px;font-size:14px}
+  table.ss th,table.ss td{border:1px solid #c4d0e0;padding:0}
+  table.ss thead th{background:var(--navy);color:#fff;text-align:center;padding:6px;font-weight:700}
+  table.ss .rh{background:var(--lighter);color:var(--navy);text-align:center;font-weight:700;width:34px}
+  table.ss td.lbl{background:#f3f7fc;color:var(--navy);font-weight:600;padding:8px 10px}
+  table.ss td.cell{padding:0;position:relative}
+  table.ss td.cell input{border:none;border-radius:0;width:100%;padding:8px 10px;background:transparent}
+  table.ss td.cell input:focus{box-shadow:inset 0 0 0 2px var(--blue)}
+  td.data input{font-weight:700;color:#13633d;background:#eef7f1}
+  td.formula{background:#fffdf5}
+  .chip{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--lighter);color:var(--navy);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;pointer-events:none}
+  td.ttc input{font-weight:800;color:var(--navy)}
+  td.ttc{background:var(--light)}
+  .hint{color:var(--grey);font-size:12.5px;margin-top:8px}
+  .help{background:var(--lighter);border-left:5px solid var(--blue);padding:10px 12px;border-radius:8px;font-size:13px;color:var(--navy);margin-top:10px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin:14px 8px 0 0;transition:.15s}
+  .btn:hover{background:#255f96}
+  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .btn:disabled{background:#9bb6d4;cursor:not-allowed;border-color:#9bb6d4;color:#fff}
+  .msg{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;display:none}
+  .msg.ok{background:#e7f6ee;color:#13633d;border-left:5px solid var(--ok);display:block}
+  .msg.ko{background:#fbeae8;color:#8e2018;border-left:5px solid var(--ko);display:block}
+  .msg.info{background:var(--lighter);color:var(--navy);border-left:5px solid var(--blue);display:block}
+  .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
+  .privacy{font-size:11px;color:var(--grey);margin-top:12px;border-top:1px dashed #d6deea;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="band">
+    <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
+    <h1>Mini-tableur — La facture d'eau</h1>
+    <p>Séance 2 — Retrouve les bonnes formules pour calculer la facture.</p>
+  </header>
+
+  <section class="card">
+    <h2>Votre binôme</h2>
+    <div class="idrow">
+      <div><label>Nom — élève 1</label><input id="nom1" class="up" placeholder="DUPONT" autocomplete="off"></div>
+      <div><label>Prénom — élève 1</label><input id="pre1" class="cap" placeholder="Léa" autocomplete="off"></div>
+    </div>
+    <div class="idrow">
+      <div><label>Nom — élève 2</label><input id="nom2" class="up" placeholder="MARTIN" autocomplete="off"></div>
+      <div><label>Prénom — élève 2</label><input id="pre2" class="cap" placeholder="Tom" autocomplete="off"></div>
+    </div>
+    <div class="idrow"><div style="max-width:200px"><label>Classe</label>
+      <select id="classe"><option value="" selected disabled>Choisir…</option>
+      <option>4A</option><option>4B</option><option>4C</option><option>4D</option><option>4E</option><option>4F</option><option>4G</option></select></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>La feuille de calcul</h2>
+    <div class="help">👉 Dans les cellules <b>B7 à B11</b>, écris une <b>formule</b> commençant par <b>=</b> et utilisant les références des autres cellules. Exemple : pour le total de l'eau, <b>=B2*B3</b>. Les cellules vertes (B2–B6) sont des données déjà saisies.</div>
+    <table class="ss">
+      <thead><tr><th class="rh"></th><th style="width:55%">A</th><th>B</th></tr></thead>
+      <tbody>
+        <tr><td class="rh">1</td><td class="lbl">Libellé</td><td class="lbl" style="text-align:center;background:#f3f7fc">Valeur</td></tr>
+        <tr><td class="rh">2</td><td class="lbl">Consommation (m³)</td><td class="cell data"><input id="B2" value="50" inputmode="decimal"></td></tr>
+        <tr><td class="rh">3</td><td class="lbl">Prix eau HT (€/m³)</td><td class="cell data"><input id="B3" value="1.16" inputmode="decimal"></td></tr>
+        <tr><td class="rh">4</td><td class="lbl">Assainissement (€/m³)</td><td class="cell data"><input id="B4" value="1.55" inputmode="decimal"></td></tr>
+        <tr><td class="rh">5</td><td class="lbl">Abonnement (€)</td><td class="cell data"><input id="B5" value="30" inputmode="decimal"></td></tr>
+        <tr><td class="rh">6</td><td class="lbl">TVA (%)</td><td class="cell data"><input id="B6" value="5.5" inputmode="decimal"></td></tr>
+        <tr><td class="rh">7</td><td class="lbl">Total eau (€)</td><td class="cell formula"><input id="B7" placeholder="= …"><span class="chip" id="c7"></span></td></tr>
+        <tr><td class="rh">8</td><td class="lbl">Total assainissement (€)</td><td class="cell formula"><input id="B8" placeholder="= …"><span class="chip" id="c8"></span></td></tr>
+        <tr><td class="rh">9</td><td class="lbl">Sous-total HT (€)</td><td class="cell formula"><input id="B9" placeholder="= …"><span class="chip" id="c9"></span></td></tr>
+        <tr><td class="rh">10</td><td class="lbl">Montant TVA (€)</td><td class="cell formula"><input id="B10" placeholder="= …"><span class="chip" id="c10"></span></td></tr>
+        <tr><td class="rh">11</td><td class="lbl">TOTAL TTC (€)</td><td class="cell formula ttc"><input id="B11" placeholder="= …"><span class="chip" id="c11"></span></td></tr>
+      </tbody>
+    </table>
+    <p class="hint">Astuce : B9 doit additionner l'eau, l'assainissement et l'abonnement ; B10 applique le pourcentage de TVA ; B11 ajoute la TVA au sous-total HT.</p>
+
+    <button class="btn" id="checkBtn">Vérifier mes formules</button>
+    <button class="btn sec" id="sendBtn" disabled>Envoyer au professeur</button>
+    <div class="msg" id="msg"></div>
+    <p class="privacy">🔒 Les résultats (binôme, formules, total) ne sont envoyés que vers le Google Sheet de l'enseignant, lorsque l'envoi est configuré. Aucune autre donnée n'est conservée.</p>
+  </section>
+
+  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Mini-tableur facture d'eau</div>
+</div>
+
+<script>
+/* ====== À COMPLÉTER APRÈS DÉPLOIEMENT DU SCRIPT GOOGLE ======
+   Colle ici l'URL « /exec » de ton Apps Script Web App lié au Google Sheet. */
+const SCRIPT_URL = "";
+/* ============================================================ */
+
+// --- saisie binôme ---
+document.querySelectorAll('.up').forEach(function(el){ el.addEventListener('input',function(){ this.value=this.value.toUpperCase(); }); });
+document.querySelectorAll('.cap').forEach(function(el){ el.addEventListener('input',function(){ var v=this.value; this.value=v?v.charAt(0).toUpperCase()+v.slice(1):v; }); });
+function val(id){ return document.getElementById(id).value.trim(); }
+
+// --- moteur tableur ---
+var FORMULA_CELLS=['B7','B8','B9','B10','B11'];
+function rawOf(ref){ return document.getElementById(ref).value.trim().replace(',','.'); }
+function valueOf(ref,seen){
+  var raw=rawOf(ref);
+  if(raw==='') return NaN;
+  if(raw.charAt(0)==='='){
+    if(seen[ref]) return NaN; seen[ref]=true;
+    var expr=raw.slice(1).toUpperCase();
+    expr=expr.replace(/B[0-9]+/g,function(m){ var v=valueOf(m,seen); return '('+(isNaN(v)?'0':v)+')'; });
+    if(!/^[-+*/(). 0-9]+$/.test(expr)) return NaN;
+    try{ var r=Function('return ('+expr+')')(); return (typeof r==='number'&&isFinite(r))?r:NaN; }catch(e){ return NaN; }
+  }
+  var num=parseFloat(raw); return isNaN(num)?NaN:num;
+}
+function fmt(x){ return isNaN(x)?'?':x.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function recompute(){
+  FORMULA_CELLS.forEach(function(ref){
+    var chip=document.getElementById('c'+ref.slice(1));
+    var raw=rawOf(ref);
+    if(raw===''){ chip.textContent=''; return; }
+    var v=valueOf(ref,{});
+    chip.textContent=isNaN(v)?'?':fmt(v)+' €';
+  });
+}
+document.querySelectorAll('table.ss input').forEach(function(el){ el.addEventListener('input',recompute); });
+recompute();
+
+// --- vérification ---
+function expected(){
+  var B2=parseFloat(rawOf('B2'))||0,B3=parseFloat(rawOf('B3'))||0,B4=parseFloat(rawOf('B4'))||0,B5=parseFloat(rawOf('B5'))||0,B6=parseFloat(rawOf('B6'))||0;
+  var eau=B2*B3, as=B2*B4, ht=eau+as+B5, tva=ht*B6/100, ttc=ht+tva;
+  return {B7:eau,B8:as,B9:ht,B10:tva,B11:ttc};
+}
+function near(a,b){ return !isNaN(a)&&Math.abs(a-b)<0.01; }
+var lastScore=0;
+document.getElementById('checkBtn').addEventListener('click',function(){
+  var exp=expected(), good=0, details=[];
+  FORMULA_CELLS.forEach(function(ref){
+    var v=valueOf(ref,{}); var ok=near(v,exp[ref]); if(ok)good++;
+    details.push(ref+(ok?' ✔':' ✗'));
+  });
+  lastScore=good;
+  var msg=document.getElementById('msg');
+  if(good===5){ msg.className='msg ok'; msg.innerHTML='✅ Bravo ! Les 5 formules sont correctes. TOTAL TTC ≈ <b>'+fmt(exp.B11)+' €</b>.'; }
+  else { msg.className='msg ko'; msg.innerHTML='❌ '+good+'/5 formules correctes. À revoir : '+details.filter(function(d){return d.indexOf('✔')<0;}).map(function(d){return d.split(' ')[0];}).join(', ')+'. Rappel : une formule commence par = et utilise les références (ex. =B2*B3).'; }
+  document.getElementById('sendBtn').disabled = !(val('nom1')&&val('nom2')&&val('classe'));
+});
+
+// --- envoi vers Google Sheet ---
+document.getElementById('sendBtn').addEventListener('click',function(){
+  var msg=document.getElementById('msg');
+  if(!(val('nom1')&&val('nom2')&&val('classe'))){ msg.className='msg ko'; msg.textContent='Renseigne d’abord le binôme et la classe.'; return; }
+  var payload={
+    outil:'Tableur facture', classe:val('classe'),
+    eleve1:val('pre1')+' '+val('nom1'), eleve2:val('pre2')+' '+val('nom2'),
+    detail:'B7='+rawOf('B7')+' | B8='+rawOf('B8')+' | B9='+rawOf('B9')+' | B10='+rawOf('B10')+' | B11='+rawOf('B11'),
+    score:lastScore+'/5', total:fmt(expected().B11)+' €',
+    horodatage:new Date().toLocaleString('fr-FR')
+  };
+  if(!SCRIPT_URL){ msg.className='msg info'; msg.innerHTML='ℹ️ Envoi non configuré pour l’instant (SCRIPT_URL vide). Une fois ton script Google déployé, les résultats arriveront automatiquement dans ta feuille.'; return; }
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(){ msg.className='msg ok'; msg.textContent='✅ Résultats envoyés au professeur. Merci !'; })
+    .catch(function(){ msg.className='msg ko'; msg.textContent='Envoi impossible (vérifie la connexion ou l’URL du script).'; });
+});
+</script>
+</body>
+</html>

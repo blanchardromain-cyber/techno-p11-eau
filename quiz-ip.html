@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Quiz : l'indice de protection IP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1F3864; --blue:#2E75B6; --light:#DEEAF6; --lighter:#EAF1FA;
+    --ok:#1E8E5A; --ko:#C0392B; --grey:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto;padding:22px 16px 60px}
+  header.band{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
+  header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
+  header.band h1{margin:6px 0 0;font-size:22px;font-weight:800}
+  header.band p{margin:6px 0 0;color:#dce8f8;font-size:14px}
+  .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  h2{color:var(--blue);font-size:17px;margin:0 0 14px;border-bottom:2px solid var(--light);padding-bottom:8px}
+  label{display:block;font-weight:600;color:var(--navy);font-size:13px;margin:10px 0 4px}
+  input,select{width:100%;padding:10px 12px;border:1px solid #cbd6e4;border-radius:9px;font-size:15px;font-family:inherit;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.15)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:160px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:16px;transition:.15s}
+  .btn:hover{background:#255f96}
+  .btn:disabled{background:#9bb6d4;cursor:not-allowed}
+  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .hint{color:var(--grey);font-size:12px;margin-top:6px}
+  .qcount{color:var(--grey);font-size:13px;font-weight:600}
+  .qtext{font-size:17px;font-weight:700;color:var(--navy);margin:6px 0 14px}
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid #cbd6e4;border-radius:10px;padding:13px 15px;margin:8px 0;font-size:15px;font-family:inherit;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--blue);background:var(--lighter)}
+  .opt.correct{border-color:var(--ok);background:#e7f6ee;color:#13633d;font-weight:600}
+  .opt.wrong{border-color:var(--ko);background:#fbeae8;color:#8e2018;font-weight:600}
+  .opt:disabled{cursor:default}
+  .fb{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:14px}
+  .fb.ok{background:#e7f6ee;color:#13633d;border-left:5px solid var(--ok)}
+  .fb.ko{background:#fbeae8;color:#8e2018;border-left:5px solid var(--ko)}
+  .pill{display:inline-block;background:var(--light);color:var(--navy);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;margin-top:4px}
+  .score{font-size:46px;font-weight:800;color:var(--navy);text-align:center;margin:6px 0}
+  .scsub{text-align:center;color:var(--grey);margin-bottom:8px}
+  .who{text-align:center;background:var(--lighter);border-radius:10px;padding:12px;color:var(--navy);font-weight:600;margin:12px 0}
+  .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
+  .hidden{display:none}
+  .privacy{font-size:11px;color:var(--grey);margin-top:14px;border-top:1px dashed #d6deea;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="band">
+    <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
+    <h1>Quiz — L'indice de protection (IP)</h1>
+    <p>Compétence CT 2.5 — Identifier les contraintes et les normes.</p>
+  </header>
+
+  <!-- ÉCRAN 1 : identification du binôme -->
+  <section id="screen-id" class="card">
+    <h2>Votre binôme</h2>
+    <div class="row">
+      <div>
+        <label>Nom — élève 1</label>
+        <input id="nom1" class="up" placeholder="DUPONT" autocomplete="off">
+      </div>
+      <div>
+        <label>Prénom — élève 1</label>
+        <input id="pre1" class="cap" placeholder="Léa" autocomplete="off">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Nom — élève 2</label>
+        <input id="nom2" class="up" placeholder="MARTIN" autocomplete="off">
+      </div>
+      <div>
+        <label>Prénom — élève 2</label>
+        <input id="pre2" class="cap" placeholder="Tom" autocomplete="off">
+      </div>
+    </div>
+    <div class="row">
+      <div style="max-width:200px">
+        <label>Classe</label>
+        <select id="classe">
+          <option value="" selected disabled>Choisir…</option>
+          <option>4A</option><option>4B</option><option>4C</option><option>4D</option>
+          <option>4E</option><option>4F</option><option>4G</option>
+        </select>
+      </div>
+    </div>
+    <button id="startBtn" class="btn" disabled>Commencer le quiz</button>
+    <p class="hint">Renseigne les deux élèves et la classe pour démarrer.</p>
+    <p class="privacy">🔒 Confidentialité : les noms restent sur cet ordinateur, ne sont ni enregistrés ni envoyés. Ils servent uniquement à afficher le score à l'écran.</p>
+  </section>
+
+  <!-- ÉCRAN 2 : questions -->
+  <section id="screen-quiz" class="card hidden">
+    <div class="qcount" id="qcount"></div>
+    <div class="qtext" id="qtext"></div>
+    <div id="opts"></div>
+    <div id="fb"></div>
+    <button id="nextBtn" class="btn hidden">Question suivante</button>
+  </section>
+
+  <!-- ÉCRAN 3 : résultat -->
+  <section id="screen-res" class="card hidden">
+    <h2>Résultat</h2>
+    <div class="who" id="who"></div>
+    <div class="score" id="score"></div>
+    <div class="scsub" id="scsub"></div>
+    <div id="sendmsg" class="fb" style="display:none"></div>
+    <button id="sendBtn" class="btn">Envoyer au professeur</button>
+    <button id="againBtn" class="btn sec">Recommencer</button>
+  </section>
+
+  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Quiz IP</div>
+</div>
+
+<script>
+/* ====== À COMPLÉTER APRÈS DÉPLOIEMENT DU SCRIPT GOOGLE ======
+   Colle ici l'URL « /exec » de ton Apps Script Web App lié au Google Sheet. */
+const SCRIPT_URL = "";
+/* ============================================================ */
+
+// ---- Saisie : majuscules / capitalisation automatiques ----
+document.querySelectorAll('.up').forEach(function(el){
+  el.addEventListener('input',function(){ this.value = this.value.toUpperCase(); checkId(); });
+});
+document.querySelectorAll('.cap').forEach(function(el){
+  el.addEventListener('input',function(){
+    var v=this.value; this.value = v ? v.charAt(0).toUpperCase()+v.slice(1) : v; checkId();
+  });
+});
+document.getElementById('classe').addEventListener('change',checkId);
+
+function val(id){ return document.getElementById(id).value.trim(); }
+function checkId(){
+  var ok = val('nom1')&&val('pre1')&&val('nom2')&&val('pre2')&&val('classe');
+  document.getElementById('startBtn').disabled = !ok;
+}
+
+// ---- Questions ----
+var QUESTIONS = [
+  { q:"Que protège le 1ᵉʳ chiffre de l'indice IP ?",
+    options:["Contre les corps solides et les poussières","Contre l'eau et les liquides","Contre les chocs","Contre la chaleur"],
+    correct:0, exp:"Le 1ᵉʳ chiffre (0 à 6) indique la protection contre les corps solides et les poussières." },
+  { q:"Que protège le 2ᵉ chiffre de l'indice IP ?",
+    options:["Contre les poussières","Contre l'eau et les liquides","Contre le bruit","Contre les rayures"],
+    correct:1, exp:"Le 2ᵉ chiffre (0 à 8) indique la protection contre l'eau." },
+  { q:"Un objet électrique est exposé à des projections d'eau de toutes directions. Quel 2ᵉ chiffre minimum faut-il ?",
+    options:["1","2","4","0"],
+    correct:2, exp:"Un 2ᵉ chiffre de 4 correspond à la protection contre les projections d'eau de toutes directions." },
+  { q:"Que signifie l'indice IP65 ?",
+    options:["Protégé contre les gouttes verticales seulement","Totalement protégé contre les poussières et contre les jets d'eau","Protégé contre l'immersion permanente","Aucune protection"],
+    correct:1, exp:"6 = totalement étanche aux poussières ; 5 = protégé contre les jets d'eau à la lance." },
+  { q:"Entre IP44 et IP65, lequel protège le mieux contre l'eau ?",
+    options:["IP44","IP65","Ils protègent pareil","On ne peut pas savoir"],
+    correct:1, exp:"Le 2ᵉ chiffre de IP65 est 5, supérieur au 4 de IP44 : meilleure protection contre l'eau." },
+  { q:"Pour le robinet automatique d'un sanitaire (zone humide), quel indice est adapté ?",
+    options:["IP00","IP20","IP65","IP10"],
+    correct:2, exp:"IP65 protège la partie électrique contre la poussière et les jets d'eau : adapté à une zone humide." }
+];
+
+var idx=0, score=0, locked=false;
+document.getElementById('startBtn').addEventListener('click',function(){
+  idx=0;score=0;
+  document.getElementById('screen-id').classList.add('hidden');
+  document.getElementById('screen-res').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click',function(){
+  idx++;
+  if(idx>=QUESTIONS.length){ showResult(); } else { render(); }
+});
+document.getElementById('againBtn').addEventListener('click',function(){
+  document.getElementById('screen-res').classList.add('hidden');
+  document.getElementById('screen-id').classList.remove('hidden');
+});
+
+function render(){
+  locked=false;
+  var Q=QUESTIONS[idx];
+  document.getElementById('qcount').textContent='Question '+(idx+1)+' / '+QUESTIONS.length;
+  document.getElementById('qtext').textContent=Q.q;
+  document.getElementById('fb').innerHTML='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('nextBtn').textContent = (idx===QUESTIONS.length-1)?'Voir le résultat':'Question suivante';
+  var box=document.getElementById('opts'); box.innerHTML='';
+  Q.options.forEach(function(txt,i){
+    var b=document.createElement('button');
+    b.className='opt'; b.textContent=txt;
+    b.addEventListener('click',function(){ answer(i,b); });
+    box.appendChild(b);
+  });
+}
+function answer(i,btn){
+  if(locked) return; locked=true;
+  var Q=QUESTIONS[idx];
+  var all=document.querySelectorAll('#opts .opt');
+  all.forEach(function(b){ b.disabled=true; });
+  all[Q.correct].classList.add('correct');
+  var fb=document.getElementById('fb');
+  if(i===Q.correct){
+    score++;
+    fb.className='fb ok'; fb.innerHTML='✅ Bonne réponse ! '+Q.exp;
+  } else {
+    btn.classList.add('wrong');
+    fb.className='fb ko'; fb.innerHTML='❌ Pas tout à fait. '+Q.exp;
+  }
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+function showResult(){
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-res').classList.remove('hidden');
+  var who = val('pre1')+' '+val('nom1')+' & '+val('pre2')+' '+val('nom2')+' — '+val('classe');
+  document.getElementById('who').textContent=who;
+  document.getElementById('score').textContent=score+' / '+QUESTIONS.length;
+  var pct=Math.round(score/QUESTIONS.length*100);
+  var msg = pct>=83?'Excellent, l’indice IP n’a plus de secret !' : pct>=50?'Bien, revois les chiffres de l’indice IP.' : 'À retravailler : relis la fiche S4.';
+  document.getElementById('scsub').textContent=msg+' ('+pct+' %)';
+  var sm=document.getElementById('sendmsg'); sm.style.display='none';
+  document.getElementById('sendBtn').style.display='inline-block';
+}
+function sendResult(){
+  var sm=document.getElementById('sendmsg');
+  var payload={
+    outil:'Quiz IP', classe:val('classe'),
+    eleve1:val('pre1')+' '+val('nom1'), eleve2:val('pre2')+' '+val('nom2'),
+    detail:'Quiz indice IP', score:score+'/'+QUESTIONS.length, total:'',
+    horodatage:new Date().toLocaleString('fr-FR')
+  };
+  if(!SCRIPT_URL){ sm.style.display='block'; sm.className='fb ko'; sm.innerHTML='ℹ️ Envoi non configuré (SCRIPT_URL vide). Une fois ton script Google déployé, les résultats arriveront dans ta feuille.'; return; }
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(){ sm.style.display='block'; sm.className='fb ok'; sm.innerHTML='✅ Résultat envoyé au professeur. Merci !'; document.getElementById('sendBtn').style.display='none'; })
+    .catch(function(){ sm.style.display='block'; sm.className='fb ko'; sm.innerHTML='Envoi impossible (vérifie la connexion ou l’URL du script).'; });
+}
+document.getElementById('sendBtn').addEventListener('click',sendResult);
+</script>
+</body>
+</html>
