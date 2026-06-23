@@ -190,4 +190,8 @@ document.getElementById('sendBtn').addEventListener('click',function(){
   if(!SCRIPT_URL){ msg.className='msg info'; msg.innerHTML='ℹ️ Envoi non configuré pour l’instant (SCRIPT_URL vide). Une fois ton script Google déployé, les résultats arriveront automatiquement dans ta feuille.'; return; }
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
     .then(function(){ msg.className='msg ok'; msg.textContent='✅ Résultats envoyés au professeur. Merci !'; })
-    .catch(function(){ msg.className='msg ko'; msg.
+    .catch(function(){ msg.className='msg ko'; msg.textContent='Envoi impossible (vérifie la connexion ou l’URL du script).'; });
+});
+</script>
+</body>
+</html>
