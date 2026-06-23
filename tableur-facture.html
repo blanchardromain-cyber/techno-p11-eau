@@ -173,7 +173,7 @@ document.getElementById('checkBtn').addEventListener('click',function(){
   var msg=document.getElementById('msg');
   if(good===5){ msg.className='msg ok'; msg.innerHTML='✅ Bravo ! Les 5 formules sont correctes. TOTAL TTC ≈ <b>'+fmt(exp.B11)+' €</b>.'; }
   else { msg.className='msg ko'; msg.innerHTML='❌ '+good+'/5 formules correctes. À revoir : '+details.filter(function(d){return d.indexOf('✔')<0;}).map(function(d){return d.split(' ')[0];}).join(', ')+'. Rappel : une formule commence par = et utilise les références (ex. =B2*B3).'; }
-  document.getElementById('sendBtn').disabled = !(val('nom1')&&val('nom2')&&val('classe'));
+  document.getElementById('sendBtn').disabled = false;   // toujours cliquable après Vérifier ; la validation du binôme se fait au clic
 });
 
 // --- envoi vers Google Sheet ---
