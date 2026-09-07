@@ -34,6 +34,9 @@
   table.ss td.cell input:focus{box-shadow:inset 0 0 0 2px var(--blue)}
   td.data input{font-weight:700;color:#13633d;background:#eef7f1}
   td.formula{background:#fffdf5}
+  table.ss td.lbl.orange{background:#FDF1DC;color:#7a5310}
+  table.ss td.assain{background:#FDF1DC}
+  table.ss td.assain input{background:#FDF1DC;color:#7a5310;font-weight:700}
   .chip{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--lighter);color:var(--navy);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;pointer-events:none}
   td.ttc input{font-weight:800;color:var(--navy)}
   td.ttc{background:var(--light)}
@@ -77,18 +80,18 @@
 
   <section class="card">
     <h2>La feuille de calcul</h2>
-    <div class="help">👉 Dans les cellules <b>B7 à B11</b>, écris une <b>formule</b> commençant par <b>=</b> et utilisant les références des autres cellules. Exemple : pour le total de l'eau, <b>=B2*B3</b>. Les cellules vertes (B2–B6) sont des données déjà saisies.</div>
+    <div class="help">👉 Dans les cellules <b>B7 à B11</b>, écris une <b>formule</b> commençant par <b>=</b> et utilisant les références des autres cellules. Exemple : pour le total de l'eau, <b>=B2*B3</b>. Les cellules colorées (B2–B6) sont des données déjà saisies.</div>
     <table class="ss">
       <thead><tr><th class="rh"></th><th style="width:55%">A</th><th>B</th></tr></thead>
       <tbody>
         <tr><td class="rh">1</td><td class="lbl">Libellé</td><td class="lbl" style="text-align:center;background:#f3f7fc">Valeur</td></tr>
         <tr><td class="rh">2</td><td class="lbl">Consommation (m³)</td><td class="cell data"><input id="B2" value="50" inputmode="decimal"></td></tr>
         <tr><td class="rh">3</td><td class="lbl">Prix eau HT (€/m³)</td><td class="cell data"><input id="B3" value="1.16" inputmode="decimal"></td></tr>
-        <tr><td class="rh">4</td><td class="lbl">Assainissement (€/m³)</td><td class="cell data"><input id="B4" value="1.55" inputmode="decimal"></td></tr>
+        <tr><td class="rh">4</td><td class="lbl orange">Assainissement (€/m³)</td><td class="cell data assain"><input id="B4" value="1.55" inputmode="decimal"></td></tr>
         <tr><td class="rh">5</td><td class="lbl">Abonnement (€)</td><td class="cell data"><input id="B5" value="30" inputmode="decimal"></td></tr>
         <tr><td class="rh">6</td><td class="lbl">TVA (%)</td><td class="cell data"><input id="B6" value="5.5" inputmode="decimal"></td></tr>
         <tr><td class="rh">7</td><td class="lbl">Total eau (€)</td><td class="cell formula"><input id="B7" placeholder="= …"><span class="chip" id="c7"></span></td></tr>
-        <tr><td class="rh">8</td><td class="lbl">Total assainissement (€)</td><td class="cell formula"><input id="B8" placeholder="= …"><span class="chip" id="c8"></span></td></tr>
+        <tr><td class="rh">8</td><td class="lbl orange">Total assainissement (€)</td><td class="cell formula assain"><input id="B8" placeholder="= …"><span class="chip" id="c8"></span></td></tr>
         <tr><td class="rh">9</td><td class="lbl">Sous-total HT (€)</td><td class="cell formula"><input id="B9" placeholder="= …"><span class="chip" id="c9"></span></td></tr>
         <tr><td class="rh">10</td><td class="lbl">Montant TVA (€)</td><td class="cell formula"><input id="B10" placeholder="= …"><span class="chip" id="c10"></span></td></tr>
         <tr><td class="rh">11</td><td class="lbl">TOTAL TTC (€)</td><td class="cell formula ttc"><input id="B11" placeholder="= …"><span class="chip" id="c11"></span></td></tr>
