@@ -18,38 +18,55 @@
   header.band p{margin:6px 0 0;color:#dce8f8;font-size:14px}
   .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
   h2{color:var(--blue);font-size:16px;margin:0 0 12px;border-bottom:2px solid var(--light);padding-bottom:8px}
+  h3{color:var(--navy);font-size:14.5px;margin:20px 0 6px}
   label{display:block;font-weight:600;color:var(--navy);font-size:13px;margin:10px 0 4px}
   .idrow{display:flex;gap:12px;flex-wrap:wrap}
   .idrow>div{flex:1;min-width:150px}
   input,select{width:100%;padding:9px 11px;border:1px solid #cbd6e4;border-radius:9px;font-size:14px;font-family:inherit}
   input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.15)}
   /* tableur */
+  .tscroll{overflow-x:auto}
   table.ss{border-collapse:collapse;width:100%;margin-top:6px;font-size:14px}
   table.ss th,table.ss td{border:1px solid #c4d0e0;padding:0}
   table.ss thead th{background:var(--navy);color:#fff;text-align:center;padding:6px;font-weight:700}
   table.ss .rh{background:var(--lighter);color:var(--navy);text-align:center;font-weight:700;width:34px}
   table.ss td.lbl{background:#f3f7fc;color:var(--navy);font-weight:600;padding:8px 10px}
   table.ss td.cell{padding:0;position:relative}
-  table.ss td.cell input{border:none;border-radius:0;width:100%;padding:8px 10px;background:transparent}
+  table.ss td.cell input{border:none;border-radius:0;width:100%;padding:8px 76px 8px 10px;background:transparent}
   table.ss td.cell input:focus{box-shadow:inset 0 0 0 2px var(--blue)}
   td.data input{font-weight:700;color:#13633d;background:#eef7f1}
   td.formula{background:#fffdf5}
-  table.ss td.lbl.orange{background:#FDF1DC;color:#7a5310}
-  table.ss td.assain{background:#FDF1DC}
-  table.ss td.assain input{background:#FDF1DC;color:#7a5310;font-weight:700}
   .chip{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--lighter);color:var(--navy);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;pointer-events:none}
   td.ttc input{font-weight:800;color:var(--navy)}
   td.ttc{background:var(--light)}
+  table.ss td.ok{box-shadow:inset 0 0 0 2px var(--ok)}
+  table.ss td.ko{box-shadow:inset 0 0 0 2px var(--ko)}
   .hint{color:var(--grey);font-size:12.5px;margin-top:8px}
-  .help{background:var(--lighter);border-left:5px solid var(--blue);padding:10px 12px;border-radius:8px;font-size:13px;color:var(--navy);margin-top:10px}
+  .help{background:var(--lighter);border-left:5px solid var(--blue);padding:11px 13px;border-radius:8px;font-size:13.5px;color:var(--navy);margin-top:12px}
+  .help ul{margin:6px 0 0 18px;padding:0}
+  .help li{margin-bottom:4px}
+  .exemple{background:#fff;border:1px dashed #9bb6d4;border-radius:8px;padding:9px 12px;margin-top:9px;font-size:13px;color:#41506a}
+  .exemple code{background:var(--light);color:var(--navy);border-radius:4px;padding:1px 5px;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace}
+  /* aide graduée */
+  .aide{background:#FFF8E7;border:1px solid #F0D089;border-radius:10px;padding:11px 14px;margin-top:14px}
+  .aide .at{font-size:13px;font-weight:700;color:#8A5A00;margin-bottom:8px}
+  .aide-bts{display:flex;gap:7px;flex-wrap:wrap}
+  .aidebt{background:#fff;border:2px solid #E0B65C;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:700;color:#8A5A00}
+  .aidebt:hover{background:#FBEFD5}
+  .aidebt.used{background:#F5E2B8;border-color:#C79A34}
+  .aide-msg{margin-top:9px;font-size:13px;color:#6B4A00;line-height:1.5}
+  .aide-msg .cran{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;color:#A87400;display:block;margin-bottom:2px}
   .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin:14px 8px 0 0;transition:.15s}
   .btn:hover{background:#255f96}
   .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .btn.pt{padding:8px 14px;font-size:13.5px;margin-top:10px}
   .btn:disabled{background:#9bb6d4;cursor:not-allowed;border-color:#9bb6d4;color:#fff}
   .msg{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;display:none}
   .msg.ok{background:#e7f6ee;color:#13633d;border-left:5px solid var(--ok);display:block}
   .msg.ko{background:#fbeae8;color:#8e2018;border-left:5px solid var(--ko);display:block}
   .msg.info{background:var(--lighter);color:var(--navy);border-left:5px solid var(--blue);display:block}
+  .msg ul{margin:6px 0 0 18px;padding:0;font-weight:400}
+  .msg li{margin-bottom:4px}
   .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
   .privacy{font-size:11px;color:var(--grey);margin-top:12px;border-top:1px dashed #d6deea;padding-top:10px}
 </style>
@@ -59,7 +76,7 @@
   <header class="band">
     <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
     <h1>Mini-tableur — La facture d'eau</h1>
-    <p>Séance 2 — Retrouve les bonnes formules pour calculer la facture.</p>
+    <p>Séance 2 — Estime <b>ta</b> facture d'eau pour une année, à partir de la facture étudiée en classe.</p>
   </header>
 
   <section class="card">
@@ -79,55 +96,135 @@
   </section>
 
   <section class="card">
-    <h2>La feuille de calcul</h2>
-    <div class="help">👉 Dans les cellules <b>B7 à B11</b>, écris une <b>formule</b> commençant par <b>=</b> et utilisant les références des autres cellules. Exemple : pour le total de l'eau, <b>=B2*B3</b>. Les cellules colorées (B2–B6) sont des données déjà saisies.</div>
+    <h2>1 — Les données (cellules B2 à B6)</h2>
+    <div class="help">
+      Cette feuille de calcul estime <b>votre facture d'eau pour une année</b>.
+      <ul>
+        <li><b>B2</b> : <b>votre</b> consommation — recopiez la consommation annuelle estimée par le simulateur
+            (question 1 de la fiche papier).</li>
+        <li><b>B3 à B6</b> : à <b>relever sur la facture</b> de M. Dupont (recto et verso). Les libellés de la
+            colonne A reprennent ceux de la facture : cherchez la même expression sur le document.</li>
+      </ul>
+      Attention pour <b>B5</b> : la facture ne couvre que <b>six mois</b>, alors que la feuille calcule <b>une année</b>.
+    </div>
+    <div class="tscroll">
     <table class="ss">
-      <thead><tr><th class="rh"></th><th style="width:55%">A</th><th>B</th></tr></thead>
+      <thead><tr><th class="rh"></th><th style="width:52%">A</th><th>B</th></tr></thead>
       <tbody>
         <tr><td class="rh">1</td><td class="lbl">Libellé</td><td class="lbl" style="text-align:center;background:#f3f7fc">Valeur</td></tr>
-        <tr><td class="rh">2</td><td class="lbl">Consommation (m³)</td><td class="cell data"><input id="B2" value="50" inputmode="decimal"></td></tr>
-        <tr><td class="rh">3</td><td class="lbl">Prix eau HT (€/m³)</td><td class="cell data"><input id="B3" value="1.16" inputmode="decimal"></td></tr>
-        <tr><td class="rh">4</td><td class="lbl orange">Assainissement (€/m³)</td><td class="cell data assain"><input id="B4" value="1.55" inputmode="decimal"></td></tr>
-        <tr><td class="rh">5</td><td class="lbl">Abonnement (€)</td><td class="cell data"><input id="B5" value="30" inputmode="decimal"></td></tr>
-        <tr><td class="rh">6</td><td class="lbl">TVA (%)</td><td class="cell data"><input id="B6" value="5.5" inputmode="decimal"></td></tr>
-        <tr><td class="rh">7</td><td class="lbl">Total eau (€)</td><td class="cell formula"><input id="B7" placeholder="= …"><span class="chip" id="c7"></span></td></tr>
-        <tr><td class="rh">8</td><td class="lbl orange">Total assainissement (€)</td><td class="cell formula assain"><input id="B8" placeholder="= …"><span class="chip" id="c8"></span></td></tr>
-        <tr><td class="rh">9</td><td class="lbl">Sous-total HT (€)</td><td class="cell formula"><input id="B9" placeholder="= …"><span class="chip" id="c9"></span></td></tr>
-        <tr><td class="rh">10</td><td class="lbl">Montant TVA (€)</td><td class="cell formula"><input id="B10" placeholder="= …"><span class="chip" id="c10"></span></td></tr>
-        <tr><td class="rh">11</td><td class="lbl">TOTAL TTC (€)</td><td class="cell formula ttc"><input id="B11" placeholder="= …"><span class="chip" id="c11"></span></td></tr>
+        <tr><td class="rh">2</td><td class="lbl">Consommation sur l'année (m³)</td><td class="cell data" id="td-B2"><input id="B2" placeholder="votre valeur du simulateur" inputmode="decimal"></td></tr>
+        <tr><td class="rh">3</td><td class="lbl">Consommation Vendée Eau — prix unitaire HT (€/m³)</td><td class="cell data" id="td-B3"><input id="B3" placeholder="sur la facture" inputmode="decimal"></td></tr>
+        <tr><td class="rh">4</td><td class="lbl">Redevances Agence de l'eau (€/m³)</td><td class="cell data" id="td-B4"><input id="B4" placeholder="sur la facture" inputmode="decimal"></td></tr>
+        <tr><td class="rh">5</td><td class="lbl">Abonnement pour l'année (€)</td><td class="cell data" id="td-B5"><input id="B5" placeholder="sur la facture" inputmode="decimal"></td></tr>
+        <tr><td class="rh">6</td><td class="lbl">TVA (%)</td><td class="cell data" id="td-B6"><input id="B6" placeholder="sur la facture" inputmode="decimal"></td></tr>
+        <tr><td class="rh">7</td><td class="lbl">Total eau (€)</td><td class="cell formula" id="td-B7"><input id="B7" placeholder="= …"><span class="chip" id="cB7"></span></td></tr>
+        <tr><td class="rh">8</td><td class="lbl">Total des redevances (€)</td><td class="cell formula" id="td-B8"><input id="B8" placeholder="= …"><span class="chip" id="cB8"></span></td></tr>
+        <tr><td class="rh">9</td><td class="lbl">Sous-total HT (€)</td><td class="cell formula" id="td-B9"><input id="B9" placeholder="= …"><span class="chip" id="cB9"></span></td></tr>
+        <tr><td class="rh">10</td><td class="lbl">Montant de la TVA (€)</td><td class="cell formula" id="td-B10"><input id="B10" placeholder="= …"><span class="chip" id="cB10"></span></td></tr>
+        <tr><td class="rh">11</td><td class="lbl">TOTAL TTC (€)</td><td class="cell formula ttc" id="td-B11"><input id="B11" placeholder="= …"><span class="chip" id="cB11"></span></td></tr>
       </tbody>
     </table>
-    <p class="hint">Astuce : B9 doit additionner l'eau, l'assainissement et l'abonnement ; B10 applique le pourcentage de TVA ; B11 ajoute la TVA au sous-total HT.</p>
+    </div>
+    <button class="btn pt" id="donBtn">Vérifier mes données</button>
+    <div class="msg" id="don-msg"></div>
+
+    <div class="help" style="margin-top:18px">
+      <b>HT, TVA, TTC : de quoi parle-t-on ?</b>
+      <ul>
+        <li><b>HT</b> = <b>hors taxes</b> : le prix du service seul, ce que touche l'entreprise qui produit et
+            distribue l'eau.</li>
+        <li>La <b>TVA</b> (taxe sur la valeur ajoutée) est un <b>impôt</b> ajouté à ce prix. L'entreprise la collecte
+            sur la facture puis la reverse à l'État : elle ne la garde pas. On l'exprime en <b>pourcentage</b> du
+            montant HT — un taux de 5,5 % veut dire <b>5,50 € de taxe pour 100 € HT</b>.</li>
+        <li><b>TTC</b> = <b>toutes taxes comprises</b> : le montant HT augmenté de la TVA. C'est la somme que le
+            client paie réellement.</li>
+      </ul>
+      L'eau potable est un produit de première nécessité : elle bénéficie d'un <b>taux réduit</b>, bien plus bas que
+      les 20 % appliqués à la plupart des produits.
+    </div>
+
+    <h2 style="margin-top:26px">2 — Les formules (cellules B7 à B11)</h2>
+    <div class="help">
+      Une formule commence toujours par le signe <b>=</b> et renvoie aux <b>références</b> des cellules (B2, B3…) au
+      lieu de recopier les nombres à la main : si une donnée change, tout le calcul se met à jour tout seul.
+      <div class="exemple">
+        <b>Exemple, sur une tout autre feuille</b> — <code>A1</code> contient le nombre de crayons (12) et
+        <code>A2</code> le prix d'un crayon (0,80 €). Pour obtenir la dépense, on n'écrit pas 9,6 : on écrit
+        <code>=A1*A2</code>. Changez le 12 en 20, le total suit.
+      </div>
+    </div>
+    <div class="aide">
+      <div class="at">💡 Coup de pouce — cliquez sur la cellule qui vous bloque</div>
+      <div class="aide-bts">
+        <button type="button" class="aidebt" id="aide-B7"  onclick="coupDePouce('B7')">B7</button>
+        <button type="button" class="aidebt" id="aide-B8"  onclick="coupDePouce('B8')">B8</button>
+        <button type="button" class="aidebt" id="aide-B9"  onclick="coupDePouce('B9')">B9</button>
+        <button type="button" class="aidebt" id="aide-B10" onclick="coupDePouce('B10')">B10</button>
+        <button type="button" class="aidebt" id="aide-B11" onclick="coupDePouce('B11')">B11</button>
+      </div>
+      <div class="aide-msg" id="aide-msg">Un 1<sup>er</sup> clic explique la ligne avec des mots. Un 2<sup>e</sup> clic
+        sur la même cellule dit <em>quelles</em> cellules interviennent. La formule, c'est vous qui l'écrivez.</div>
+    </div>
 
     <button class="btn" id="checkBtn">Vérifier mes formules</button>
+    <button class="btn sec" id="testBtn">🧾 Tester mes formules sur la vraie facture</button>
     <button class="btn sec" id="sendBtn" disabled>Envoyer au professeur</button>
     <div class="msg" id="msg"></div>
-    <p class="privacy">🔒 Les résultats (binôme, formules, total) ne sont envoyés que vers le Google Sheet de l'enseignant, lorsque l'envoi est configuré. Aucune autre donnée n'est conservée.</p>
+    <p class="privacy">🔒 Les résultats (binôme, données, formules, total) ne sont envoyés que vers le Google Sheet de l'enseignant, lorsque l'envoi est configuré. Aucune autre donnée n'est conservée.</p>
   </section>
 
   <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Mini-tableur facture d'eau</div>
 </div>
 
 <script>
-/* ====== À COMPLÉTER APRÈS DÉPLOIEMENT DU SCRIPT GOOGLE ======
-   Colle ici l'URL « /exec » de ton Apps Script Web App lié au Google Sheet. */
+/* ====== URL « /exec » de l'Apps Script Web App liée au Google Sheet ====== */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9e_j_EH8BQR6wE-iMrhk1aMOqs3T-I7pvjFeD8VqkqqQWUsq6l2m5JXMoFVZOerhW/exec";
-/* ============================================================ */
+/* ======================================================================== */
 
 // --- saisie binôme ---
 document.querySelectorAll('.up').forEach(function(el){ el.addEventListener('input',function(){ this.value=this.value.toUpperCase(); }); });
 document.querySelectorAll('.cap').forEach(function(el){ el.addEventListener('input',function(){ var v=this.value; this.value=v?v.charAt(0).toUpperCase()+v.slice(1):v; }); });
-function val(id){ return document.getElementById(id).value.trim(); }
+function $(id){ return document.getElementById(id); }
+function val(id){ var e=$(id); return e ? e.value.trim() : ''; }
+
+var DATA_CELLS    = ['B2','B3','B4','B5','B6'];
+var FORMULA_CELLS = ['B7','B8','B9','B10','B11'];
+
+/* Valeurs attendues pour les données relevées sur la facture (B2 vient du simulateur).
+   Elles ne sont jamais affichées à l'élève : elles servent à orienter son regard sur le document. */
+var REPERES = {
+  B3:{ v:1.162, tol:0.006, ou:"verso, ligne « Consommation Vendée Eau — tarif Bleu 1<sup>er</sup> semestre 2025 », colonne « Prix unitaire € HT ». La ligne du dessus (1,17 €) est celle du semestre précédent." },
+  B4:{ v:0.408, tol:0.006, ou:"verso, bloc « Redevances Agence de l'eau » : additionnez les prix unitaires des lignes de ce bloc (prélèvement, consommation, performance des réseaux)." },
+  B5:{ v:86,    tol:1,     ou:"recto ou verso, ligne « Abonnement ». Pensez que la facture couvre un semestre et que la feuille calcule une année." },
+  B6:{ v:5.5,   tol:0.05,  ou:"bas de la facture, bloc « TVA » : c'est le taux en %, pas le montant en euros." }
+};
+/* Cellules attendues dans chaque formule — sert aux coups de pouce et au diagnostic,
+   jamais à afficher la formule elle-même. */
+var CELLULES = { B7:['B2','B3'], B8:['B2','B4'], B9:['B5','B7','B8'], B10:['B6','B9'], B11:['B9','B10'] };
+/* Aide graduée : deux crans, pas un de plus. */
+var AIDE = {
+  B7:["Sur la facture, l'eau est vendue à un certain prix pour chaque mètre cube. Ici, on cherche ce que coûtent, en tout, les mètres cubes consommés dans l'année.",
+      "Deux cellules interviennent : <b>B2</b> et <b>B3</b>."],
+  B8:["Les redevances de l'Agence de l'eau se comptent elles aussi pour chaque mètre cube consommé, exactement comme l'eau.",
+      "Deux cellules interviennent : <b>B2</b> et <b>B4</b>."],
+  B9:["Le sous-total HT rassemble tout ce que l'on paie avant la taxe : l'eau, les redevances, et la part fixe que l'on paie même en consommant peu.",
+      "Trois cellules interviennent : <b>B7</b>, <b>B8</b> et <b>B5</b>."],
+  B10:["La TVA n'est pas un montant fixe : c'est une part du sous-total HT, exprimée en pourcentage. 5,5 % signifie 5,50 € pour 100 € HT.",
+      "Deux cellules interviennent : <b>B9</b> et <b>B6</b> — et B6 est un pourcentage, pas des euros."],
+  B11:["Le montant TTC, c'est ce que le client paie vraiment : le sous-total hors taxes, auquel on ajoute la taxe.",
+      "Deux cellules interviennent : <b>B9</b> et <b>B10</b>."]
+};
+var AIDES = { B7:0, B8:0, B9:0, B10:0, B11:0 };
+var SAUVE = null;   /* valeurs personnelles mises de côté pendant le test « vraie facture » */
 
 // --- moteur tableur ---
-var FORMULA_CELLS=['B7','B8','B9','B10','B11'];
-function rawOf(ref){ return document.getElementById(ref).value.trim().replace(',','.'); }
+function rawOf(ref){ var e=$(ref); return e ? e.value.trim().replace(',','.') : ''; }
 function valueOf(ref,cache,stack){
   if(Object.prototype.hasOwnProperty.call(cache,ref)) return cache[ref];
   var raw=rawOf(ref);
   if(raw==='') return NaN;
   if(raw.charAt(0)==='='){
-    if(stack.indexOf(ref)>=0){ cache[ref]=NaN; return NaN; }   // cycle
+    if(stack.indexOf(ref)>=0){ cache[ref]=NaN; return NaN; }   // renvoi circulaire
     stack.push(ref);
     var bad=false;
     var expr=raw.slice(1).toUpperCase().replace(/B[0-9]+/g,function(m){
@@ -148,52 +245,233 @@ function fmt(x){ return isNaN(x)?'?':x.toLocaleString('fr-FR',{minimumFractionDi
 function recompute(){
   var cache={};
   FORMULA_CELLS.forEach(function(ref){
-    var chip=document.getElementById('c'+ref.slice(1));
-    var raw=rawOf(ref);
-    if(raw===''){ chip.textContent=''; return; }
+    var chip=$('c'+ref);
+    if(rawOf(ref)===''){ chip.textContent=''; return; }
     var v=valueOf(ref,cache,[]);
     chip.textContent=isNaN(v)?'?':fmt(v)+' €';
   });
 }
-document.querySelectorAll('table.ss input').forEach(function(el){ el.addEventListener('input',recompute); });
+document.querySelectorAll('table.ss input').forEach(function(el){
+  el.addEventListener('input',function(){
+    recompute();
+    var td=this.parentNode; if(td) td.classList.remove('ok','ko');
+  });
+});
 recompute();
 
-// --- vérification ---
 function expected(){
-  var B2=parseFloat(rawOf('B2'))||0,B3=parseFloat(rawOf('B3'))||0,B4=parseFloat(rawOf('B4'))||0,B5=parseFloat(rawOf('B5'))||0,B6=parseFloat(rawOf('B6'))||0;
-  var eau=B2*B3, as=B2*B4, ht=eau+as+B5, tva=ht*B6/100, ttc=ht+tva;
-  return {B7:eau,B8:as,B9:ht,B10:tva,B11:ttc};
+  var B2=parseFloat(rawOf('B2'))||0,B3=parseFloat(rawOf('B3'))||0,B4=parseFloat(rawOf('B4'))||0,
+      B5=parseFloat(rawOf('B5'))||0,B6=parseFloat(rawOf('B6'))||0;
+  var eau=B2*B3, red=B2*B4, ht=eau+red+B5, tva=ht*B6/100;
+  return {B7:eau,B8:red,B9:ht,B10:tva,B11:ht+tva};
 }
-function near(a,b){ return !isNaN(a)&&Math.abs(a-b)<0.01; }
+function donneesCompletes(){
+  for(var i=0;i<DATA_CELLS.length;i++) if(rawOf(DATA_CELLS[i])==='') return false;
+  return true;
+}
+function afficher(id,ok,html){
+  var b=$(id); if(!b) return;
+  b.className='msg '+(ok?'ok':'ko');
+  b.innerHTML=html;
+}
+
+// --- 1. vérification des données relevées sur la facture ---
+$('donBtn').addEventListener('click',function(){
+  var msgs=[], ok=0, vides=0, i, ref;
+  DATA_CELLS.forEach(function(r){ var td=$('td-'+r); if(td) td.classList.remove('ok','ko'); });
+  var b2=parseFloat(rawOf('B2'));
+  if(rawOf('B2')===''){
+    vides++; msgs.push("<b>B2</b> : reportez votre consommation annuelle estimée (simulateur, question 1 de la fiche).");
+  } else if(isNaN(b2)||b2<=0){
+    msgs.push("<b>B2</b> : on attend un nombre de mètres cubes.");
+  } else if(b2<10||b2>400){
+    msgs.push("<b>B2</b> : "+rawOf('B2')+" m³ par an, c'est très loin de l'ordre de grandeur (45 à 55 m³ par personne et par an). Vérifiez l'unité donnée par le simulateur.");
+  } else { ok++; $('td-B2').classList.add('ok'); }
+
+  for(i=0;i<DATA_CELLS.length;i++){
+    ref=DATA_CELLS[i];
+    if(ref==='B2') continue;
+    var rep=REPERES[ref], raw=rawOf(ref), td=$('td-'+ref);
+    if(raw===''){ vides++; msgs.push("<b>"+ref+"</b> : à relever sur la facture — "+rep.ou); continue; }
+    var v=parseFloat(raw);
+    if(isNaN(v)){ msgs.push("<b>"+ref+"</b> : on attend un nombre (avec un point ou une virgule décimale)."); td.classList.add('ko'); continue; }
+    if(Math.abs(v-rep.v)<=rep.tol){ ok++; td.classList.add('ok'); continue; }
+    td.classList.add('ko');
+    if(ref==='B5'&&Math.abs(v-rep.v/2)<=1){
+      msgs.push("<b>B5</b> : c'est bien le montant lu sur la facture, mais elle ne couvre que <b>six mois</b>. La feuille, elle, calcule une <b>année</b>.");
+    } else if(ref==='B6'&&v>20){
+      msgs.push("<b>B6</b> : on attend le <b>taux</b> de TVA en %, pas le montant en euros.");
+    } else if(ref==='B3'&&Math.abs(v-1.17)<0.006){
+      msgs.push("<b>B3</b> : c'est le tarif du <b>semestre précédent</b>. "+rep.ou);
+    } else {
+      msgs.push("<b>"+ref+"</b> : ce n'est pas la bonne ligne — "+rep.ou);
+    }
+  }
+  if(ok===DATA_CELLS.length){
+    afficher('don-msg',true,"🎉 Les 5 données sont bonnes. Vous pouvez écrire vos formules.");
+  } else {
+    afficher('don-msg',false,ok+"/5 donnée(s) correcte(s)"+(vides?" — "+vides+" cellule(s) encore vide(s)":"")+
+      ".<ul><li>"+msgs.join("</li><li>")+"</li></ul>");
+  }
+});
+
+// --- 2. coup de pouce en deux crans ---
+function coupDePouce(ref){
+  var boite=$('aide-msg'), textes=AIDE[ref];
+  if(!boite||!textes) return;
+  if(AIDES[ref]<2) AIDES[ref]++;
+  var cran=AIDES[ref], bt=$('aide-'+ref);
+  if(bt) bt.classList.add('used');
+  boite.innerHTML='<span class="cran">'+ref+' — coup de pouce '+cran+'/2</span>'+textes[cran-1]+
+    (cran===1 ? ' <em>(recliquez sur '+ref+' pour savoir quelles cellules interviennent)</em>'
+              : ' <em>(à vous d\'écrire la formule : c\'est le travail demandé)</em>');
+}
+function aidesTexte(){
+  var out=[], n=0;
+  FORMULA_CELLS.forEach(function(r){ if(AIDES[r]){ out.push(r+'×'+AIDES[r]); n+=AIDES[r]; } });
+  return { n:n, txt: out.length ? out.join(', ') : 'aucun' };
+}
+
+// --- 3. diagnostic d'une formule fausse, sans jamais la donner ---
+function refsDe(raw){ var m=raw.toUpperCase().match(/B[0-9]+/g); return m||[]; }
+function memesCellules(a,b){
+  if(a.length!==b.length) return false;
+  return a.slice().sort().join(',')===b.slice().sort().join(',');
+}
+function valeurIdeale(ref,exp){
+  var cache={};
+  FORMULA_CELLS.forEach(function(r){ if(r!==ref) cache[r]=exp[r]; });
+  return valueOf(ref,cache,[]);
+}
+function dependancesFausses(raw,exp){
+  var refs=refsDe(raw), out=[], cache={};
+  for(var i=0;i<refs.length;i++){
+    if(FORMULA_CELLS.indexOf(refs[i])<0) continue;
+    var v=valueOf(refs[i],cache,[]);
+    if(isNaN(v)||Math.abs(v-exp[refs[i]])>=0.01) out.push(refs[i]);
+  }
+  return out;
+}
+function diagFormule(ref,raw,v,vIdeale,exp){
+  if(raw.charAt(0)!=='='){
+    if(/^[-+*/(). 0-9]+$/.test(raw))
+      return "vous avez tapé le résultat à la main. Le tableur attend une <b>formule</b>, qui commence par <b>=</b>.";
+    return "il manque le signe <b>=</b> au début : sans lui, le tableur garde la saisie comme du texte.";
+  }
+  var refs=refsDe(raw.slice(1));
+  if(!refs.length)
+    return "la formule ne renvoie à <b>aucune cellule</b> : des nombres ont été recopiés. Utilisez les références (B2, B3…) pour que le calcul se mette à jour tout seul.";
+  for(var i=0;i<refs.length;i++){
+    var n=parseInt(refs[i].slice(1),10);
+    if(n<2||n>11) return "la cellule <b>"+refs[i]+"</b> n'existe pas dans cette feuille (elle va de B1 à B11).";
+    if(refs[i]===ref) return "la formule se renvoie à <b>elle-même</b> : le tableur tourne en rond.";
+    if(rawOf(refs[i])==='') return "la cellule <b>"+refs[i]+"</b> est encore vide : le calcul ne peut pas aboutir.";
+    if(isNaN(valueOf(refs[i],{},[ref])))
+      return "la formule s'appuie sur <b>"+refs[i]+"</b>, qui ne renvoie pas encore de nombre. Corrigez d'abord cette cellule-là.";
+  }
+  if(!isNaN(vIdeale)&&Math.abs(vIdeale-exp[ref])<0.01){
+    var dep=dependancesFausses(raw.slice(1),exp);
+    return "la formule est <b>juste</b> — mais elle s'appuie sur "+
+      (dep.length ? "<b>"+dep.join(" et ")+"</b>, qui reste"+(dep.length>1?"nt":"")+" à corriger" : "une cellule encore fausse")+
+      ". Corrigez cette cellule-là, puis revérifiez.";
+  }
+  if(isNaN(v))
+    return "le tableur n'arrive pas à calculer la formule : vérifiez les parenthèses et les signes (+ − * /).";
+  if(ref==='B10'&&!isNaN(vIdeale)&&Math.abs(vIdeale-exp[ref]*100)<0.01)
+    return "les deux cellules sont les bonnes, mais <b>B6 est un pourcentage</b> : 5,5 ne veut pas dire 5,50 €.";
+  if(refs.length===1)
+    return "la formule recopie une seule cellule. Relisez le libellé de la ligne : plusieurs valeurs doivent être combinées.";
+  if(memesCellules(refs,CELLULES[ref]))
+    return "les cellules utilisées sont les <b>bonnes</b>, mais pas l'opération. Relisez le libellé de la ligne.";
+  return "regardez quelles valeurs doivent intervenir : le libellé de la ligne (colonne A) le dit en toutes lettres.";
+}
+/* Formule juste mais qui recopie un nombre au lieu d'une référence : on la valide, on alerte. */
+function nombreEnDur(raw){
+  var nums=raw.slice(1).toUpperCase().replace(/B[0-9]+/g,'').match(/[0-9]+(?:\.[0-9]+)?/g)||[];
+  for(var i=0;i<nums.length;i++) if(nums[i]!=='100') return true;
+  return false;
+}
+
 var lastScore=0;
-document.getElementById('checkBtn').addEventListener('click',function(){
-  var exp=expected(), good=0, details=[], cache={};
+$('checkBtn').addEventListener('click',function(){
+  $('sendBtn').disabled=false;
+  if(!donneesCompletes()){
+    afficher('msg',false,"Complétez d'abord les données B2 à B6 : sans elles, vos formules ne peuvent pas être vérifiées.");
+    return;
+  }
+  var exp=expected(), cache={}, ok=0, details=[], vides=0, alertes=[];
   FORMULA_CELLS.forEach(function(ref){
-    var v=valueOf(ref,cache,[]); var ok=near(v,exp[ref]); if(ok)good++;
-    details.push(ref+(ok?' ✔':' ✗'));
+    var td=$('td-'+ref);
+    if(td) td.classList.remove('ok','ko');
+    var raw=rawOf(ref);
+    if(raw===''){ vides++; return; }
+    var v=valueOf(ref,cache,[]);
+    /* On exige une vraie formule : c'est la compétence travaillée, pas le calcul mental. */
+    var bon=(raw.charAt(0)==='=')&&!isNaN(v)&&Math.abs(v-exp[ref])<0.01;
+    if(bon){
+      ok++; if(td) td.classList.add('ok');
+      if(nombreEnDur(raw)) alertes.push(ref);
+    } else {
+      details.push("<b>"+ref+"</b> : "+diagFormule(ref,raw,v,valeurIdeale(ref,exp),exp));
+      if(td) td.classList.add('ko');
+    }
   });
-  lastScore=good;
-  var msg=document.getElementById('msg');
-  if(good===5){ msg.className='msg ok'; msg.innerHTML='✅ Bravo ! Les 5 formules sont correctes. TOTAL TTC ≈ <b>'+fmt(exp.B11)+' €</b>.'; }
-  else { msg.className='msg ko'; msg.innerHTML='❌ '+good+'/5 formules correctes. À revoir : '+details.filter(function(d){return d.indexOf('✔')<0;}).map(function(d){return d.split(' ')[0];}).join(', ')+'. Rappel : une formule commence par = et utilise les références (ex. =B2*B3).'; }
-  document.getElementById('sendBtn').disabled = false;   // toujours cliquable après Vérifier ; la validation du binôme se fait au clic
+  lastScore=ok;
+  if(vides===FORMULA_CELLS.length){
+    afficher('msg',false,"Écrivez d'abord vos formules dans les cellules B7 à B11 (elles commencent par <b>=</b>). Bloqués sur une ligne ? Le bouton <b>Coup de pouce</b> est là pour ça.");
+    return;
+  }
+  var mot = alertes.length
+    ? "<div style=\"margin-top:7px;font-weight:400\">⚠️ "+alertes.join(', ')+" donne le bon résultat, mais un nombre y a été recopié au lieu d'une référence : si la donnée change, le total sera faux.</div>"
+    : "";
+  if(ok===FORMULA_CELLS.length){
+    afficher('msg',true,"🎉 Les 5 formules sont justes. Votre facture d'eau estimée pour l'année : <b>"+fmt(exp.B11)+" €</b>."+mot);
+  } else {
+    afficher('msg',false,ok+"/5 formule(s) juste(s)"+(vides?" — "+vides+" cellule(s) encore vide(s)":"")+
+      ".<ul><li>"+details.join("</li><li>")+"</li></ul>"+mot);
+  }
+});
+
+/* Test grandeur nature : les chiffres du semestre de M. Dupont (SUEZ pour Vendée Eau,
+   1er semestre 2025). Des formules justes doivent retrouver le total imprimé sur la facture. */
+$('testBtn').addEventListener('click',function(){
+  if(!SAUVE){
+    SAUVE={};
+    DATA_CELLS.forEach(function(r){ SAUVE[r]=val(r); });
+  }
+  var v={B2:'59',B3:'1.162',B4:'0.408',B5:'43',B6:'5.5'};
+  DATA_CELLS.forEach(function(r){ $(r).value=v[r]; });
+  recompute();
+  afficher('msg',true,"🧾 Données du semestre de M. Dupont chargées : 59 m³, 1,162 €/m³, redevances 0,408 €/m³, "+
+    "abonnement 43 €, TVA 5,5 %. Vos formules affichent <b>"+fmt(expected().B11)+" €</b> en B11 : comparez ce montant "+
+    "au total imprimé sur la facture (143,26 €). S'il y colle, vos formules sont bonnes. "+
+    '<button type="button" class="btn sec pt" id="retourBtn">↩ Revenir à mes valeurs</button>');
+  var rb=$('retourBtn');
+  if(rb) rb.addEventListener('click',function(){
+    if(!SAUVE) return;
+    DATA_CELLS.forEach(function(r){ $(r).value=SAUVE[r]||''; });
+    SAUVE=null; recompute();
+    afficher('msg',true,"↩ Vos données sont revenues. La feuille calcule de nouveau <b>votre</b> facture estimée.");
+  });
 });
 
 // --- envoi vers Google Sheet ---
-document.getElementById('sendBtn').addEventListener('click',function(){
-  var msg=document.getElementById('msg');
-  if(!(val('nom1')&&val('nom2')&&val('classe'))){ msg.className='msg ko'; msg.textContent='Renseigne d’abord le binôme et la classe.'; return; }
+$('sendBtn').addEventListener('click',function(){
+  var msg=$('msg');
+  if(!(val('nom1')&&val('nom2')&&val('classe'))){ msg.className='msg ko'; msg.textContent='Renseignez d’abord le binôme et la classe.'; return; }
   var payload={
     outil:'Tableur facture', classe:val('classe'),
     eleve1:val('pre1')+' '+val('nom1'), eleve2:val('pre2')+' '+val('nom2'),
-    detail:'B7='+rawOf('B7')+' | B8='+rawOf('B8')+' | B9='+rawOf('B9')+' | B10='+rawOf('B10')+' | B11='+rawOf('B11'),
+    donnees:DATA_CELLS.map(function(r){ return r+'='+rawOf(r); }).join(' | '),
+    detail:FORMULA_CELLS.map(function(r){ return r+'='+rawOf(r); }).join(' | '),
+    aides:aidesTexte().n+' ('+aidesTexte().txt+')',
     score:lastScore+'/5', total:fmt(expected().B11)+' €',
     horodatage:new Date().toLocaleString('fr-FR')
   };
-  if(!SCRIPT_URL){ msg.className='msg info'; msg.innerHTML='ℹ️ Envoi non configuré pour l’instant (SCRIPT_URL vide). Une fois ton script Google déployé, les résultats arriveront automatiquement dans ta feuille.'; return; }
+  if(!SCRIPT_URL){ msg.className='msg info'; msg.innerHTML='ℹ️ Envoi non configuré pour l’instant (SCRIPT_URL vide).'; return; }
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
     .then(function(){ msg.className='msg ok'; msg.textContent='✅ Résultats envoyés au professeur. Merci !'; })
-    .catch(function(){ msg.className='msg ko'; msg.textContent='Envoi impossible (vérifie la connexion ou l’URL du script).'; });
+    .catch(function(){ msg.className='msg ko'; msg.textContent='Envoi impossible (vérifiez la connexion ou l’URL du script).'; });
 });
 </script>
 </body>
