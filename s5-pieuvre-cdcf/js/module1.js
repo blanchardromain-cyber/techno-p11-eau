@@ -365,105 +365,199 @@ var M1 = (function(){
       ' · <b>' + nbFC + '</b> fonction' + (nbFC>1?'s':'') + ' contrainte' + (nbFC>1?'s':'');
   }
 
-  /* ================= C. Classement des six fonctions ====================== */
+  /* ================= C. Le tableau d'analyse des six fonctions =============
+     L'élève attribue à chaque fonction son TYPE et son REPÈRE.
 
-  var chipSelectionnee = null;
+     L'ordre des six lignes est tiré au sort à chaque chargement : deux élèves
+     voisins n'ont pas le même tableau, et celui qui refait l'activité ne peut
+     pas rejouer une suite de réponses apprise par cœur.
 
-  function construireTri(){
-    var pool = document.getElementById('m1-pool');
-    pool.innerHTML = '';
-    document.getElementById('bin-FP').querySelector('.contenu').innerHTML = '';
-    document.getElementById('bin-FC').querySelector('.contenu').innerHTML = '';
+     Le repère ne se compare donc pas à une liste de référence figée — après
+     tirage, l'ordre attendu serait indevinable. Ce qui est vérifié, c'est la
+     règle : la fonction principale porte FP1, chaque contrainte porte un FC
+     numéroté différent des autres. C'est à cela que sert un repère, identifier
+     une fonction sans ambiguïté dans le cahier des charges.
+     ====================================================================== */
 
-    P11DATA.FONCTIONS.forEach(function(f){
-      var c = document.createElement('div');
-      c.className = 'chip';
-      c.draggable = true;
-      c.dataset.f = f.id;
-      c.setAttribute('role','button');
-      c.setAttribute('tabindex','0');
-      c.innerHTML = '<span class="grip" aria-hidden="true">⠿</span><span class="txt">' +
-                    P11.esc(f.texte) + '</span>';
+  var ordreAffichage = [];   // ids des fonctions, tirés au sort à l'ouverture
 
-      // Glisser-déposer classique sur ordinateur…
-      c.addEventListener('dragstart', function(e){
-        chipSelectionnee = f.id;
-        c.classList.add('dragging');
-        try { e.dataTransfer.setData('text/plain', f.id); } catch(err){}
-      });
-      c.addEventListener('dragend', function(){ c.classList.remove('dragging'); });
+  /** Tirage de Fisher-Yates sur une copie : data.js n'est jamais modifié. */
+  function melanger(liste){
+    var t = liste.slice();
+    for (var i = t.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = t[i]; t[i] = t[j]; t[j] = tmp;
+    }
+    return t;
+  }
 
-      // …et sélection au clic, seule méthode fiable sur tablette.
-      c.addEventListener('click', function(){ selectionnerChip(f.id); });
-      c.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectionnerChip(f.id); }
-      });
+  function fonctionParId(id){
+    for (var i=0;i<P11DATA.FONCTIONS.length;i++){
+      if (P11DATA.FONCTIONS[i].id === id) return P11DATA.FONCTIONS[i];
+    }
+    return null;
+  }
 
-      pool.appendChild(c);
-    });
+  /** Repère composé à partir des deux choix de l'élève : « FC » + « 2 » → FC2. */
+  function repereDe(id){
+    var t = P11.state.m1.typage[id], n = P11.state.m1.numeros[id];
+    return (t && n) ? (t + n) : '';
+  }
 
-    ['FP','FC'].forEach(function(type){
-      var bin = document.getElementById('bin-' + type);
-      bin.addEventListener('dragover', function(e){ e.preventDefault(); bin.classList.add('over'); });
-      bin.addEventListener('dragleave', function(){ bin.classList.remove('over'); });
-      bin.addEventListener('drop', function(e){
-        e.preventDefault(); bin.classList.remove('over');
-        var id = null;
-        try { id = e.dataTransfer.getData('text/plain'); } catch(err){}
-        deposer(id || chipSelectionnee, type);
-      });
-      bin.addEventListener('click', function(){
-        if (chipSelectionnee) deposer(chipSelectionnee, type);
-      });
+  function construireAnalyse(){
+    ordreAffichage = melanger(P11DATA.FONCTIONS.map(function(f){ return f.id; }));
+
+    var corps = document.getElementById('m1-analyse');
+    corps.innerHTML = ordreAffichage.map(function(id){
+      var f = fonctionParId(id);
+      return '' +
+        '<tr data-f="' + id + '">' +
+          '<td><select class="a-type" aria-label="Type de la fonction : ' + P11.esc(f.texte) + '">' +
+            '<option value="">—</option>' +
+            '<option value="FP">FP</option>' +
+            '<option value="FC">FC</option>' +
+          '</select></td>' +
+          '<td><select class="a-num" aria-label="Numéro de la fonction : ' + P11.esc(f.texte) + '">' +
+            '<option value="">—</option>' +
+            [1,2,3,4,5,6].map(function(n){
+              return '<option value="' + n + '">' + n + '</option>';
+            }).join('') +
+          '</select></td>' +
+          '<td class="a-rep"><span class="pill todo">—</span></td>' +
+          '<td class="fn">' + P11.esc(f.texte) + '</td>' +
+          '<td class="stat a-fb"></td>' +
+        '</tr>';
+    }).join('');
+
+    corps.querySelectorAll('tr').forEach(function(tr){
+      var id = tr.dataset.f;
+      function noter(){
+        var t = tr.querySelector('.a-type').value;
+        var n = tr.querySelector('.a-num').value;
+        if (t) P11.state.m1.typage[id] = t; else delete P11.state.m1.typage[id];
+        if (n) P11.state.m1.numeros[id] = n; else delete P11.state.m1.numeros[id];
+        P11.sauver();
+        P11.majEnTete();
+        rafraichirAnalyse();
+      }
+      tr.querySelector('.a-type').addEventListener('change', noter);
+      tr.querySelector('.a-num').addEventListener('change', noter);
     });
 
     document.getElementById('m1-rendre').addEventListener('click', function(){
       P11.state.m1.typage = {};
-      chipSelectionnee = null;
+      P11.state.m1.numeros = {};
+      P11.state.m1.valide = false;
       refletTypage();
+      P11.sauver();
+      P11.majEnTete();
+    });
+    document.getElementById('m1-valider-analyse').addEventListener('click', function(){
+      P11.state.m1.valide = true;
+      rafraichirAnalyse();
       P11.sauver();
     });
   }
 
-  function selectionnerChip(id){
-    chipSelectionnee = (chipSelectionnee === id) ? null : id;
-    var chips = document.querySelectorAll('.chip');
-    for (var i=0;i<chips.length;i++){
-      chips[i].style.outline = (chips[i].dataset.f === chipSelectionnee) ? '3px solid var(--aqua)' : '';
-      chips[i].style.outlineOffset = '2px';
-    }
-    document.getElementById('m1-tri-aide').textContent = chipSelectionnee
-      ? "Fonction sélectionnée : clique maintenant sur « Fonction principale » ou « Fonction contrainte »."
-      : "Fais glisser chaque fonction dans la bonne colonne — ou clique dessus puis clique sur la colonne.";
-  }
-
-  function deposer(id, type){
-    if (!id) return;
-    P11.state.m1.typage[id] = type;
-    chipSelectionnee = null;
-    refletTypage();
-    P11.sauver();
-    P11.majEnTete();
-  }
-
-  /** Replace chaque étiquette dans la colonne mémorisée par l'état. */
-  function refletTypage(){
-    var typage = P11.state.m1.typage;
-    var pool = document.getElementById('m1-pool');
-    document.querySelectorAll('.chip').forEach(function(c){
-      var t = typage[c.dataset.f];
-      c.classList.remove('ok','ko');
-      var why = c.querySelector('.why');
-      if (why) why.parentNode.removeChild(why);
-      c.style.outline = '';
-      var dest = t ? document.getElementById('bin-' + t).querySelector('.contenu') : pool;
-      if (c.parentNode !== dest) dest.appendChild(c);
+  /**
+   * Évalue le tableau. Renvoie, par fonction, les points obtenus et le motif.
+   * Séparé de l'affichage : la même fonction sert au retour en direct, à la
+   * note de la mission et au dossier final.
+   *
+   * Barème d'une ligne, sur 2 points : le TYPE vaut 1,5 — c'est la notion de
+   * la séance — et le REPÈRE 0,5, qui récompense la rigueur sans écraser le
+   * reste si l'élève se trompe de numéro.
+   */
+  function evaluerAnalyse(){
+    var st = P11.state.m1;
+    // Un même repère porté par deux fonctions ne désigne plus rien : on
+    // repère les doublons avant de juger les lignes.
+    var comptes = {};
+    P11DATA.FONCTIONS.forEach(function(f){
+      var r = repereDe(f.id);
+      if (r) comptes[r] = (comptes[r] || 0) + 1;
     });
-    var n = Object.keys(typage).length;
-    document.getElementById('m1-tri-aide').textContent = n === P11DATA.FONCTIONS.length
-      ? "Les six fonctions sont classées. Tu peux vérifier."
-      : "Fais glisser chaque fonction dans la bonne colonne — ou clique dessus puis clique sur la colonne. "
-        + "Restant : " + (P11DATA.FONCTIONS.length - n) + ".";
+
+    return P11DATA.FONCTIONS.map(function(f){
+      var type = st.typage[f.id] || '';
+      var num  = st.numeros[f.id] || '';
+      var rep  = repereDe(f.id);
+      var typeOk = type === f.type;
+      var res = { f:f, type:type, num:num, rep:rep, typeOk:typeOk, repOk:false, pts:0, motif:'' };
+
+      if (!type && !num){ res.motif = "Ligne non renseignée."; return res; }
+      if (!typeOk){
+        res.motif = type
+          ? "Type incorrect. Compte les éléments du milieu extérieur reliés par cette fonction."
+          : "Choisis d'abord le type.";
+        return res;
+      }
+      res.pts = 1.5;
+
+      if (!num){ res.motif = "Type correct. Il manque le numéro."; return res; }
+      if (comptes[rep] > 1){
+        res.motif = "Le repère " + rep + " est utilisé deux fois : un repère doit désigner une seule fonction.";
+        return res;
+      }
+      if (f.type === 'FP' && num !== '1'){
+        res.motif = "L'objet n'a qu'une seule fonction principale : elle porte le repère FP1.";
+        return res;
+      }
+      res.repOk = true;
+      res.pts = 2;
+      res.motif = "Type et repère corrects.";
+      return res;
+    });
+  }
+
+  /** Met à jour les pastilles de repère et la colonne de retour. */
+  function rafraichirAnalyse(){
+    var st = P11.state.m1;
+    var res = evaluerAnalyse();
+    var parId = {};
+    res.forEach(function(r){ parId[r.f.id] = r; });
+
+    document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
+      var r = parId[tr.dataset.f];
+      if (!r) return;
+      var cellRep = tr.querySelector('.a-rep');
+      cellRep.innerHTML = r.rep
+        ? '<span class="pill ' + (r.type === 'FP' ? 'fp' : 'fc') + '">' + r.rep + '</span>'
+        : '<span class="pill todo">—</span>';
+
+      // Le retour ne s'affiche qu'après la première validation : avant, l'élève
+      // essaierait les combinaisons jusqu'à voir un ✓ sans jamais réfléchir.
+      // Une fois validé, il se met à jour en direct pendant la correction.
+      var cellFb = tr.querySelector('.a-fb');
+      if (!st.valide){ cellFb.innerHTML = ''; tr.title = ''; return; }
+      cellFb.innerHTML = r.pts === 2
+        ? '<span class="pill ok">✓</span>'
+        : (r.pts > 0 ? '<span class="pill partial">≈</span>' : '<span class="pill ko">✗</span>');
+      tr.title = r.motif;
+    });
+
+    var remplies = res.filter(function(r){ return r.type; }).length;
+    var justes = res.filter(function(r){ return r.pts === 2; }).length;
+    document.getElementById('m1-tri-aide').innerHTML = !st.valide
+      ? (remplies === P11DATA.FONCTIONS.length
+          ? "Les six lignes sont renseignées. Clique sur <b>Valider le tableau</b> pour voir tes erreurs."
+          : "Renseigne le type et le numéro de chaque fonction. Restant : <b>" +
+            (P11DATA.FONCTIONS.length - remplies) + "</b>.")
+      : (justes === P11DATA.FONCTIONS.length
+          ? "<b>Les six lignes sont justes.</b> Tu peux passer à la vérification de la mission."
+          : "<b>" + justes + " / " + P11DATA.FONCTIONS.length + "</b> lignes justes. " +
+            "Survole une ligne pour lire la remarque, corrige, le retour se met à jour aussitôt.");
+  }
+
+  /** Réaffiche les choix enregistrés dans les listes déroulantes. */
+  function refletTypage(){
+    var st = P11.state.m1;
+    document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
+      var id = tr.dataset.f;
+      tr.querySelector('.a-type').value = st.typage[id] || '';
+      tr.querySelector('.a-num').value  = st.numeros[id] || '';
+    });
+    rafraichirAnalyse();
   }
 
   /* ========================= Vérification ================================= */
@@ -522,46 +616,36 @@ var M1 = (function(){
         return '<li>' + (r.ok ? '✔ ' : '→ ') + P11.esc(r.t) + '</li>';
       }).join('') + '</ul>');
 
-    /* --- 2. Le typage des six fonctions ---------------------------------- */
-    var ptsType = 0, detailType = [];
-    P11DATA.FONCTIONS.forEach(function(f){
-      var rep = st.typage[f.id];
-      var juste = rep === f.type;
-      if (juste) ptsType += 2;
-      detailType.push({ f:f, rep:rep, juste:juste });
+    /* --- 2. Le tableau d'analyse : type et repère ------------------------ */
+    st.valide = true;          // la vérification vaut validation du tableau
+    var analyse = evaluerAnalyse();
+    var ptsType = analyse.reduce(function(s, r){ return s + r.pts; }, 0);
+    rafraichirAnalyse();
 
-      var chip = document.querySelector('.chip[data-f="' + f.id + '"]');
-      if (chip && rep){
-        chip.classList.remove('ok','ko');
-        chip.classList.add(juste ? 'ok' : 'ko');
-        var why = chip.querySelector('.why');
-        if (why) why.parentNode.removeChild(why);
-        var s = document.createElement('span');
-        s.className = 'why';
-        // Le « pourquoi » est donné dès le premier essai quand la réponse est
-        // juste (on consolide), et seulement au second quand elle est fausse
-        // (on laisse d'abord l'élève chercher).
-        s.textContent = juste ? '✔ ' + f.pourquoi
-                              : (montrer ? '✘ ' + f.pourquoi
-                                         : "✘ Compte les éléments du milieu extérieur reliés par cette fonction.");
-        chip.appendChild(s);
-      }
-    });
-
-    var nonClasses = P11DATA.FONCTIONS.length - Object.keys(st.typage).length;
-    var texteType = nonClasses
-      ? '<p style="margin:0 0 8px">' + nonClasses + ' fonction' + (nonClasses>1?'s ne sont':' n\'est') +
-        ' pas encore classée' + (nonClasses>1?'s':'') + '.</p>'
+    var nonRemplies = analyse.filter(function(r){ return !r.type; }).length;
+    var texteType = nonRemplies
+      ? '<p style="margin:0 0 8px">' + nonRemplies + ' ligne' + (nonRemplies>1?'s ne sont':' n\'est') +
+        ' pas renseignée' + (nonRemplies>1?'s':'') + '.</p>'
       : '';
-    texteType += '<ul>' + detailType.map(function(d){
-        return '<li>' + (d.juste ? '✔' : (d.rep ? '✘' : '·')) + ' <b>' + (d.f.rep) + '</b> — ' +
-               P11.esc(d.f.texte) + (d.rep ? ' <span class="pill ' + (d.juste?'ok':'ko') + '">' + d.rep + '</span>' : '') +
-               '</li>';
+    texteType += '<ul>' + analyse.map(function(r){
+        var icone = r.pts === 2 ? '✔' : (r.pts > 0 ? '≈' : (r.type ? '✘' : '·'));
+        var ligne = '<li>' + icone + ' ' + P11.esc(r.f.texte);
+        if (r.type){
+          ligne += ' <span class="pill ' + (r.pts === 2 ? 'ok' : (r.pts > 0 ? 'partial' : 'ko')) + '">' +
+                   P11.esc(r.rep || r.type) + '</span>';
+        }
+        // Le « pourquoi » complet est donné dès le premier essai quand la
+        // réponse est juste — on consolide — et seulement au second quand elle
+        // est fausse, pour laisser d'abord l'élève chercher.
+        if (r.typeOk)          ligne += '<br><span class="why">' + P11.esc(r.f.pourquoi) + '</span>';
+        else if (montrer)      ligne += '<br><span class="why">Attendu : <b>' + r.f.rep + '</b>. ' +
+                                        P11.esc(r.f.pourquoi) + '</span>';
+        else if (r.motif)      ligne += '<br><span class="why">' + P11.esc(r.motif) + '</span>';
+        return ligne + '</li>';
       }).join('') + '</ul>';
 
-    html += bloc(ptsType === 12 ? 'ok' : (ptsType >= 6 ? 'partial' : 'ko'),
-      'Le classement FP / FC — ' + ptsType + ' / ' + P11DATA.BAREME.m1.typage + ' points', texteType);
-
+    html += bloc(ptsType === P11DATA.BAREME.m1.typage ? 'ok' : (ptsType >= 6 ? 'partial' : 'ko'),
+      'Le tableau d\'analyse — ' + P11.fmt(ptsType) + ' / ' + P11DATA.BAREME.m1.typage + ' points', texteType);
     /* --- 3. Score et suite ----------------------------------------------- */
     var total = ptsLiens + ptsType;
     st.score = total;
@@ -586,6 +670,7 @@ var M1 = (function(){
     document.getElementById('m1-sortie').innerHTML = html;
     document.getElementById('m1-sortie').scrollIntoView({ behavior:'smooth', block:'start' });
     P11.sauver(true);
+    CLOUD.envoyer('m1');
     P11.majEnTete();
   }
 
@@ -615,7 +700,7 @@ var M1 = (function(){
   function init(){
     statut = document.getElementById('m1-statut');
     construirePlateau();
-    construireTri();
+    construireAnalyse();
 
     ['FP','FC'].forEach(function(t){
       document.getElementById('m1-mode-' + t).addEventListener('click', function(){
