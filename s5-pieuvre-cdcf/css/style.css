@@ -341,36 +341,13 @@ header.band p{ margin:6px 0 0; color:#dce8f8; font-size:14px; position:relative 
   display:inline-flex; align-items:center; justify-content:center; font-size:12px; flex:none;
 }
 
-/* Tri FP / FC par glisser-déposer (avec repli au clic) */
-.sortzone{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px }
-.bin{
-  border:2px dashed #c6d6e8; border-radius:12px; padding:12px; min-height:150px;
-  background:#fbfdff; transition:.15s;
-}
-.bin.fp{ border-color:var(--fp) }
-.bin.fc{ border-color:var(--fc) }
-.bin.over{ background:var(--lighter); border-style:solid }
-.bin h4{
-  margin:0 0 4px; font-size:13.5px; color:var(--navy);
-  display:flex; align-items:center; gap:8px;
-}
-.bin .rule{ font-size:11.5px; color:var(--grey); margin:0 0 10px; line-height:1.4 }
-.chip{
-  background:#fff; border:1.5px solid var(--line); border-radius:9px;
-  padding:9px 11px; font-size:13px; margin:0 0 8px; cursor:grab;
-  box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; transition:.15s;
-}
-.chip:hover{ border-color:var(--blue) }
-.chip:active{ cursor:grabbing }
-.chip.dragging{ opacity:.45 }
-.chip .grip{ color:#b9c8db; font-size:15px; flex:none; line-height:1 }
-.chip .txt{ flex:1 }
-.chip.ok{ border-color:var(--ok); background:var(--ok-bg) }
-.chip.ko{ border-color:var(--ko); background:var(--ko-bg) }
-.chip .why{ display:block; font-size:11.5px; margin-top:4px; font-weight:600 }
-.chip.ok .why{ color:#13633d }
-.chip.ko .why{ color:#8e2018 }
-.pool{ margin-top:14px }
+/* Tableau d'analyse fonctionnelle (mission 1, étape 3) */
+.cdcf.analyse select{ width:100%; font-size:13.5px; padding:8px 6px }
+.cdcf.analyse td{ vertical-align:middle }
+.cdcf.analyse .a-rep{ text-align:center }
+.cdcf.analyse tr:hover td{ background:var(--lighter) }
+/* Explication sous une réponse : reprise du ton des retours, hors des chips */
+.why{ display:block; font-size:11.5px; margin-top:4px; font-weight:600; opacity:.9 }
 
 /* Scène 3D et ses points chauds */
 .scene-holder{
@@ -432,6 +409,34 @@ header.band p{ margin:6px 0 0; color:#dce8f8; font-size:14px; position:relative 
 .cdcf .niv select{ width:110px; flex:none; font-size:13px; padding:8px 6px }
 .cdcf td.stat{ width:52px; text-align:center }
 .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+
+/* Coup de pouce : aides repliées, ouvertes une par une */
+.pouce{
+  border:1.5px solid var(--gold); border-radius:12px; padding:12px 14px;
+  margin:16px 0; background:#fffdf7;
+}
+.pouce-titre{
+  font-size:13px; font-weight:800; color:var(--gold);
+  letter-spacing:.02em; margin-bottom:8px;
+}
+.pouce-item{ border-top:1px solid #f0e3c8 }
+.pouce-item:first-child{ border-top:none }
+.pouce-item > summary{
+  cursor:pointer; padding:9px 2px; font-size:13.5px; font-weight:700;
+  color:var(--navy); list-style:none; display:flex; align-items:center; gap:8px;
+}
+.pouce-item > summary::-webkit-details-marker{ display:none }
+.pouce-item > summary::before{
+  content:"▸"; color:var(--gold); font-size:13px; transition:transform .15s; flex:none;
+}
+.pouce-item[open] > summary::before{ transform:rotate(90deg) }
+.pouce-item > summary:hover{ color:var(--blue) }
+.pouce-corps{ padding:2px 2px 12px 20px; font-size:13.5px; line-height:1.55 }
+.pouce-corps p{ margin:0 0 8px }
+.pouce-corps ul{ margin:0 0 8px; padding-left:20px }
+.pouce-corps li{ margin:4px 0 }
+.pouce-corps .grille{ font-size:12.5px }
+.pouce-corps .grille td, .pouce-corps .grille th{ padding:6px 9px }
 
 /* Bandeau de progression du dossier d'appel d'offres */
 .progress-strip{
@@ -500,6 +505,18 @@ header.band p{ margin:6px 0 0; color:#dce8f8; font-size:14px; position:relative 
   width:100%; max-width:520px; border-radius:10px; border:1px solid var(--line); display:block;
 }
 
+/* Proposition de passage au vidéoprojecteur */
+.presenter-bloc{
+  margin-top:14px; border:1.5px solid var(--gold); border-radius:12px;
+  padding:14px 16px; background:#fffdf7;
+  display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+}
+.presenter-case{
+  display:flex; gap:11px; align-items:flex-start; flex:1; min-width:240px;
+  font-size:13.5px; line-height:1.5; cursor:pointer;
+}
+.presenter-case input{ width:19px; height:19px; flex:none; margin-top:1px; accent-color:var(--gold) }
+
 /* Grille de compétence : les 4 niveaux de maîtrise du cycle 4 */
 .grille{ width:100%; border-collapse:collapse; font-size:13px; margin-top:10px }
 .grille th, .grille td{ border:1px solid var(--line); padding:9px 11px; text-align:left }
@@ -551,9 +568,62 @@ body.est-prof .prof-only{ display:block }
 }
 .modal h3{ margin-top:0 }
 
+/* ------------------- Mode présentation (vidéoprojecteur) -----------------
+   Tailles calculées pour une projection en fond de salle : rien en dessous de
+   19 px, contraste maximal, aucune information de notation à l'écran.
+   ---------------------------------------------------------------------- */
+.presentation{
+  position:fixed; inset:0; background:#0d2440; color:#eaf4ff; z-index:80;
+  display:none; flex-direction:column;
+}
+.presentation.show{ display:flex }
+.pres-barre{
+  display:flex; align-items:center; gap:12px; justify-content:flex-end;
+  padding:12px 18px; background:rgba(0,0,0,.22); flex:none;
+}
+.pres-compte{ margin-right:auto; font-size:15px; font-weight:700; color:#9fc7e8; letter-spacing:.06em }
+.pres-nav{
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.28);
+  color:#eaf4ff; border-radius:10px; width:46px; height:40px; font-size:17px;
+  cursor:pointer; font-family:inherit; transition:.15s;
+}
+.pres-nav:hover{ background:rgba(255,255,255,.24) }
+.pres-corps{ flex:1; overflow-y:auto; padding:26px 42px 44px }
+.pres-entete{ border-bottom:2px solid rgba(159,199,232,.34); padding-bottom:14px; margin-bottom:22px }
+.pres-equipe{ font-size:19px; color:#9fc7e8; font-weight:700 }
+.pres-classe{
+  background:rgba(255,255,255,.14); border-radius:999px; padding:2px 12px;
+  margin-left:8px; font-size:17px;
+}
+.pres-titre{ margin:8px 0 0; font-size:42px; font-weight:800; line-height:1.12 }
+.pres-grille{ display:grid; grid-template-columns:1.15fr 1fr; gap:38px; align-items:start }
+.pres-h2{
+  font-size:16px; color:#9fdcff; border:none; padding:0; margin:0 0 8px;
+  letter-spacing:.07em; text-transform:uppercase; font-weight:800;
+}
+.pres-p{ font-size:22px; line-height:1.5; margin:0 0 26px }
+.pres-table{ width:100%; border-collapse:collapse; font-size:20px }
+.pres-table td{ padding:9px 10px; border-bottom:1px solid rgba(159,199,232,.24); vertical-align:top }
+.pres-table .pres-type{ width:62px }
+.pres-table .pres-niveau{ width:150px; text-align:right; color:#9fdcff; font-weight:700; white-space:nowrap }
+.pres-maquette img{ width:100%; border-radius:14px; border:1px solid rgba(159,199,232,.34); display:block }
+.pres-vide{
+  border:2px dashed rgba(159,199,232,.4); border-radius:14px; padding:46px 18px;
+  text-align:center; color:#9fc7e8; font-size:19px;
+}
+.pres-sous{ font-size:16px; color:#9fc7e8; margin-top:14px; text-align:center }
+
+@media (max-width:900px){
+  .pres-grille{ grid-template-columns:1fr; gap:24px }
+  .pres-titre{ font-size:30px }
+  .pres-p{ font-size:18px }
+  .pres-table{ font-size:17px }
+  .pres-corps{ padding:18px 20px 34px }
+}
+
 @media print{
   body{ background:#fff; background-image:none }
-  .no-print, header.band, .missions, .btn, .toast, .modal-back{ display:none !important }
+  .no-print, header.band, .missions, .btn, .toast, .modal-back, .presentation{ display:none !important }
   .wrap{ max-width:none; padding:0 }
   .card, .dossier{ box-shadow:none; border:1px solid #ccc; break-inside:avoid }
   .screen{ display:none !important }
@@ -572,7 +642,6 @@ body.est-prof .prof-only{ display:block }
 @media (max-width:680px){
   .wrap{ padding:14px 12px 60px }
   .grid2{ grid-template-columns:1fr }
-  .sortzone{ grid-template-columns:1fr }
   .mode-choice{ grid-template-columns:1fr }
   .octo-stage{ aspect-ratio:auto; height:470px }
   .eme{ font-size:11px; padding:5px 8px }
@@ -587,6 +656,13 @@ body.est-prof .prof-only{ display:block }
   .cdcf{ font-size:12.5px }
   .cdcf .niv{ flex-direction:column }
   .cdcf .niv select{ width:100% }
+  /* Tableau d'analyse : colonnes resserrées pour tenir sans défilement latéral */
+  .cdcf.analyse th, .cdcf.analyse td{ padding:8px 6px }
+  .cdcf.analyse select{ font-size:12.5px; padding:7px 2px }
+  .cdcf.analyse th:nth-child(1), .cdcf.analyse td:nth-child(1),
+  .cdcf.analyse th:nth-child(2), .cdcf.analyse td:nth-child(2){ width:58px }
+  .cdcf.analyse th:nth-child(3), .cdcf.analyse td:nth-child(3){ width:56px }
+  .cdcf.analyse th:nth-child(5), .cdcf.analyse td:nth-child(5){ width:38px }
 }
 
 /* Respect du réglage système « réduire les animations » */
