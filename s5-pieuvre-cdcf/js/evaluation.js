@@ -214,6 +214,11 @@ var EVAL = (function(){
       rem.value = s.m3.prof.remarque || '';
       document.getElementById('prof-max').textContent = P11DATA.BAREME.m3.prof;
     }
+
+    // Case « à présenter » et état de la transmission au professeur.
+    var caseP = document.getElementById('dossier-presentation');
+    if (caseP) caseP.checked = !!s.m3.presentation;
+    if (window.CLOUD) CLOUD.majTemoin();
   }
 
   function ligneMission(nom, quoi, pts, max){
@@ -298,10 +303,18 @@ var EVAL = (function(){
         P11.state.m3.prof.points = v === '' ? null : Math.max(0, Math.min(P11DATA.BAREME.m3.prof, P11.nombre(v) || 0));
         P11.sauver();
       });
-      champ.addEventListener('change', construireDossier);
+      // L'appréciation part vers la feuille du professeur dès qu'il quitte le
+      // champ : rien à cliquer, rien à recopier.
+      champ.addEventListener('change', function(){
+        construireDossier();
+        CLOUD.envoyer('prof');
+      });
       document.getElementById('prof-remarque').addEventListener('input', function(){
         P11.state.m3.prof.remarque = this.value;
         P11.sauver();
+      });
+      document.getElementById('prof-remarque').addEventListener('change', function(){
+        CLOUD.envoyer('prof');
       });
     }
   }
