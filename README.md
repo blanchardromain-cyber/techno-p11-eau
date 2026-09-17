@@ -72,6 +72,10 @@ est réellement chargée.
 ### Organisation des fichiers
 
 ```
+apps-script/
+├── Code.gs               script à coller dans le classeur Google Sheets
+└── LISEZ-MOI.md          installation de la remontée des résultats
+
 s5-pieuvre-cdcf/
 ├── index.html            page unique, tous les écrans
 ├── css/style.css         charte et composants
@@ -80,10 +84,12 @@ s5-pieuvre-cdcf/
     ├── core.js           état, sauvegarde locale, navigation, outils de texte
     ├── badge.js          identification de l'équipe, reprise d'un dossier
     ├── scene3d.js        les deux scènes 3D, et leur repli sans 3D
-    ├── module1.js        mission 1 — la pieuvre
-    ├── module2.js        mission 2 — le cahier des charges
-    ├── module3.js        mission 3 — le défi créatif
-    └── evaluation.js     dossier final, note sur 20, exports
+    ├── module1.js        mission 1 — la pieuvre et le tableau d'analyse
+    ├── module2.js        mission 2 — le cahier des charges et les coups de pouce
+    ├── module3.js        mission 3 — le défi créatif et l'atelier de maquette
+    ├── evaluation.js     dossier final, note sur 20, exports
+    ├── cloud.js          envoi automatique des résultats au professeur
+    └── presentation.js   mode plein écran pour le vidéoprojecteur
 ```
 
 **Pour modifier le contenu d'une année sur l'autre, `js/data.js` suffit.** Il
@@ -103,24 +109,77 @@ contient aucune connaissance métier.
 
 Les paramètres se combinent : `?prof&no3d`.
 
+### Une remarque sur la numérotation des fonctions
+
+Les six fonctions de la pieuvre portent **FP1** puis **FC1 à FC5**, dans l'ordre
+de la fiche papier. La ligne « Limiter la consommation d'eau » du cahier des
+charges porte donc **FC6**, et non FC3 comme sur la fiche : sans quoi deux
+fonctions différentes auraient le même repère d'une mission à l'autre. Cette
+fonction n'est d'ailleurs reliée à aucun élément du milieu extérieur sur la
+pieuvre — c'est une exigence de performance ajoutée au cahier des charges.
+
+Pour revenir à la numérotation de la fiche, une seule ligne à changer dans
+`js/data.js` : le `rep:'FC6'` de `CDCF_ROBINET`.
+
 ### Où va le travail des élèves
 
 Le travail est enregistré dans le **navigateur du poste** (`localStorage`), sous
-un code d'équipe généré à l'inscription (par exemple `4B-K7M2`). Rien ne part sur
-un serveur.
+un code d'équipe généré à l'inscription (par exemple `4B-K7M2`).
+
+Deux stockages, deux rôles :
+
+- **`localStorage` garde le travail**, indexé par code. Il survit à la fermeture
+  du navigateur : une équipe retrouve son dossier la semaine suivante sur le
+  même poste, et `?prof` en liste le contenu.
+- **`sessionStorage` garde seulement ce que la session en cours travaille.**
+  C'est lui qui décide de la réouverture automatique. Après un simple
+  rechargement, l'équipe retrouve son écran ; après la fermeture du navigateur,
+  le poste repart sur l'écran de badge — **la classe suivante ne reprend pas le
+  dossier de la précédente à son nom**. Le travail n'est pas perdu : il se
+  rouvre avec son code.
+
+Le bouton **« Fermer ce dossier et libérer le poste »**, en fin d'heure, fait la
+même chose sans attendre.
 
 Conséquences pratiques :
 
-- l'élève retrouve son dossier sur **le même poste** sans rien saisir ;
-- pour changer de poste, il exporte son dossier en `.json` depuis l'onglet
+- pour changer de poste, l'élève exporte son dossier en `.json` depuis l'onglet
   « Dossier », puis le réimporte sur l'autre poste ;
 - **le rendu se fait par impression** (ou enregistrement en PDF depuis la fenêtre
   d'impression) : c'est ce document qui est noté ;
+- si la remontée Google Sheets est configurée (voir ci-dessous), les résultats
+  arrivent en plus dans un classeur, tout seuls ;
 - une session de navigation privée ou un nettoyage du poste efface le travail.
   L'activité prévient l'élève si l'enregistrement échoue.
 
 En salle informatique, `?prof` affiche sur chaque poste la liste des dossiers
-qui y ont été créés, avec les notes des trois missions.
+qui y ont été créés, avec les notes des trois missions et une étoile sur les
+équipes qui se proposent pour la présentation.
+
+### Remontée automatique des résultats
+
+Les résultats peuvent arriver seuls dans un classeur Google Sheets : une ligne
+par équipe, mise à jour à chaque vérification de mission, sans aucune
+manipulation de l'élève ni du professeur.
+
+L'installation prend une dizaine de minutes et se fait une seule fois :
+voir **[`apps-script/LISEZ-MOI.md`](apps-script/LISEZ-MOI.md)**.
+
+Tant que ce n'est pas fait, le dossier affiche « Envoi non configuré » et tout
+le reste fonctionne normalement. Le classeur reste **séparé** de la feuille
+« Travail en classe » : rien n'y est importé automatiquement, il sert à croiser
+les résultats du regard au moment du bilan trimestriel.
+
+### Présenter deux ou trois solutions en fin d'heure
+
+Les équipes qui le souhaitent cochent **« Je propose ma solution pour la
+présentation en classe »** dans leur dossier. En mode `?prof`, elles apparaissent
+avec une étoile et un bouton **Projeter** qui ouvre un affichage plein écran, en
+gros caractères : nom de l'équipe, problème, principe, cahier des charges et
+maquette. Ni note ni corrigé à l'écran — on projette une proposition.
+
+Les flèches ◀ ▶ (ou les touches ← →) passent d'une équipe retenue à l'autre,
+Échap referme. On ne repasse pas les vingt-cinq maquettes.
 
 ### Ce qui est corrigé automatiquement, et ce qui ne l'est pas
 
