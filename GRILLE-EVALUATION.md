@@ -47,26 +47,35 @@ compose des deux : type `FC` + numéro `2` donne `FC2`.
 élèves voisins n'ont donc pas le même tableau, et celui qui refait l'activité ne
 peut pas rejouer une suite de réponses apprise par cœur.
 
+**Les repères sont attribués automatiquement au tracé.** Dès que l'élève trace
+un trait à l'étape 2, celui-ci reçoit son repère — FP1, FC1, FC2… dans l'ordre
+du tracé — et l'étiquette s'affiche sur la pieuvre. S'il annule un trait, les
+suivants se renumérotent d'eux-mêmes : la pieuvre ne garde jamais de trou.
+
+Le tableau ne demande donc pas d'inventer un numéro, mais de faire la
+**correspondance** : pour chaque fonction écrite, retrouver le trait du schéma
+qui lui correspond. La liste déroulante ne propose que les traits réellement
+tracés, décrits par leur élément (« FC2 — le milieu humide »).
+
 **2 points par ligne**, décomposés ainsi :
 
 | Élément | Points | Ce qui est vérifié |
 |---|---:|---|
 | Type | 1,5 | FP ou FC — c'est la notion de la séance |
-| Repère | 0,5 | FP1 pour la fonction principale, un numéro différent pour chaque contrainte |
+| Repère | 0,5 | le trait désigné relie bien le ou les éléments de cette fonction |
 
-Le repère **ne se compare pas à une liste figée** : après tirage au sort, l'ordre
-attendu serait indevinable. Ce qui est vérifié est la règle — un repère désigne
-une fonction et une seule, et son préfixe correspond à son type. C'est
-exactement ce à quoi sert un repère dans un cahier des charges.
-
-| Énoncé | Type attendu | Repère de référence |
+| Énoncé | Type attendu | Trait attendu |
 |---|---|---|
-| Permettre à l'utilisateur de se laver les mains avec de l'eau | **FP** | FP1 |
-| Détecter la présence des mains | FC | FC1 |
-| Résister à l'environnement humide | FC | FC2 |
-| Être alimenté en énergie | FC | FC3 |
-| Se fixer sur le lavabo | FC | FC4 |
-| Respecter le budget | FC | FC5 |
+| Permettre à l'utilisateur de se laver les mains avec de l'eau | **FP** | utilisateur ↔ eau, à travers l'objet |
+| Détecter la présence des mains | FC | objet ↔ les mains |
+| Résister à l'environnement humide | FC | objet ↔ le milieu humide |
+| Être alimenté en énergie | FC | objet ↔ l'énergie |
+| Se fixer sur le lavabo | FC | objet ↔ le lavabo |
+| Respecter le budget | FC | objet ↔ le budget |
+
+**Deux élèves justes n'ont pas la même numérotation**, puisqu'elle suit l'ordre
+de leur tracé. C'est voulu : cela rend la recopie inopérante, et le corrigé
+affiché à l'élève reprend *ses* repères, pas ceux du voisin.
 
 Le retour ne s'affiche **qu'après la première validation** : avant cela, l'élève
 essaierait les combinaisons jusqu'à voir un ✓ sans jamais réfléchir. Une fois
@@ -81,6 +90,23 @@ reliés à travers l'objet, ou un seul élément auquel l'objet doit s'adapter.
 
 L'équipe choisit un objet technique parmi quatre. Le barème est ramené à 20
 points quel que soit l'objet, afin que les quatre sujets soient équivalents.
+
+### La demande du client
+
+Chaque objet est accompagné d'un **courrier du client** — intendance, conseil de
+vie collégienne, club jardin, association humanitaire — qui décrit son besoin en
+prose. **Toutes les valeurs attendues y figurent**, mais dites comme un client
+les dit : « une dizaine de centimètres », « un demi-litre », « un quart
+d'heure », « quatre-vingts millimètres de diamètre ».
+
+Le travail de l'élève n'est donc pas de recopier une cellule, mais de traduire
+une formulation en grandeur, nombre et unité. C'est exactement ce que demande
+CT 2.1, et c'est le registre du document de référence sur le robot explorateur.
+
+Un **exemple entièrement traité** précède le tableau : une phrase du même
+courrier, suivie de la fonction, du critère, du niveau et de l'unité qu'on en
+tire, et d'une remarque sur le piège de la phrase. La fonction choisie pour
+l'exemple ne fait jamais partie des quatre à compléter.
 
 **5 points par ligne**, décomposés ainsi :
 
