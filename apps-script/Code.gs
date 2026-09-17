@@ -27,9 +27,24 @@ var NOM_FEUILLE = 'P11-S5';
 var COLONNES = [
   'dateISO', 'date', 'classe', 'code', 'mode',
   'nom1', 'prenom1', 'nom2', 'prenom2',
-  'm1', 'm1_liens', 'm1_analyse',
+
+  // Mission 1 : note, detail et reperes attribues par l'eleve.
+  // Les reperes suivent l'ordre de trace de chaque eleve : ils sont donc
+  // propres a sa pieuvre, et listes ici dans l'ordre de reference des
+  // fonctions (FP1 puis les cinq contraintes de la fiche).
+  'm1', 'm1_liens', 'm1_analyse', 'm1_reperes',
+
+  // Mission 2 : note, objet choisi, puis les quatre lignes du cahier des
+  // charges telles que l'eleve les a saisies.
   'm2', 'm2_objet',
-  'm3_auto', 'm3_prof',
+  'm2_1_rep', 'm2_1_critere', 'm2_1_niveau', 'm2_1_unite',
+  'm2_2_rep', 'm2_2_critere', 'm2_2_niveau', 'm2_2_unite',
+  'm2_3_rep', 'm2_3_critere', 'm2_3_niveau', 'm2_3_unite',
+  'm2_4_rep', 'm2_4_critere', 'm2_4_niveau', 'm2_4_unite',
+
+  // Mission 3 : part automatique, part professeur, appreciation generee.
+  'm3_auto', 'm3_prof', 'm3_appreciation',
+
   'total', 'sur', 'note20', 'niveau',
   'solution', 'probleme', 'presentation', 'aides', 'remarque',
   'capsule', 'raison'
@@ -112,6 +127,8 @@ function _feuille() {
     f.getRange(1, 1, 1, COLONNES.length).setFontWeight('bold');
     f.setColumnWidth(COLONNES.indexOf('probleme') + 1, 320);
     f.setColumnWidth(COLONNES.indexOf('remarque') + 1, 260);
+    f.setColumnWidth(COLONNES.indexOf('m3_appreciation') + 1, 420);
+    f.setColumnWidth(COLONNES.indexOf('m1_reperes') + 1, 170);
   }
   return f;
 }
