@@ -149,24 +149,43 @@ var EVAL = (function(){
 
     /* --- Mission 1 : la pieuvre produite --------------------------------- */
     h += '<section><h2>Mission 1 — La pieuvre du robinet automatique</h2>';
-    if (!s.m1.liens.length && !Object.keys(s.m1.typage).length){
+    if (!s.m1.liens.length && !Object.keys(s.m1.repere).length){
       h += '<p class="hint">Rien n\'a été produit pour cette mission.</p>';
     } else {
+      // Repère de chaque trait, tel qu'il a été attribué au tracé.
+      var repDuLien = {};
+      ['FP','FC'].forEach(function(t){
+        s.m1.liens.filter(function(l){ return l.type === t; })
+                  .forEach(function(l, i){ repDuLien[l.lid] = t + (i+1); });
+      });
+
       h += '<p style="margin:0 0 8px"><b>Liens tracés</b></p><ul style="margin-top:0">';
       s.m1.liens.forEach(function(l){
-        h += '<li><span class="pill ' + l.type.toLowerCase() + '">' + l.type + '</span> ' +
+        h += '<li><span class="pill ' + l.type.toLowerCase() + '">' + (repDuLien[l.lid] || l.type) + '</span> ' +
              (l.type === 'FP'
                ? P11.esc(nomEME(l.de)) + ' ↔ ' + P11.esc(nomEME(l.a)) + ' <em>(à travers l\'objet)</em>'
                : 'objet ↔ ' + P11.esc(nomEME(l.de))) + '</li>';
       });
-      h += '</ul><p style="margin:14px 0 8px"><b>Classement des fonctions</b></p>' +
-           '<table class="grille"><thead><tr><th>Fonction</th><th style="width:90px">Réponse</th><th style="width:90px">Attendu</th></tr></thead><tbody>';
+
+      h += '</ul><p style="margin:14px 0 8px"><b>Tableau d\'analyse</b></p>' +
+           '<table class="grille"><thead><tr><th>Fonction</th><th style="width:90px">Repère choisi</th>' +
+           '<th style="width:110px">Attendu</th></tr></thead><tbody>';
       P11DATA.FONCTIONS.forEach(function(f){
-        var rep = s.m1.typage[f.id];
-        var juste = rep === f.type;
+        var lid = s.m1.repere[f.id];
+        var lien = null;
+        s.m1.liens.forEach(function(l){ if (l.lid === lid) lien = l; });
+        // Le trait qui aurait dû être désigné, avec la numérotation de l'élève.
+        var attendu = null;
+        s.m1.liens.forEach(function(l){
+          if (attendu) return;
+          if (f.type === 'FP'){
+            if (l.type === 'FP' && f.via.indexOf(l.de) !== -1 && f.via.indexOf(l.a) !== -1) attendu = l;
+          } else if (l.type === 'FC' && l.de === f.via[0]) attendu = l;
+        });
+        var juste = lien && attendu && lien.lid === attendu.lid;
         h += '<tr><td>' + P11.esc(f.texte) + '</td>' +
-             '<td class="lv' + (juste ? ' on' : '') + '">' + (rep || '—') + '</td>' +
-             '<td class="lv">' + f.type + '</td></tr>';
+             '<td class="lv' + (juste ? ' on' : '') + '">' + (lien ? repDuLien[lien.lid] : '—') + '</td>' +
+             '<td class="lv">' + (attendu ? repDuLien[attendu.lid] : '<em style="font-weight:600">trait absent</em>') + '</td></tr>';
       });
       h += '</tbody></table>';
     }
