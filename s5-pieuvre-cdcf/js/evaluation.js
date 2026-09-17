@@ -47,6 +47,44 @@ var EVAL = (function(){
     };
   }
 
+  /**
+   * Appréciation de la mission 3, rédigée à partir du détail des points.
+   *
+   * Elle ne remplace pas celle du professeur : elle résume ce que la machine a
+   * pu constater, pour que la ligne du classeur soit lisible sans rouvrir le
+   * dossier. Chaque phrase renvoie à un point du barème.
+   */
+  function appreciationM3(){
+    var d = P11.state.m3.detail;
+    if (!d) return 'Mission 3 non vérifiée.';
+    var A = P11DATA.BAREME.m3;
+    var dit = [];
+
+    dit.push(d.dossier === 3
+      ? "fiche d'identité complète"
+      : "fiche d'identité incomplète (" + d.dossier + '/3)');
+    dit.push(d.structure === 2
+      ? 'structure de pieuvre correcte'
+      : 'structure de pieuvre à revoir (' + d.structure + '/2)');
+    dit.push(d.formulation === 3
+      ? "fonctions bien formulées à l'infinitif"
+      : "formulation des fonctions à revoir (" + d.formulation + '/3)');
+    dit.push(d.exigences === 3
+      ? 'exigences chiffrées avec leurs unités'
+      : 'critères ou niveaux incomplets (' + d.exigences + '/3)');
+    dit.push(d.maquette === 1 ? 'maquette représentée' : 'maquette absente');
+
+    var total = P11.state.m3.score;
+    var ouverture =
+        total >= 11 ? "Dossier de conception solide"
+      : total >= 8  ? "Dossier recevable"
+      : total >= 5  ? "Dossier incomplet"
+      :               "Dossier très incomplet";
+
+    return ouverture + ' (' + P11.fmt(total) + '/' + A.auto + ' en automatique) : ' +
+           dit.join(', ') + '.';
+  }
+
   /* ====================== Construction du dossier ========================= */
 
   function construireDossier(){
@@ -296,6 +334,16 @@ var EVAL = (function(){
       construireDossier(); P11.signaler('Dossier mis à jour.');
     });
 
+    document.getElementById('dossier-envoyer').addEventListener('click', function(){
+      if (!P11.state.badge.code){ P11.signaler("Crée d'abord ton badge."); return; }
+      construireDossier();
+      CLOUD.envoyer('validation');
+      P11.signaler(CLOUD.actif()
+        ? 'Dossier envoyé à ton professeur.'
+        : (CLOUD.configure() ? "Envoi impossible depuis une page de test."
+                             : "L'envoi n'est pas configuré : imprime ton dossier pour le rendre."), 4200);
+    });
+
     var champ = document.getElementById('prof-points');
     if (champ){
       champ.addEventListener('input', function(){
@@ -320,5 +368,6 @@ var EVAL = (function(){
   }
 
   return { init:init, construireDossier:construireDossier, bilan:bilan,
+           appreciationM3:appreciationM3,
            exporterJSON:exporterJSON, imprimer:imprimer };
 })();
