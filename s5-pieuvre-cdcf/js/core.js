@@ -20,7 +20,10 @@ var P11 = (function(){
 
   var CLE_PREFIXE = 'p11s5:';   // préfixe des entrées localStorage
   var CLE_DERNIER = 'p11s5:dernier';
-  var VERSION_ETAT = 1;         // incrémenté si la forme de l'état change
+  // sessionStorage : ce que la SESSION de navigation en cours travaille.
+  // Voir « Deux stockages, deux rôles » plus bas.
+  var CLE_SESSION = 'p11s5:session';
+  var VERSION_ETAT = 2;         // incrémenté si la forme de l'état change
 
   /* =========================== 1. État ==================================== */
 
@@ -29,10 +32,17 @@ var P11 = (function(){
   function etatVierge(){
     return {
       v: VERSION_ETAT,
-      badge: { mode:'seul', eleve1:'', eleve2:'', classe:'', code:'', cree:'' },
+      badge: {
+        mode:'seul',
+        nom1:'', prenom1:'',      // nom en majuscules, prénom capitalisé
+        nom2:'', prenom2:'',      // second élève, en binôme
+        classe:'', code:'', cree:''
+      },
       m1: {
         liens: [],        // liens tracés : {de, a, type}
         typage: {},       // idFonction -> 'FP' | 'FC'
+        numeros: {},      // idFonction -> '1' … '6' (le repère est type + numéro)
+        valide: false,    // vrai dès la première validation du tableau d'analyse
         hotspots: [],     // identifiants des points chauds déjà ouverts
         essais: 0,
         score: null,      // rempli à la vérification
@@ -41,6 +51,7 @@ var P11 = (function(){
       m2: {
         ost: '',          // identifiant de l'objet technique choisi
         reponses: {},     // 'rep' -> {critere, valeur, unite}
+        aides: [],        // coups de pouce ouverts, pour information du professeur
         essais: 0,
         score: null,
         detail: null
@@ -53,8 +64,10 @@ var P11 = (function(){
         essais: 0,
         score: null,
         detail: null,
-        prof: { points:null, remarque:'' }   // part évaluée par le professeur
+        prof: { points:null, remarque:'' },  // part évaluée par le professeur
+        presentation: false                  // retenue pour la projection en classe
       },
+      envoi: { fait:'', erreur:'' },         // trace du dernier envoi au professeur
       maj: ''
     };
   }
@@ -77,6 +90,30 @@ var P11 = (function(){
     try { window.localStorage.setItem(k,v); return true; } catch(e){ return false; }
   }
 
+  /* --- Deux stockages, deux rôles ---------------------------------------
+     `localStorage` garde LE TRAVAIL, indexé par code d'équipe. Il survit à la
+     fermeture du navigateur : une équipe retrouve son dossier la semaine
+     suivante sur le même poste, et le professeur peut lister les dossiers du
+     poste en mode ?prof.
+
+     `sessionStorage` garde SEULEMENT ce que cette session de navigation est en
+     train de faire. Il s'efface à la fermeture du navigateur. C'est lui qui
+     décide de la réouverture automatique.
+
+     Sans cette séparation, la classe suivante qui s'assoit devant le poste
+     rouvrait le dossier de la classe précédente, sous son nom. Le travail n'est
+     pas perdu pour autant : il reste dans localStorage, accessible par son code.
+     --------------------------------------------------------------------- */
+  function ssGet(k){
+    try { return window.sessionStorage.getItem(k); } catch(e){ return null; }
+  }
+  function ssSet(k,v){
+    try { window.sessionStorage.setItem(k,v); return true; } catch(e){ return false; }
+  }
+  function ssRemove(k){
+    try { window.sessionStorage.removeItem(k); } catch(e){}
+  }
+
   var sauveEnAttente = null;
   /** Sauvegarde différée : évite d'écrire à chaque frappe clavier. */
   function sauver(immediat){
@@ -86,6 +123,7 @@ var P11 = (function(){
       state.maj = new Date().toISOString();
       var ok = lsSet(CLE_PREFIXE + state.badge.code, JSON.stringify(state));
       lsSet(CLE_DERNIER, state.badge.code);
+      ssSet(CLE_SESSION, state.badge.code);
       if (!ok) signaler("Sauvegarde impossible sur ce poste — pense à exporter ton dossier.", 5000);
       majEnTete();
     };
@@ -98,9 +136,36 @@ var P11 = (function(){
     if (!brut) return false;
     try {
       var obj = JSON.parse(brut);
-      state = fusionner(etatVierge(), obj);
+      state = migrer(fusionner(etatVierge(), obj));
       return true;
     } catch(e){ return false; }
+  }
+
+  /**
+   * Adapte un dossier enregistré par une version antérieure.
+   * La v1 stockait un seul champ `eleve1` du type « Dupont Camille ». On le
+   * reventile en nom et prénom sur le premier espace, et l'élève corrige au
+   * besoin : mieux vaut un nom à retoucher qu'un dossier vide.
+   */
+  function migrer(s){
+    if (!s.badge.nom1 && s.badge.eleve1){
+      var d = decouperNom(s.badge.eleve1);
+      s.badge.nom1 = d.nom; s.badge.prenom1 = d.prenom;
+    }
+    if (!s.badge.nom2 && s.badge.eleve2){
+      var d2 = decouperNom(s.badge.eleve2);
+      s.badge.nom2 = d2.nom; s.badge.prenom2 = d2.prenom;
+    }
+    delete s.badge.eleve1; delete s.badge.eleve2;
+    s.v = VERSION_ETAT;
+    return s;
+  }
+
+  function decouperNom(complet){
+    var t = String(complet || '').trim().replace(/\s+/g, ' ');
+    var i = t.indexOf(' ');
+    if (i < 0) return { nom: formaterNom(t), prenom: '' };
+    return { nom: formaterNom(t.slice(0, i)), prenom: formaterPrenom(t.slice(i + 1)) };
   }
 
   /**
@@ -140,7 +205,9 @@ var P11 = (function(){
         if (k && k.indexOf(CLE_PREFIXE) === 0 && k !== CLE_DERNIER){
           try {
             var s = JSON.parse(window.localStorage.getItem(k));
-            out.push({ code:s.badge.code, eleves:nomEquipe(s), maj:s.maj, etat:s });
+            s = migrer(fusionner(etatVierge(), s));
+          out.push({ code:s.badge.code, eleves:nomEquipe(s), classe:s.badge.classe,
+                     maj:s.maj, etat:s });
           } catch(e){ /* entrée illisible : ignorée */ }
         }
       }
@@ -160,10 +227,38 @@ var P11 = (function(){
     return cl + '-' + s;
   }
 
+  /* --- Formatage des noms -----------------------------------------------
+     Appliqué à la frappe : le cahier de textes et la feuille du professeur
+     restent lisibles sans reprise manuelle, et deux élèves qui écrivent
+     « dupont » et « DUPONT » produisent la même entrée.
+     --------------------------------------------------------------------- */
+
+  /** Nom de famille : tout en majuscules, accents conservés. */
+  function formaterNom(v){
+    return String(v == null ? '' : v).replace(/\s+/g, ' ').replace(/^ /, '').toLocaleUpperCase('fr-FR');
+  }
+
+  /**
+   * Prénom : une majuscule après chaque séparateur, le reste en minuscules.
+   * Les séparateurs sont l'espace, le trait d'union et l'apostrophe, pour que
+   * « jean-luc » devienne « Jean-Luc » et « n'guyen » « N'Guyen ».
+   */
+  function formaterPrenom(v){
+    var t = String(v == null ? '' : v).replace(/\s+/g, ' ').replace(/^ /, '').toLocaleLowerCase('fr-FR');
+    return t.replace(/(^|[\s\-'’])([^\s\-'’])/g, function(_, sep, c){
+      return sep + c.toLocaleUpperCase('fr-FR');
+    });
+  }
+
+  /** « DUPONT Camille », ou chaîne vide si rien n'est saisi. */
+  function nomComplet(nom, prenom){
+    return [String(nom||'').trim(), String(prenom||'').trim()].filter(Boolean).join(' ');
+  }
+
   function nomEquipe(s){
     s = s || state;
-    var a = (s.badge.eleve1||'').trim();
-    var b = (s.badge.eleve2||'').trim();
+    var a = nomComplet(s.badge.nom1, s.badge.prenom1);
+    var b = nomComplet(s.badge.nom2, s.badge.prenom2);
     if (s.badge.mode === 'binome' && b) return a + ' & ' + b;
     return a || 'Équipe sans nom';
   }
@@ -451,16 +546,22 @@ var P11 = (function(){
 
     BADGE.init();
     M1.init(); M2.init(); M3.init(); EVAL.init();
+    PRESENTATION.init();
+    CLOUD.init();
 
-    // Reprise automatique du dernier dossier ouvert sur ce poste.
-    var dernier = lsGet(CLE_DERNIER);
-    if (dernier && charger(dernier)){
+    // Réouverture automatique : seulement le dossier de CETTE session de
+    // navigation. Après un simple rechargement, l'équipe retrouve son travail ;
+    // après la fermeture du navigateur, le poste repart sur l'écran de badge et
+    // la classe suivante ne reprend pas le dossier de la précédente à son nom.
+    var enCours = ssGet(CLE_SESSION);
+    if (enCours && charger(enCours)){
       BADGE.refletEtat();
       M1.refletEtat(); M2.refletEtat(); M3.refletEtat();
       signaler('Dossier ' + state.badge.code + ' rouvert.');
       var cible = (window.location.hash || '').replace('#','');
       aller(['m1','m2','m3','dossier'].indexOf(cible) !== -1 ? cible : 'accueil');
     } else {
+      BADGE.refletEtat();
       aller('accueil');
     }
     majEnTete();
@@ -474,7 +575,9 @@ var P11 = (function(){
     get state(){ return state; },
     set state(v){ state = v; },
     etatVierge:etatVierge, sauver:sauver, charger:charger, listerCodes:listerCodes,
-    genererCode:genererCode, nomEquipe:nomEquipe, ostParId:ostParId,
+    genererCode:genererCode, nomEquipe:nomEquipe, nomComplet:nomComplet,
+    formaterNom:formaterNom, formaterPrenom:formaterPrenom, ostParId:ostParId,
+    ssGet:ssGet, ssSet:ssSet, ssRemove:ssRemove, CLE_SESSION:CLE_SESSION,
     // navigation et interface
     aller:aller, signaler:signaler, modale:modale, fermerModale:fermerModale,
     majEnTete:majEnTete, avancement:avancement, modeProf:modeProf,
