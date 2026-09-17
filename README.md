@@ -116,9 +116,11 @@ Les repères FP1, FC1, FC2… ne sont pas saisis par l'élève : ils sont donné
 Annuler un trait renumérote les suivants sans laisser de trou.
 
 Le tableau d'analyse demande ensuite la **correspondance** : pour chaque
-fonction écrite, retrouver le trait du schéma. Deux élèves justes n'ont donc pas
-la même numérotation — c'est voulu, et le corrigé affiché reprend les repères de
-chacun.
+fonction écrite, retrouver le trait du schéma, dans un menu qui ne propose que
+les repères tracés. Ces options ne nomment pas l'élément relié — sinon elles
+donneraient la réponse ; l'élève remonte à son schéma. Deux élèves justes n'ont
+donc pas la même numérotation, c'est voulu, et le corrigé affiché reprend les
+repères de chacun.
 
 Techniquement, le tableau retient l'*identifiant* du trait et non son numéro :
 une renumérotation ne casse jamais les réponses déjà données.
