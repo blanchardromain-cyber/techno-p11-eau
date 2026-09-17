@@ -41,7 +41,7 @@ var P11 = (function(){
       m1: {
         liens: [],        // liens tracés : {de, a, type}
         typage: {},       // idFonction -> 'FP' | 'FC'
-        numeros: {},      // idFonction -> '1' … '6' (le repère est type + numéro)
+        repere: {},       // idFonction -> identifiant du trait choisi dans la pieuvre
         valide: false,    // vrai dès la première validation du tableau d'analyse
         hotspots: [],     // identifiants des points chauds déjà ouverts
         essais: 0,
