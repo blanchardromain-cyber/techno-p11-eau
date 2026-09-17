@@ -4,10 +4,11 @@
 fait, l'activité fonctionne normalement : elle affiche simplement
 « Envoi non configuré » dans le dossier, et le rendu se fait par impression.
 
-## 1. Créer le classeur
+## 1. Le classeur
 
-Dans Google Drive : **Nouveau → Google Sheets**. Nommer par exemple
-`P11 S5 — Résultats pieuvre et cahier des charges`.
+Le classeur est déjà créé :
+
+<https://docs.google.com/spreadsheets/d/1KM0b8t2JWtRS6dmB6K_qRlFj0paHwRGYAWRA7CSENDE/edit>
 
 Ne rien créer à l'intérieur : l'onglet `P11-S5` et sa ligne d'en-têtes se
 créent tout seuls au premier envoi.
@@ -79,20 +80,31 @@ apparaître dans le classeur en quelques secondes, et le dossier affiche
 ## Ce qui arrive dans le classeur
 
 Une ligne par équipe, **mise à jour** à chaque vérification de mission — pas une
-ligne par clic : la clé de remplacement est le code d'équipe.
+ligne par clic : la clé de remplacement est le code d'équipe. L'élève dispose en
+plus d'un bouton **« Valider et envoyer à mon professeur »** dans son dossier,
+pour refaire l'envoi une dernière fois quand il a terminé.
 
 | Colonnes | Contenu |
 |---|---|
 | `date`, `classe`, `code`, `mode` | quand, qui, seul ou en binôme |
 | `nom1`, `prenom1`, `nom2`, `prenom2` | identité, déjà mise en forme |
 | `m1`, `m1_liens`, `m1_analyse` | mission 1 sur 20, et son détail |
+| `m1_reperes` | les repères attribués aux six fonctions, dans l'ordre de la fiche |
 | `m2`, `m2_objet` | mission 2 sur 20, et l'objet technique choisi |
+| `m2_1_rep` … `m2_4_unite` | les quatre lignes du cahier des charges : repère, critère, niveau et unité **tels que l'élève les a saisis** |
 | `m3_auto`, `m3_prof` | mission 3 : 12 points automatiques, 8 points professeur |
+| `m3_appreciation` | appréciation générée automatiquement pour la mission 3 |
 | `total`, `sur`, `note20`, `niveau` | note sur 20 et positionnement de compétence |
 | `solution`, `probleme` | l'idée proposée en mission 3 |
 | `presentation` | `oui` si l'équipe a été retenue pour la projection |
 | `aides` | coups de pouce consultés en mission 2 |
 | `remarque` | appréciation saisie par le professeur |
+
+**À propos de `m1_reperes` :** les numéros suivent l'ordre dans lequel chaque
+élève a tracé sa pieuvre. Deux élèves justes n'ont donc pas la même suite —
+c'est normal, et c'est ce qui rend la triche par recopie inopérante. Ce qui
+compte est la colonne `m1_analyse` : elle dit si chaque fonction a été reliée
+au bon trait.
 
 **Ce qui n'y arrive pas :** l'image de la maquette 3D et le détail des réponses.
 Une cellule de tableur n'est pas faite pour cela — ils restent dans le dossier
