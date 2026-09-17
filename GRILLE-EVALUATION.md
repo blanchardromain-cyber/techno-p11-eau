@@ -54,15 +54,24 @@ suivants se renumérotent d'eux-mêmes : la pieuvre ne garde jamais de trou.
 
 Le tableau ne demande donc pas d'inventer un numéro, mais de faire la
 **correspondance** : pour chaque fonction écrite, retrouver le trait du schéma
-qui lui correspond. La liste déroulante ne propose que les traits réellement
-tracés, décrits par leur élément (« FC2 — le milieu humide »).
+qui lui correspond. Un seul menu déroulant par ligne, qui ne propose que les
+repères réellement tracés — `FP1`, `FC1`, `FC2`…
 
-**2 points par ligne**, décomposés ainsi :
+**Les options ne nomment pas l'élément relié.** Une liste qui afficherait
+« FC2 — le milieu humide » donnerait la réponse : l'élève doit remonter à son
+schéma pour savoir quel trait porte quel numéro. C'est là que se fait le lien
+entre le dessin et l'énoncé, et c'est tout l'objet de l'exercice.
+
+**2 points par ligne**, lus dans ce seul choix :
 
 | Élément | Points | Ce qui est vérifié |
 |---|---:|---|
-| Type | 1,5 | FP ou FC — c'est la notion de la séance |
-| Repère | 0,5 | le trait désigné relie bien le ou les éléments de cette fonction |
+| Type | 1 | le repère choisi est bien une FP là où il faut une FP |
+| Élément relié | 1 | le trait désigné aboutit au bon élément du milieu extérieur |
+
+Les deux moitiés pèsent pareil parce qu'un seul choix les porte : se tromper
+de type et se tromper d'élément sont deux erreurs de même nature. Un repère
+attribué à deux fonctions différentes ne vaut que le point de type.
 
 | Énoncé | Type attendu | Trait attendu |
 |---|---|---|
