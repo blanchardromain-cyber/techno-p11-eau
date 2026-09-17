@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2026-09-17s">
+<link rel="stylesheet" href="css/style.css?v=2026-09-17x">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐙</text></svg>">
 </head>
 <body>
@@ -89,16 +89,31 @@
         <p class="hint" id="badge-mode-aide" style="margin-top:-8px;margin-bottom:16px"></p>
 
         <div class="grid2">
-          <label class="field"><span>Nom et prénom</span>
-            <input type="text" id="badge-eleve1" placeholder="Ex. Dupont Camille" autocomplete="off">
+          <label class="field"><span>Nom — élève 1</span>
+            <input type="text" id="badge-nom1" placeholder="DUPONT" autocomplete="off"
+                   spellcheck="false" autocapitalize="characters">
           </label>
-          <label class="field" id="champ-eleve2" style="display:none"><span>Nom et prénom du binôme</span>
-            <input type="text" id="badge-eleve2" placeholder="Ex. Martin Sacha" autocomplete="off">
+          <label class="field"><span>Prénom — élève 1</span>
+            <input type="text" id="badge-prenom1" placeholder="Léa" autocomplete="off"
+                   spellcheck="false" autocapitalize="words">
+          </label>
+        </div>
+        <div class="grid2" id="champs-eleve2" style="display:none">
+          <label class="field"><span>Nom — élève 2</span>
+            <input type="text" id="badge-nom2" placeholder="MARTIN" autocomplete="off"
+                   spellcheck="false" autocapitalize="characters">
+          </label>
+          <label class="field"><span>Prénom — élève 2</span>
+            <input type="text" id="badge-prenom2" placeholder="Tom" autocomplete="off"
+                   spellcheck="false" autocapitalize="words">
           </label>
         </div>
         <label class="field" style="max-width:220px"><span>Classe</span>
-          <input type="text" id="badge-classe" placeholder="Ex. 4B" autocomplete="off" maxlength="6">
+          <select id="badge-classe"></select>
         </label>
+        <p class="hint" style="margin-top:-6px;margin-bottom:14px">
+          Le nom se met tout seul en majuscules et le prénom prend sa majuscule :
+          écris normalement, l'activité s'occupe de la présentation.</p>
 
         <button class="btn" id="badge-creer" type="button">Créer mon badge et commencer</button>
       </div>
@@ -112,6 +127,11 @@
           <button class="btn sec small" id="badge-copier" type="button">Copier le code</button>
           <button class="btn small" type="button" onclick="P11.aller('m1')">Commencer la mission 1</button>
         </p>
+        <p class="center-text" style="margin-top:14px">
+          <button class="btn ghost small" id="badge-fermer" type="button">Fermer ce dossier et libérer le poste</button>
+        </p>
+        <p class="hint center-text" style="margin-top:2px">
+          À faire en fin d'heure : le dossier reste enregistré et se rouvre avec son code.</p>
       </div>
     </section>
 
@@ -192,27 +212,41 @@
     </section>
 
     <section class="card">
-      <h2>3 · Classe les six fonctions de la fiche</h2>
-      <p class="lead" id="m1-tri-aide">Fais glisser chaque fonction dans la bonne colonne —
-        ou clique dessus puis clique sur la colonne.</p>
+      <h2>3 · Le tableau d'analyse fonctionnelle</h2>
+      <p class="lead">Pour chaque fonction, indique son <b>type</b> et son <b>numéro</b>.
+        Le repère se compose tout seul : par exemple type <span class="pill fc">FC</span> + numéro 2
+        donne <b>FC2</b>.</p>
 
-      <div class="sortzone">
-        <div class="bin fp" id="bin-FP">
-          <h4><span class="pill fp">FP</span> Fonction principale</h4>
-          <p class="rule">Relie DEUX éléments du milieu extérieur à travers l'objet.
-            C'est la raison d'être de l'objet technique.</p>
-          <div class="contenu"></div>
-        </div>
-        <div class="bin fc" id="bin-FC">
-          <h4><span class="pill fc">FC</span> Fonction contrainte</h4>
-          <p class="rule">Relie l'objet à UN SEUL élément du milieu extérieur.
-            L'objet doit s'adapter à cet élément.</p>
-          <div class="contenu"></div>
-        </div>
+      <div class="fb info" style="margin-top:0">
+        <b class="t">La règle</b>
+        <ul style="margin-top:6px">
+          <li><span class="pill fp">FP</span> <b>fonction principale</b> — relie <b>deux</b> éléments
+            du milieu extérieur à travers l'objet. C'est sa raison d'être, et il n'y en a
+            qu'une : elle porte le repère <b>FP1</b>.</li>
+          <li><span class="pill fc">FC</span> <b>fonction contrainte</b> — relie l'objet à
+            <b>un seul</b> élément du milieu extérieur, auquel il doit s'adapter. Chaque
+            contrainte porte un numéro <b>différent des autres</b>.</li>
+        </ul>
       </div>
 
-      <div class="pool" id="m1-pool"></div>
-      <p><button class="btn ghost small" id="m1-rendre" type="button">Remettre toutes les fonctions en bas</button></p>
+      <div class="table-scroll" style="margin-top:14px">
+        <table class="cdcf analyse">
+          <thead><tr>
+            <th style="width:78px">Type</th>
+            <th style="width:78px">N°</th>
+            <th style="width:72px">Repère</th>
+            <th>Fonction</th>
+            <th style="width:52px">Retour</th>
+          </tr></thead>
+          <tbody id="m1-analyse"></tbody>
+        </table>
+      </div>
+
+      <p class="lead" id="m1-tri-aide" style="margin-top:12px"></p>
+      <p>
+        <button class="btn sec" id="m1-valider-analyse" type="button">Valider le tableau</button>
+        <button class="btn ghost small" id="m1-rendre" type="button">Tout effacer</button>
+      </p>
     </section>
 
     <section class="card">
@@ -248,6 +282,14 @@
           <b>niveau</b> : une valeur chiffrée et son unité. Vérifie chaque ligne séparément :
           au premier essai tu reçois une aide, au second le corrigé.
         </p>
+
+        <!-- Coup de pouce : trois aides séparées, ouvertes à la demande -->
+        <div class="pouce" id="m2-pouce">
+          <div class="pouce-titre">
+            <span aria-hidden="true">🤝</span> Coup de pouce — ouvre seulement ce qui te bloque
+          </div>
+          <div class="pouce-liste" id="m2-pouce-liste"></div>
+        </div>
 
         <div id="m2-table"></div>
 
@@ -320,10 +362,15 @@
           <p style="margin:12px 0 4px;font-size:12.5px;font-weight:700;color:var(--navy)">Pièces posées</p>
           <div class="parts-list" id="m3-pieces"></div>
           <p style="margin-top:10px">
-            <button class="btn ghost small" id="m3-pivoter" type="button">Pivoter la pièce</button>
+            <button class="btn ghost small" id="m3-pivoter" type="button">Pivoter</button>
+            <button class="btn ghost small" id="m3-monter" type="button" title="Monter la pièce sélectionnée">▲ Monter</button>
+            <button class="btn ghost small" id="m3-descendre" type="button" title="Descendre la pièce sélectionnée">▼ Descendre</button>
             <button class="btn ghost small" id="m3-recadrer3" type="button">Replacer la vue</button>
             <button class="btn ghost small" id="m3-vider" type="button">Vider</button>
           </p>
+          <p class="hint" style="margin-top:0">Sélectionne une pièce (dans la liste ou sur l'établi),
+            fais-la glisser pour la placer au sol, et monte-la pour l'installer en hauteur —
+            une cuve sur un support, un panneau sur un toit.</p>
         </div>
         <div>
           <div class="scene-holder" id="m3-scene"></div>
@@ -365,6 +412,24 @@
         <button class="btn sec" id="dossier-png" type="button">⤓ Image de la maquette (.png)</button>
         <button class="btn ghost small" id="dossier-maj" type="button">Mettre à jour</button>
       </p>
+
+      <!-- Où en est la transmission au professeur -->
+      <div class="fb info" style="margin-top:14px" id="cloud-temoin"></div>
+
+      <!-- Proposition de passage au vidéoprojecteur -->
+      <div class="presenter-bloc">
+        <label class="presenter-case">
+          <input type="checkbox" id="dossier-presentation">
+          <span>
+            <b>Je propose ma solution pour la présentation en classe.</b><br>
+            Le professeur en retient deux ou trois en fin d'heure — toutes les maquettes
+            ne passent pas au tableau.
+          </span>
+        </label>
+        <button class="btn gold small" id="dossier-projeter" type="button">
+          Voir en mode présentation
+        </button>
+      </div>
     </section>
 
     <div class="dossier" id="dossier-corps"></div>
@@ -389,7 +454,7 @@
   <div class="footer no-print">
     Collège Saint Pierre – Les Essarts · Séquence P11 · Séance 5 —
     <a href="../index.html">retour aux outils de la séquence</a>
-    <br><span style="opacity:.7">build 2026-09-17s</span>
+    <br><span style="opacity:.7">build 2026-09-17x</span>
   </div>
 </div>
 
@@ -417,14 +482,16 @@
 -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js" crossorigin="anonymous"></script>
 
-<script src="js/data.js?v=2026-09-17s"></script>
-<script src="js/core.js?v=2026-09-17s"></script>
-<script src="js/badge.js?v=2026-09-17s"></script>
-<script src="js/scene3d.js?v=2026-09-17s"></script>
-<script src="js/module1.js?v=2026-09-17s"></script>
-<script src="js/module2.js?v=2026-09-17s"></script>
-<script src="js/module3.js?v=2026-09-17s"></script>
-<script src="js/evaluation.js?v=2026-09-17s"></script>
+<script src="js/data.js?v=2026-09-17x"></script>
+<script src="js/core.js?v=2026-09-17x"></script>
+<script src="js/badge.js?v=2026-09-17x"></script>
+<script src="js/scene3d.js?v=2026-09-17x"></script>
+<script src="js/module1.js?v=2026-09-17x"></script>
+<script src="js/module2.js?v=2026-09-17x"></script>
+<script src="js/module3.js?v=2026-09-17x"></script>
+<script src="js/evaluation.js?v=2026-09-17x"></script>
+<script src="js/cloud.js?v=2026-09-17x"></script>
+<script src="js/presentation.js?v=2026-09-17x"></script>
 <script>
   // Démarrage une fois le document et tous les scripts en place.
   if (document.readyState === 'loading'){
