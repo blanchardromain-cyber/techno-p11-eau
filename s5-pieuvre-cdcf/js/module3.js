@@ -166,6 +166,14 @@ var M3 = (function(){
       if (!atelier.pivoter()) P11.signaler("Sélectionne d'abord une pièce dans la maquette.");
       else syncPieces();
     });
+    document.getElementById('m3-monter').addEventListener('click', function(){
+      if (!atelier.elever(1)) P11.signaler("Sélectionne d'abord une pièce dans la maquette.");
+      else syncPieces();
+    });
+    document.getElementById('m3-descendre').addEventListener('click', function(){
+      if (!atelier.elever(-1)) P11.signaler("Sélectionne d'abord une pièce dans la maquette.");
+      else syncPieces();
+    });
     document.getElementById('m3-recadrer3').addEventListener('click', function(){ atelier.recadrer(); });
     document.getElementById('m3-vider').addEventListener('click', function(){
       if (!P11.state.m3.pieces.length) return;
@@ -353,6 +361,7 @@ var M3 = (function(){
     document.getElementById('m3-sortie').innerHTML = html;
     document.getElementById('m3-sortie').scrollIntoView({ behavior:'smooth', block:'start' });
     P11.sauver(true);
+    CLOUD.envoyer('m3');
     P11.majEnTete();
   }
 
@@ -391,7 +400,7 @@ var M3 = (function(){
       if (atelier.actif && atelier.lister().length === 0 && P11.state.m3.pieces.length){
         P11.state.m3.pieces.forEach(function(p){
           var k = kitParId(p.kit);
-          if (k) atelier.ajouter(k, p.x, p.z, p.rot);
+          if (k) atelier.ajouter(k, p.x, p.z, p.rot, p.elev);
         });
         syncPieces();
       }
