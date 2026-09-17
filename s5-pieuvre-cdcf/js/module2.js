@@ -286,6 +286,7 @@ var M2 = (function(){
     document.getElementById('m2-sortie').innerHTML = html;
     document.getElementById('m2-sortie').scrollIntoView({ behavior:'smooth', block:'start' });
     P11.sauver(true);
+    CLOUD.envoyer('m2');
     P11.majEnTete();
   }
 
@@ -305,8 +306,38 @@ var M2 = (function(){
 
   /* ============================ Mise en place ============================= */
 
+  /* ========================= Coup de pouce ===============================
+     Trois aides repliées, ouvertes une par une. L'élément <details> natif fait
+     le travail : il fonctionne sans JavaScript, se déplie au clavier, et est
+     annoncé correctement par un lecteur d'écran.
+     ====================================================================== */
+  function construirePouce(){
+    var box = document.getElementById('m2-pouce-liste');
+    box.innerHTML = P11DATA.COUPS_DE_POUCE.map(function(p){
+      return '<details class="pouce-item" data-p="' + P11.esc(p.id) + '">' +
+               '<summary>' + P11.esc(p.titre) + '</summary>' +
+               '<div class="pouce-corps">' + p.html + (p.svg || '') + '</div>' +
+             '</details>';
+    }).join('');
+
+    // Les aides consultées sont notées dans le dossier : si un élève rend un
+    // travail juste sans jamais ouvrir d'aide, ce n'est pas la même chose que
+    // s'il a eu besoin des trois. Le professeur le voit, l'élève n'est pas
+    // pénalisé pour autant — aucune aide n'enlève de point.
+    box.querySelectorAll('details').forEach(function(d){
+      d.addEventListener('toggle', function(){
+        if (!d.open) return;
+        var id = d.dataset.p;
+        var st = P11.state.m2;
+        if (!st.aides) st.aides = [];
+        if (st.aides.indexOf(id) === -1){ st.aides.push(id); P11.sauver(); }
+      });
+    });
+  }
+
   function init(){
     construirePicker();
+    construirePouce();
     document.getElementById('m2-verif').addEventListener('click', verifierTout);
     document.getElementById('m2-memo').addEventListener('click', function(){
       P11.modale('Mémo — critère et niveau',
