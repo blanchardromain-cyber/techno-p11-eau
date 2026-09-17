@@ -51,6 +51,45 @@ var M2 = (function(){
     document.getElementById('m2-table-zone').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
+  /* ================= La demande du client et son exemple =================
+     Le texte du client contient TOUTES les valeurs attendues, mais dites comme
+     un client les dit : « une dizaine de centimètres », « un demi-litre », « un
+     quart d'heure ». Le travail de l'élève n'est donc pas de recopier une
+     cellule, c'est de traduire une formulation en grandeur, nombre et unité —
+     ce que demande exactement la compétence CT 2.1.
+     ====================================================================== */
+
+  function construireDemande(ost){
+    var box = document.getElementById('m2-demande');
+    if (!box) return;
+    if (!ost.demande){ box.innerHTML = ''; return; }
+    box.innerHTML =
+      '<div class="demande-entete">' +
+        '<span class="demande-de">' + P11.esc(ost.demande.de) + '</span>' +
+        '<h3 class="demande-titre">' + P11.esc(ost.demande.titre) + '</h3>' +
+      '</div>' +
+      ost.demande.corps.map(function(p){ return '<p>' + P11.esc(p) + '</p>'; }).join('');
+  }
+
+  function construireModele(ost){
+    var box = document.getElementById('m2-modele');
+    if (!box) return;
+    var m = ost.modele;
+    if (!m){ box.innerHTML = ''; return; }
+    box.innerHTML =
+      '<figure class="modele">' +
+        '<blockquote class="modele-phrase">« ' + P11.esc(m.phrase) + ' »</blockquote>' +
+        '<div class="modele-fleche" aria-hidden="true">↓</div>' +
+        '<div class="modele-ligne">' +
+          '<div><span class="modele-cle">Fonction</span>' + P11.esc(m.fonction) + '</div>' +
+          '<div><span class="modele-cle">Critère</span>' + P11.esc(m.critere) + '</div>' +
+          '<div><span class="modele-cle">Niveau</span><b>' + P11.esc(m.niveau) + '</b></div>' +
+          '<div><span class="modele-cle">Unité</span><b>' + P11.esc(m.unite) + '</b></div>' +
+        '</div>' +
+        '<figcaption class="modele-pourquoi">' + P11.esc(m.pourquoi) + '</figcaption>' +
+      '</figure>';
+  }
+
   /* ====================== Construction du tableau ========================= */
 
   function construireTable(){
@@ -61,6 +100,9 @@ var M2 = (function(){
 
     document.getElementById('m2-contexte').innerHTML =
       '<b>' + P11.esc(ost.nom) + '</b> — ' + P11.esc(ost.contexte);
+
+    construireDemande(ost);
+    construireModele(ost);
 
     var html =
       '<div class="table-scroll"><table class="cdcf"><thead><tr>' +
