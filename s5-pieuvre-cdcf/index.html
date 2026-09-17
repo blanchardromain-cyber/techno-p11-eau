@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2026-09-17x">
+<link rel="stylesheet" href="css/style.css?v=2026-09-18a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐙</text></svg>">
 </head>
 <body>
@@ -213,19 +213,18 @@
 
     <section class="card">
       <h2>3 · Le tableau d'analyse fonctionnelle</h2>
-      <p class="lead">Pour chaque fonction, indique son <b>type</b> et son <b>numéro</b>.
-        Le repère se compose tout seul : par exemple type <span class="pill fc">FC</span> + numéro 2
-        donne <b>FC2</b>.</p>
+      <p class="lead">Les repères <b>FP1</b>, <b>FC1</b>, <b>FC2</b>… ont été attribués tout seuls
+        à tes traits, dans l'ordre où tu les as tracés : tu les lis sur la pieuvre ci-dessus.
+        Pour chaque fonction écrite ci-dessous, retrouve <b>son type</b> et <b>le trait qui lui
+        correspond</b>.</p>
 
       <div class="fb info" style="margin-top:0">
         <b class="t">La règle</b>
         <ul style="margin-top:6px">
           <li><span class="pill fp">FP</span> <b>fonction principale</b> — relie <b>deux</b> éléments
-            du milieu extérieur à travers l'objet. C'est sa raison d'être, et il n'y en a
-            qu'une : elle porte le repère <b>FP1</b>.</li>
+            du milieu extérieur à travers l'objet. C'est sa raison d'être, et il n'y en a qu'une.</li>
           <li><span class="pill fc">FC</span> <b>fonction contrainte</b> — relie l'objet à
-            <b>un seul</b> élément du milieu extérieur, auquel il doit s'adapter. Chaque
-            contrainte porte un numéro <b>différent des autres</b>.</li>
+            <b>un seul</b> élément du milieu extérieur, auquel il doit s'adapter.</li>
         </ul>
       </div>
 
@@ -233,8 +232,7 @@
         <table class="cdcf analyse">
           <thead><tr>
             <th style="width:78px">Type</th>
-            <th style="width:78px">N°</th>
-            <th style="width:72px">Repère</th>
+            <th style="width:210px">Repère — le trait de ta pieuvre</th>
             <th>Fonction</th>
             <th style="width:52px">Retour</th>
           </tr></thead>
@@ -273,8 +271,25 @@
     </section>
 
     <div id="m2-table-zone" style="display:none">
+      <!-- La demande du client : c'est là que se trouvent toutes les réponses -->
       <section class="card">
-        <h2>2 · Complète le cahier des charges fonctionnel</h2>
+        <h2>2 · Lis la demande du client</h2>
+        <p class="lead">Tout ce dont tu as besoin est dans ce texte. Le client n'écrit pas
+          « critère » ni « niveau » : il décrit son besoin avec ses mots, et c'est à toi de
+          le traduire en exigences mesurables.</p>
+        <div class="demande" id="m2-demande"></div>
+      </section>
+
+      <!-- Un exemple entièrement traité, tiré du même texte -->
+      <section class="card">
+        <h2>3 · Un exemple déjà traité</h2>
+        <p class="lead">Voici comment on passe d'une phrase du client à une ligne du cahier
+          des charges. Cette fonction-là est faite : à toi les suivantes.</p>
+        <div id="m2-modele"></div>
+      </section>
+
+      <section class="card">
+        <h2>4 · Complète le cahier des charges fonctionnel</h2>
         <div class="fb info" style="margin-top:0" id="m2-contexte"></div>
 
         <p class="lead" style="margin-top:14px">
@@ -415,6 +430,14 @@
 
       <!-- Où en est la transmission au professeur -->
       <div class="fb info" style="margin-top:14px" id="cloud-temoin"></div>
+      <p style="margin-top:10px">
+        <button class="btn gold" id="dossier-envoyer" type="button">
+          ✓ Valider et envoyer à mon professeur
+        </button>
+      </p>
+      <p class="hint" style="margin-top:0">L'envoi se fait déjà tout seul à chaque
+        vérification de mission : ce bouton sert à le refaire une dernière fois,
+        quand tu as fini.</p>
 
       <!-- Proposition de passage au vidéoprojecteur -->
       <div class="presenter-bloc">
@@ -454,7 +477,7 @@
   <div class="footer no-print">
     Collège Saint Pierre – Les Essarts · Séquence P11 · Séance 5 —
     <a href="../index.html">retour aux outils de la séquence</a>
-    <br><span style="opacity:.7">build 2026-09-17x</span>
+    <br><span style="opacity:.7">build 2026-09-18a</span>
   </div>
 </div>
 
@@ -482,16 +505,16 @@
 -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js" crossorigin="anonymous"></script>
 
-<script src="js/data.js?v=2026-09-17x"></script>
-<script src="js/core.js?v=2026-09-17x"></script>
-<script src="js/badge.js?v=2026-09-17x"></script>
-<script src="js/scene3d.js?v=2026-09-17x"></script>
-<script src="js/module1.js?v=2026-09-17x"></script>
-<script src="js/module2.js?v=2026-09-17x"></script>
-<script src="js/module3.js?v=2026-09-17x"></script>
-<script src="js/evaluation.js?v=2026-09-17x"></script>
-<script src="js/cloud.js?v=2026-09-17x"></script>
-<script src="js/presentation.js?v=2026-09-17x"></script>
+<script src="js/data.js?v=2026-09-18a"></script>
+<script src="js/core.js?v=2026-09-18a"></script>
+<script src="js/badge.js?v=2026-09-18a"></script>
+<script src="js/scene3d.js?v=2026-09-18a"></script>
+<script src="js/module1.js?v=2026-09-18a"></script>
+<script src="js/module2.js?v=2026-09-18a"></script>
+<script src="js/module3.js?v=2026-09-18a"></script>
+<script src="js/evaluation.js?v=2026-09-18a"></script>
+<script src="js/cloud.js?v=2026-09-18a"></script>
+<script src="js/presentation.js?v=2026-09-18a"></script>
 <script>
   // Démarrage une fois le document et tous les scripts en place.
   if (document.readyState === 'loading'){
