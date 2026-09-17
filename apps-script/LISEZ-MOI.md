@@ -42,11 +42,17 @@ Autoriser l'accès quand Google le demande (passer par « Paramètres avancés �
 Accéder à … » au premier lancement, l'avertissement est normal pour un script
 personnel non vérifié).
 
-Copier l'**URL de l'application web**. Elle ressemble à :
+Google affiche alors un écran de confirmation portant une étiquette du genre
+**« Version 1 du 17 sept. 2026, 21:53 »**. ⚠️ **Cette étiquette ne sert à rien
+ici** : c'est le nom que Google donne à votre déploiement, rien ne se recopie
+dans le code. La seule chose à prendre sur cet écran est l'**URL de
+l'application web**, celle qui se termine par `/exec` :
 
 ```
 https://script.google.com/macros/s/AKfycb.../exec
 ```
+
+Elle apparaît sous « URL de l'application web », avec un bouton « Copier ».
 
 ## 4. Renseigner l'URL dans l'activité
 
@@ -64,8 +70,29 @@ var CLOUD = {
 Le `secret` doit rester **identique** à `SECRET_PARTAGE` dans `Code.gs`.
 Pour le changer, le changer aux deux endroits.
 
-Puis incrémenter le numéro de version dans `s5-pieuvre-cdcf/index.html`
-(recherche-remplacement sur `v=2026-09-…`), commiter et pousser.
+### Puis vider le cache des postes
+
+Rien à voir avec la « version » affichée par Google : il s'agit d'une chaîne
+anti-cache propre à l'activité, présente une dizaine de fois dans
+`s5-pieuvre-cdcf/index.html`, à la fin de chaque appel de fichier :
+
+```html
+<link rel="stylesheet" href="css/style.css?v=2026-09-18b">
+...
+<script src="js/data.js?v=2026-09-18b"></script>
+```
+
+Faire une **recherche-remplacement** de `2026-09-18b` par la valeur suivante
+(`2026-09-18c`, puis `d`…) : peu importe laquelle, il suffit qu'elle change.
+Le pied de page de l'activité affiche la même chaîne (`build 2026-09-18b`), ce
+qui permet de vérifier sur le poste d'un élève quelle version est réellement
+chargée.
+
+Sans cela, un poste du collège continue de servir l'ancien code depuis son
+cache, parfois plusieurs jours — et l'envoi resterait désactivé alors que
+l'URL est bien renseignée.
+
+Commiter et pousser ensuite.
 
 ## 5. Vérifier
 
