@@ -109,6 +109,20 @@ contient aucune connaissance métier.
 
 Les paramètres se combinent : `?prof&no3d`.
 
+### Comment les repères sont attribués
+
+Les repères FP1, FC1, FC2… ne sont pas saisis par l'élève : ils sont donnés
+**au tracé**, dans l'ordre où il dessine ses traits, et affichés sur la pieuvre.
+Annuler un trait renumérote les suivants sans laisser de trou.
+
+Le tableau d'analyse demande ensuite la **correspondance** : pour chaque
+fonction écrite, retrouver le trait du schéma. Deux élèves justes n'ont donc pas
+la même numérotation — c'est voulu, et le corrigé affiché reprend les repères de
+chacun.
+
+Techniquement, le tableau retient l'*identifiant* du trait et non son numéro :
+une renumérotation ne casse jamais les réponses déjà données.
+
 ### Une remarque sur la numérotation des fonctions
 
 Les six fonctions de la pieuvre portent **FP1** puis **FC1 à FC5**, dans l'ordre
