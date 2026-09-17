@@ -64,6 +64,53 @@ var SCENE3D = (function(){
     return tex;
   }
 
+  /* ------------------------- Textures procédurales -------------------------
+     Dessinées sur un canvas plutôt que chargées en image : rien à télécharger,
+     donc rien à bloquer pour le filtre du réseau, et le dépôt reste léger.
+     ---------------------------------------------------------------------- */
+
+  /** Carrelage mural : un damier de faïence avec ses joints. */
+  function textureCarrelage(repetitions){
+    var c = document.createElement('canvas');
+    c.width = c.height = 256;
+    var g = c.getContext('2d');
+    g.fillStyle = '#c3d7e6'; g.fillRect(0, 0, 256, 256);          // joint
+    var t = 124;                                                   // carreau
+    for (var y = 0; y < 2; y++){
+      for (var x = 0; x < 2; x++){
+        // Chaque carreau prend une nuance légèrement différente : un carrelage
+        // parfaitement uniforme sonne faux.
+        var n = 236 + Math.floor(Math.random() * 12);
+        g.fillStyle = 'rgb(' + n + ',' + (n + 2) + ',' + (n + 4) + ')';
+        g.fillRect(x * 128 + 2, y * 128 + 2, t, t);
+      }
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(repetitions || 6, repetitions || 6);
+    if (THREE.SRGBColorSpace && 'colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding) tex.encoding = THREE.sRGBEncoding;
+    return tex;
+  }
+
+  /** Plan de vasque : un grain fin, pour que la surface accroche la lumière. */
+  function textureGrain(teinte){
+    var c = document.createElement('canvas');
+    c.width = c.height = 128;
+    var g = c.getContext('2d');
+    g.fillStyle = teinte; g.fillRect(0, 0, 128, 128);
+    for (var i = 0; i < 2600; i++){
+      g.fillStyle = 'rgba(0,0,0,' + (Math.random() * 0.11).toFixed(3) + ')';
+      g.fillRect(Math.random() * 128, Math.random() * 128, 1.4, 1.4);
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(4, 3);
+    if (THREE.SRGBColorSpace && 'colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding) tex.encoding = THREE.sRGBEncoding;
+    return tex;
+  }
+
   function creerRenderer(holder, avecSnapshot){
     var r = new THREE.WebGLRenderer({
       antialias:true,
@@ -221,7 +268,8 @@ var SCENE3D = (function(){
       projeter:function(){ return { visible:false, x:0, y:0 }; },
       viser:function(){}, setAuto:function(){}, redimensionner:function(){},
       ajouter:function(){ return null; }, retirer:function(){}, selectionner:function(){},
-      pivoter:function(){}, snapshot:function(){ return ''; },
+      pivoter:function(){}, elever:function(){}, lister:function(){ return []; },
+      viderTout:function(){}, snapshot:function(){ return ''; },
       recadrer:function(){}, detruire:function(){}
     };
   }
@@ -262,7 +310,8 @@ var SCENE3D = (function(){
     /* --- Matériaux ------------------------------------------------------- */
     var chrome    = new THREE.MeshStandardMaterial({ color:0xdfe6ee, metalness:0.94, roughness:0.16, envMapIntensity:1.15 });
     var ceramique = new THREE.MeshStandardMaterial({ color:0xfdfefe, metalness:0.02, roughness:0.26, envMapIntensity:0.35 });
-    var plan      = new THREE.MeshStandardMaterial({ color:0x7d93ab, metalness:0.08, roughness:0.62, envMapIntensity:0.30 });
+    var plan      = new THREE.MeshStandardMaterial({ color:0x8fa3b8, metalness:0.08, roughness:0.58,
+                                                     envMapIntensity:0.30, map:textureGrain('#8fa3b8') });
     var noir      = new THREE.MeshStandardMaterial({ color:0x24303c, metalness:0.35, roughness:0.45, envMapIntensity:0.5 });
     var rouge     = new THREE.MeshStandardMaterial({ color:0xC0392B, emissive:0x5c120c, roughness:0.4 });
     var peau      = new THREE.MeshStandardMaterial({ color:0xe8b894, roughness:0.85, metalness:0, envMapIntensity:0.3 });
@@ -287,7 +336,8 @@ var SCENE3D = (function(){
     ajout(new THREE.BoxGeometry(2.30, 0.10, 1.50), plan, 0, 0.05, 0).castShadow = false;
     var mur = ajout(
       new THREE.BoxGeometry(2.30, 1.9, 0.07),
-      new THREE.MeshStandardMaterial({ color:0xcfe0ee, roughness:0.62, metalness:0.02, envMapIntensity:0.25 }),
+      new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.35, metalness:0.02,
+                                       envMapIntensity:0.35, map:textureCarrelage(5) }),
       0, 0.95, -0.76
     );
     mur.castShadow = false;
@@ -502,23 +552,43 @@ var SCENE3D = (function(){
       }
     }
 
-    function ajouterPiece(kit, x, z, rot){
+    /* L'élévation était volontairement absente de la première version : toutes
+       les pièces reposaient sur l'établi et ne se déplaçaient qu'au sol. C'est
+       insuffisant pour une maquette — une cuve se pose sur un support, un
+       panneau solaire se met en hauteur, un tuyau passe au-dessus d'un bac.
+       Chaque pièce garde donc une hauteur `elev`, ajoutée à sa hauteur de pose.
+       Le déplacement à la souris reste au sol : la hauteur se règle aux
+       boutons, sinon un glisser en perspective devient impossible à viser. */
+    var PAS_ELEVATION = 0.15;
+
+    function ajouterPiece(kit, x, z, rot, elev){
       var geo = geometrie(kit);
       geo.computeBoundingBox();
       var mat = new THREE.MeshStandardMaterial({ color:kit.couleur, metalness:0.15,
                                                 roughness:0.52, envMapIntensity:0.35 });
       var m = new THREE.Mesh(geo, mat);
-      // Pose la pièce sur l'établi, quelle que soit sa forme.
-      m.position.set(x || 0, -geo.boundingBox.min.y, z || 0);
       m.rotation.y = rot || 0;
+      // Hauteur à laquelle la pièce touche l'établi, selon sa forme.
       // Un tuyau est couché : c'est ce qui le distingue d'une colonne.
-      if (kit.forme === 'tube'){ m.rotation.z = Math.PI/2; m.position.y = kit.taille[0]; }
+      if (kit.forme === 'tube'){ m.rotation.z = Math.PI/2; m.userData.pose = kit.taille[0]; }
+      else m.userData.pose = -geo.boundingBox.min.y;
+      m.userData.elev = Math.max(0, elev || 0);
+      m.position.set(x || 0, m.userData.pose + m.userData.elev, z || 0);
       m.castShadow = true; m.receiveShadow = true;
       m.userData.kit = kit.id;
       scene.add(m);
       var p = { mesh:m, kit:kit.id, id:'p' + Date.now() + Math.floor(Math.random()*1000) };
       pieces.push(p);
       return p;
+    }
+
+    /** Monte ou descend la pièce sélectionnée d'un cran. */
+    function elever(sens){
+      if (!selection) return false;
+      var m = selection.mesh;
+      m.userData.elev = Math.max(0, Math.min(3, m.userData.elev + sens * PAS_ELEVATION));
+      m.position.y = m.userData.pose + m.userData.elev;
+      return true;
     }
 
     function surbrillance(){
@@ -589,7 +659,10 @@ var SCENE3D = (function(){
 
     return {
       actif:true,
-      ajouter:function(kit, x, z, rot){ var p = ajouterPiece(kit, x, z, rot); surbrillance(); return p; },
+      ajouter:function(kit, x, z, rot, elev){
+        var p = ajouterPiece(kit, x, z, rot, elev); surbrillance(); return p;
+      },
+      elever:elever,
       retirer:function(id){
         for (var i=0;i<pieces.length;i++){
           if (pieces[i].id === id){
@@ -621,6 +694,7 @@ var SCENE3D = (function(){
           return { id:p.id, kit:p.kit,
                    x:+p.mesh.position.x.toFixed(2),
                    z:+p.mesh.position.z.toFixed(2),
+                   elev:+(p.mesh.userData.elev || 0).toFixed(2),
                    rot:+p.mesh.rotation.y.toFixed(3) };
         });
       },
