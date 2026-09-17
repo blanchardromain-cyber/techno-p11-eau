@@ -138,11 +138,36 @@ colonnes J à M**, juste après l'identité, sans avoir à faire défiler.
 Les quatre premières colonnes et la ligne d'en-têtes sont figées : le nom de
 l'équipe reste visible quand on fait défiler vers la droite.
 
-**Changer l'ordre des colonnes plus tard ?** Le script s'en charge : s'il
-constate que la ligne d'en-têtes ne correspond plus à `COLONNES`, il relit les
-données existantes **par nom de colonne** et les réécrit dans le nouvel ordre.
-Rien n'est perdu, rien ne se décale. Il faut simplement redéployer le script
-pour que le changement prenne effet.
+### Réorganiser les colonnes
+
+Le script s'en charge : s'il constate que la ligne d'en-têtes ne correspond plus
+à `COLONNES`, il relit les données existantes **par nom de colonne** et les
+réécrit dans le nouvel ordre. Rien n'est perdu, rien ne se décale.
+
+⚠️ **Le passage ne se fait pas au moment du déploiement**, mais au premier appel
+du script qui suit. Tant qu'aucun élève n'a rien envoyé, la feuille garde son
+ancien ordre — et on peut croire à tort que le déploiement a échoué.
+
+Pour l'appliquer tout de suite :
+
+1. coller le nouveau `Code.gs` dans *Extensions → Apps Script*, **Enregistrer** ;
+2. **recharger la page du classeur** : un menu **P11** apparaît dans la barre ;
+3. **P11 → Réorganiser les colonnes**. Une fenêtre confirme l'ordre appliqué et
+   le nombre de lignes conservées.
+
+Autoriser le script la première fois que le menu est utilisé.
+
+**Enregistrer suffit-il, ou faut-il redéployer ?** Les deux, mais pas pour la
+même chose :
+
+| Action | Ce qu'elle met à jour |
+|---|---|
+| **Enregistrer** dans l'éditeur | ce qui s'exécute depuis l'éditeur et depuis le menu P11 — donc la réorganisation |
+| **Redéployer** (nouvelle version) | l'adresse en `/exec` appelée par la page des élèves — donc les envois |
+
+Autrement dit : enregistrer suffit pour réorganiser la feuille à la main,
+mais il faut redéployer pour que les envois des élèves suivent le nouveau
+format. Autant faire les deux dans la foulée.
 
 **À propos de `m1_reperes` :** les numéros suivent l'ordre dans lequel chaque
 élève a tracé sa pieuvre. Deux élèves justes n'ont donc pas la même suite —
