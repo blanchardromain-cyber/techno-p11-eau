@@ -461,11 +461,6 @@ var M1 = (function(){
       var f = fonctionParId(id);
       return '' +
         '<tr data-f="' + id + '">' +
-          '<td><select class="a-type" aria-label="Type de la fonction : ' + P11.esc(f.texte) + '">' +
-            '<option value="">—</option>' +
-            '<option value="FP">FP</option>' +
-            '<option value="FC">FC</option>' +
-          '</select></td>' +
           '<td><select class="a-rep" aria-label="Repère de la fonction : ' + P11.esc(f.texte) + '"></select></td>' +
           '<td class="fn">' + P11.esc(f.texte) + '</td>' +
           '<td class="stat a-fb"></td>' +
@@ -474,22 +469,16 @@ var M1 = (function(){
 
     corps.querySelectorAll('tr').forEach(function(tr){
       var id = tr.dataset.f;
-      function noter(){
-        var t = tr.querySelector('.a-type').value;
+      tr.querySelector('.a-rep').addEventListener('change', function(){
         var r = tr.querySelector('.a-rep').value;
-        if (t) P11.state.m1.typage[id] = t; else delete P11.state.m1.typage[id];
         if (r) P11.state.m1.repere[id] = r; else delete P11.state.m1.repere[id];
         P11.sauver();
         P11.majEnTete();
-        majChoixReperes();
         rafraichirAnalyse();
-      }
-      tr.querySelector('.a-type').addEventListener('change', noter);
-      tr.querySelector('.a-rep').addEventListener('change', noter);
+      });
     });
 
     document.getElementById('m1-rendre').addEventListener('click', function(){
-      P11.state.m1.typage = {};
       P11.state.m1.repere = {};
       P11.state.m1.valide = false;
       refletTypage();
@@ -506,34 +495,37 @@ var M1 = (function(){
   }
 
   /**
-   * Remplit la liste des repères de chaque ligne avec les traits réellement
-   * présents sur la pieuvre, filtrés par le type choisi sur cette ligne.
+   * Remplit chaque liste avec les repères réellement tracés sur la pieuvre.
    *
-   * C'est ici que se fait la liaison demandée entre les deux étapes : l'élève
-   * ne saisit pas un numéro dans le vide, il désigne un trait qu'il a tracé.
-   * Tant qu'il n'a rien tracé, la liste le lui dit.
+   * Les options ne portent QUE le repère — FP1, FC1, FC2… — et non l'élément
+   * auquel le trait aboutit. C'est volontaire : si la liste disait
+   * « FC2 — le milieu humide », elle donnerait la réponse. L'élève doit
+   * regarder son schéma pour savoir quel trait porte quel numéro. C'est là
+   * qu'il relie le dessin à l'énoncé, et c'est tout l'intérêt de l'exercice.
    */
   function majChoixReperes(){
+    var liens = P11.state.m1.liens;
+    // Les fonctions principales d'abord, puis les contraintes : l'élève
+    // retrouve l'ordre qu'il lit sur le mémo.
+    var ordonnes = liensDeType('FP').concat(liensDeType('FC'));
+
     document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
       var id = tr.dataset.f;
-      var type = tr.querySelector('.a-type').value;
       var sel = tr.querySelector('.a-rep');
       var choisi = P11.state.m1.repere[id] || '';
 
-      var dispo = type ? liensDeType(type) : P11.state.m1.liens;
-      if (!P11.state.m1.liens.length){
+      if (!liens.length){
         sel.innerHTML = '<option value="">trace la pieuvre</option>';
         sel.disabled = true;
         return;
       }
       sel.disabled = false;
       sel.innerHTML = '<option value="">—</option>' +
-        dispo.map(function(l){
-          return '<option value="' + P11.esc(l.lid) + '">' + P11.esc(libelleLien(l)) + '</option>';
+        ordonnes.map(function(l){
+          return '<option value="' + P11.esc(l.lid) + '">' + repereDuLien(l) + '</option>';
         }).join('');
-      // Le trait retenu peut ne plus figurer dans la liste si l'élève a changé
-      // le type de la ligne : on efface alors le choix devenu incohérent.
       sel.value = choisi;
+      // Le trait retenu a pu être effacé du schéma entre-temps.
       if (choisi && sel.value !== choisi) delete P11.state.m1.repere[id];
     });
   }
@@ -543,11 +535,13 @@ var M1 = (function(){
    * Séparé de l'affichage : la même fonction sert au retour en direct, à la
    * note de la mission et au dossier final.
    *
-   * Barème d'une ligne, sur 2 points : le TYPE vaut 1,5 — c'est la notion de
-   * la séance — et le REPÈRE 0,5. Ce demi-point ne récompense pas un numéro
-   * recopié : il vérifie que l'élève désigne bien le trait qui correspond à
-   * cette fonction, c'est-à-dire qu'il fait le lien entre son schéma et
-   * l'énoncé.
+   * Barème d'une ligne, sur 2 points, lus dans le SEUL repère choisi :
+   *   · 1 point si le type est le bon — FP là où il faut une FP ;
+   *   · 1 point de plus si le trait désigné aboutit au bon élément du milieu.
+   *
+   * Les deux moitiés sont égales parce qu'un seul choix les porte désormais :
+   * se tromper de type et se tromper d'élément sont deux erreurs de même
+   * poids, là où le type valait davantage quand il se choisissait à part.
    */
   function evaluerAnalyse(){
     var st = P11.state.m1;
@@ -560,40 +554,41 @@ var M1 = (function(){
     });
 
     return P11DATA.FONCTIONS.map(function(f){
-      var type = st.typage[f.id] || '';
       var lien = lienParId(st.repere[f.id]);
       var rep  = repereDuLien(lien);
+      var type = lien ? lien.type : '';
       var typeOk = type === f.type;
       var res = { f:f, type:type, lien:lien, rep:rep, typeOk:typeOk, repOk:false, pts:0, motif:'' };
 
-      if (!type && !lien){ res.motif = "Ligne non renseignée."; return res; }
+      if (!lien){ res.motif = "Ligne non renseignée."; return res; }
+
       if (!typeOk){
-        res.motif = type
-          ? "Type incorrect. Compte les éléments du milieu extérieur reliés par cette fonction."
-          : "Choisis d'abord le type.";
+        res.motif = "Mauvais type : " + rep + " est une fonction " +
+                    (type === 'FP' ? "principale" : "contrainte") +
+                    ", or cette fonction en relie " +
+                    (f.type === 'FP' ? "DEUX éléments du milieu extérieur." : "UN SEUL.");
         return res;
       }
-      res.pts = 1.5;
+      res.pts = 1;
 
-      if (!lien){ res.motif = "Type correct. Indique maintenant quel trait de ta pieuvre correspond."; return res; }
       if (comptes[st.repere[f.id]] > 1){
         res.motif = "Le repère " + rep + " est attribué à deux fonctions : un trait ne correspond qu'à une seule.";
         return res;
       }
 
-      // Le trait désigné relie-t-il bien le ou les bons éléments ?
+      // Le trait désigné aboutit-il au bon élément du milieu extérieur ?
       var bon = (f.type === 'FP')
         ? (f.via.indexOf(lien.de) !== -1 && f.via.indexOf(lien.a) !== -1)
         : (lien.de === f.via[0]);
       if (!bon){
-        res.motif = "Ce n'est pas le bon trait : " + rep + " relie " +
+        res.motif = "Bon type, mais pas le bon trait : sur ta pieuvre, " + rep + " relie " +
                     (lien.type === 'FP' ? nomEME(lien.de) + " et " + nomEME(lien.a) : nomEME(lien.de)) +
-                    ", ce qui ne correspond pas à cette fonction.";
+                    ".";
         return res;
       }
       res.repOk = true;
       res.pts = 2;
-      res.motif = "Type et repère corrects.";
+      res.motif = "Repère correct.";
       return res;
     });
   }
@@ -620,16 +615,15 @@ var M1 = (function(){
       tr.title = r.motif;
     });
 
-    var remplies = res.filter(function(r){ return r.type; }).length;
+    var remplies = res.filter(function(r){ return r.lien; }).length;
     var justes = res.filter(function(r){ return r.pts === 2; }).length;
-    var sansPieuvre = !P11.state.m1.liens.length;
 
-    document.getElementById('m1-tri-aide').innerHTML = sansPieuvre
-      ? "Trace d'abord ta pieuvre à l'étape 2 : les repères du tableau viennent de tes traits."
+    document.getElementById('m1-tri-aide').innerHTML = !P11.state.m1.liens.length
+      ? "Trace d'abord ta pieuvre à l'étape 2 : les repères proposés ici viennent de tes traits."
       : !st.valide
         ? (remplies === P11DATA.FONCTIONS.length
             ? "Les six lignes sont renseignées. Clique sur <b>Valider le tableau</b> pour voir tes erreurs."
-            : "Pour chaque fonction, choisis son type puis le trait de ta pieuvre qui lui correspond. " +
+            : "Pour chaque fonction, choisis le repère du trait qui lui correspond sur ta pieuvre. " +
               "Restant : <b>" + (P11DATA.FONCTIONS.length - remplies) + "</b>.")
         : (justes === P11DATA.FONCTIONS.length
             ? "<b>Les six lignes sont justes.</b> Tu peux passer à la vérification de la mission."
@@ -639,11 +633,6 @@ var M1 = (function(){
 
   /** Réaffiche les choix enregistrés dans les listes déroulantes. */
   function refletTypage(){
-    var st = P11.state.m1;
-    document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
-      var id = tr.dataset.f;
-      tr.querySelector('.a-type').value = st.typage[id] || '';
-    });
     majChoixReperes();
     rafraichirAnalyse();
   }
@@ -710,25 +699,25 @@ var M1 = (function(){
     var ptsType = analyse.reduce(function(s, r){ return s + r.pts; }, 0);
     rafraichirAnalyse();
 
-    var nonRemplies = analyse.filter(function(r){ return !r.type; }).length;
+    var nonRemplies = analyse.filter(function(r){ return !r.lien; }).length;
     var texteType = nonRemplies
       ? '<p style="margin:0 0 8px">' + nonRemplies + ' ligne' + (nonRemplies>1?'s ne sont':' n\'est') +
         ' pas renseignée' + (nonRemplies>1?'s':'') + '.</p>'
       : '';
     texteType += '<ul>' + analyse.map(function(r){
-        var icone = r.pts === 2 ? '✔' : (r.pts > 0 ? '≈' : (r.type ? '✘' : '·'));
+        var icone = r.pts === 2 ? '✔' : (r.pts > 0 ? '≈' : (r.lien ? '✘' : '·'));
         var ligne = '<li>' + icone + ' ' + P11.esc(r.f.texte);
-        if (r.type){
+        if (r.lien){
           ligne += ' <span class="pill ' + (r.pts === 2 ? 'ok' : (r.pts > 0 ? 'partial' : 'ko')) + '">' +
-                   P11.esc(r.rep || r.type) + '</span>';
+                   P11.esc(r.rep) + '</span>';
         }
         // Le « pourquoi » complet est donné dès le premier essai quand la
         // réponse est juste — on consolide — et seulement au second quand elle
         // est fausse, pour laisser d'abord l'élève chercher.
-        if (r.typeOk)          ligne += '<br><span class="why">' + P11.esc(r.f.pourquoi) + '</span>';
-        else if (montrer)      ligne += '<br><span class="why">Attendu : <b>' + r.f.rep + '</b>. ' +
-                                        P11.esc(r.f.pourquoi) + '</span>';
-        else if (r.motif)      ligne += '<br><span class="why">' + P11.esc(r.motif) + '</span>';
+        if (r.pts === 2)  ligne += '<br><span class="why">' + P11.esc(r.f.pourquoi) + '</span>';
+        else if (montrer) ligne += '<br><span class="why">' + P11.esc(r.motif) + ' ' +
+                                   P11.esc(r.f.pourquoi) + '</span>';
+        else if (r.motif) ligne += '<br><span class="why">' + P11.esc(r.motif) + '</span>';
         return ligne + '</li>';
       }).join('') + '</ul>';
 
