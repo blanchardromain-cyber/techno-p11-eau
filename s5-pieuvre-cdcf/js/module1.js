@@ -179,9 +179,10 @@ var M1 = (function(){
 
     if (modeTrace === 'FC'){
       if (dejaRelie(id, 'FC')){ dire("Cet élément est déjà relié par une fonction contrainte."); return; }
-      st.liens.push({ de:id, a:'objet', type:'FC' });
+      st.liens.push({ lid:nouvelId(), de:id, a:'objet', type:'FC' });
       finTrace();
-      dire("Fonction contrainte tracée : l'objet doit s'adapter à cet élément. Tu peux en tracer une autre.");
+      dire("Fonction contrainte tracée : elle prend le repère " + repereDuLien(st.liens[st.liens.length-1]) +
+           ". Tu peux en tracer une autre.");
       return;
     }
 
@@ -199,9 +200,11 @@ var M1 = (function(){
       dire("Une de ces deux extrémités est déjà utilisée par une fonction principale.");
       enAttente = []; majSelection(); return;
     }
-    st.liens.push({ de:a, a:b, type:'FP' });
+    st.liens.push({ lid:nouvelId(), de:a, a:b, type:'FP' });
     finTrace();
-    dire("Fonction principale tracée : le trait traverse l'objet et relie deux éléments du milieu extérieur.");
+    dire("Fonction principale tracée : elle prend le repère " +
+         repereDuLien(st.liens[st.liens.length-1]) +
+         " et son trait traverse l'objet pour relier deux éléments du milieu extérieur.");
   }
 
   function dejaRelie(id, type){
@@ -210,9 +213,55 @@ var M1 = (function(){
     });
   }
 
+  /* ------------------------ Numérotation des traits ----------------------
+     Chaque trait reçoit son repère au moment où il est tracé : FP1, FC1,
+     FC2… dans l'ordre de tracé. Le numéro n'est pas stocké, il se déduit du
+     rang du trait parmi ceux de son type — ainsi, quand l'élève annule un
+     trait du milieu, les suivants se renumérotent d'eux-mêmes et la pieuvre
+     ne garde pas de trou.
+
+     Le tableau d'analyse, lui, retient l'IDENTIFIANT du trait et non son
+     numéro : une renumérotation ne casse donc jamais les réponses déjà
+     données. C'est la seule raison d'être de `lid`.
+     -------------------------------------------------------------------- */
+  var compteurId = 0;
+  function nouvelId(){ return 'l' + (++compteurId) + '-' + Date.now(); }
+
+  /** Les traits d'un type, dans l'ordre de tracé. */
+  function liensDeType(type){
+    return P11.state.m1.liens.filter(function(l){ return l.type === type; });
+  }
+
+  /** Repère affiché d'un trait : son type suivi de son rang. */
+  function repereDuLien(lien){
+    if (!lien) return '';
+    var memeType = liensDeType(lien.type);
+    for (var i=0;i<memeType.length;i++){
+      if (memeType[i] === lien) return lien.type + (i+1);
+    }
+    return lien.type;
+  }
+
+  function lienParId(lid){
+    var l = P11.state.m1.liens;
+    for (var i=0;i<l.length;i++){ if (l[i].lid === lid) return l[i]; }
+    return null;
+  }
+
+  /** Libellé d'un trait dans les listes déroulantes : « FC2 — le milieu humide ». */
+  function libelleLien(lien){
+    var rep = repereDuLien(lien);
+    return lien.type === 'FP'
+      ? rep + ' — ' + nomEME(lien.de) + ' ↔ ' + nomEME(lien.a)
+      : rep + ' — ' + nomEME(lien.de);
+  }
+
   function finTrace(){
     enAttente = [];
     majSelection();
+    // Les repères du tableau d'analyse viennent des traits : ils suivent.
+    majChoixReperes();
+    rafraichirAnalyse();
     dessinerLiens();
     majCompteurs();
     P11.sauver();
@@ -330,9 +379,11 @@ var M1 = (function(){
         path.style.animationDelay = (idx * 0.09) + 's';
       } catch(e){ path.classList.remove('draw'); }
 
+      // L'étiquette porte le repère complet, pas seulement le type : c'est ce
+      // repère que l'élève retrouvera dans le tableau d'analyse.
       var tag = document.createElement('span');
       tag.className = 'link-tag ' + l.type.toLowerCase();
-      tag.textContent = l.type;
+      tag.textContent = repereDuLien(l);
       tag.style.left = milieu.x + 'px';
       tag.style.top  = milieu.y + 'px';
       stage.appendChild(tag);
@@ -397,11 +448,9 @@ var M1 = (function(){
     }
     return null;
   }
-
-  /** Repère composé à partir des deux choix de l'élève : « FC » + « 2 » → FC2. */
+  /** Repère affiché pour une ligne du tableau : celui du trait choisi. */
   function repereDe(id){
-    var t = P11.state.m1.typage[id], n = P11.state.m1.numeros[id];
-    return (t && n) ? (t + n) : '';
+    return repereDuLien(lienParId(P11.state.m1.repere[id]));
   }
 
   function construireAnalyse(){
@@ -417,13 +466,7 @@ var M1 = (function(){
             '<option value="FP">FP</option>' +
             '<option value="FC">FC</option>' +
           '</select></td>' +
-          '<td><select class="a-num" aria-label="Numéro de la fonction : ' + P11.esc(f.texte) + '">' +
-            '<option value="">—</option>' +
-            [1,2,3,4,5,6].map(function(n){
-              return '<option value="' + n + '">' + n + '</option>';
-            }).join('') +
-          '</select></td>' +
-          '<td class="a-rep"><span class="pill todo">—</span></td>' +
+          '<td><select class="a-rep" aria-label="Repère de la fonction : ' + P11.esc(f.texte) + '"></select></td>' +
           '<td class="fn">' + P11.esc(f.texte) + '</td>' +
           '<td class="stat a-fb"></td>' +
         '</tr>';
@@ -433,20 +476,21 @@ var M1 = (function(){
       var id = tr.dataset.f;
       function noter(){
         var t = tr.querySelector('.a-type').value;
-        var n = tr.querySelector('.a-num').value;
+        var r = tr.querySelector('.a-rep').value;
         if (t) P11.state.m1.typage[id] = t; else delete P11.state.m1.typage[id];
-        if (n) P11.state.m1.numeros[id] = n; else delete P11.state.m1.numeros[id];
+        if (r) P11.state.m1.repere[id] = r; else delete P11.state.m1.repere[id];
         P11.sauver();
         P11.majEnTete();
+        majChoixReperes();
         rafraichirAnalyse();
       }
       tr.querySelector('.a-type').addEventListener('change', noter);
-      tr.querySelector('.a-num').addEventListener('change', noter);
+      tr.querySelector('.a-rep').addEventListener('change', noter);
     });
 
     document.getElementById('m1-rendre').addEventListener('click', function(){
       P11.state.m1.typage = {};
-      P11.state.m1.numeros = {};
+      P11.state.m1.repere = {};
       P11.state.m1.valide = false;
       refletTypage();
       P11.sauver();
@@ -457,6 +501,41 @@ var M1 = (function(){
       rafraichirAnalyse();
       P11.sauver();
     });
+
+    majChoixReperes();
+  }
+
+  /**
+   * Remplit la liste des repères de chaque ligne avec les traits réellement
+   * présents sur la pieuvre, filtrés par le type choisi sur cette ligne.
+   *
+   * C'est ici que se fait la liaison demandée entre les deux étapes : l'élève
+   * ne saisit pas un numéro dans le vide, il désigne un trait qu'il a tracé.
+   * Tant qu'il n'a rien tracé, la liste le lui dit.
+   */
+  function majChoixReperes(){
+    document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
+      var id = tr.dataset.f;
+      var type = tr.querySelector('.a-type').value;
+      var sel = tr.querySelector('.a-rep');
+      var choisi = P11.state.m1.repere[id] || '';
+
+      var dispo = type ? liensDeType(type) : P11.state.m1.liens;
+      if (!P11.state.m1.liens.length){
+        sel.innerHTML = '<option value="">trace la pieuvre</option>';
+        sel.disabled = true;
+        return;
+      }
+      sel.disabled = false;
+      sel.innerHTML = '<option value="">—</option>' +
+        dispo.map(function(l){
+          return '<option value="' + P11.esc(l.lid) + '">' + P11.esc(libelleLien(l)) + '</option>';
+        }).join('');
+      // Le trait retenu peut ne plus figurer dans la liste si l'élève a changé
+      // le type de la ligne : on efface alors le choix devenu incohérent.
+      sel.value = choisi;
+      if (choisi && sel.value !== choisi) delete P11.state.m1.repere[id];
+    });
   }
 
   /**
@@ -465,27 +544,29 @@ var M1 = (function(){
    * note de la mission et au dossier final.
    *
    * Barème d'une ligne, sur 2 points : le TYPE vaut 1,5 — c'est la notion de
-   * la séance — et le REPÈRE 0,5, qui récompense la rigueur sans écraser le
-   * reste si l'élève se trompe de numéro.
+   * la séance — et le REPÈRE 0,5. Ce demi-point ne récompense pas un numéro
+   * recopié : il vérifie que l'élève désigne bien le trait qui correspond à
+   * cette fonction, c'est-à-dire qu'il fait le lien entre son schéma et
+   * l'énoncé.
    */
   function evaluerAnalyse(){
     var st = P11.state.m1;
-    // Un même repère porté par deux fonctions ne désigne plus rien : on
-    // repère les doublons avant de juger les lignes.
+
+    // Un même trait attribué à deux fonctions ne désigne plus rien.
     var comptes = {};
     P11DATA.FONCTIONS.forEach(function(f){
-      var r = repereDe(f.id);
+      var r = st.repere[f.id];
       if (r) comptes[r] = (comptes[r] || 0) + 1;
     });
 
     return P11DATA.FONCTIONS.map(function(f){
       var type = st.typage[f.id] || '';
-      var num  = st.numeros[f.id] || '';
-      var rep  = repereDe(f.id);
+      var lien = lienParId(st.repere[f.id]);
+      var rep  = repereDuLien(lien);
       var typeOk = type === f.type;
-      var res = { f:f, type:type, num:num, rep:rep, typeOk:typeOk, repOk:false, pts:0, motif:'' };
+      var res = { f:f, type:type, lien:lien, rep:rep, typeOk:typeOk, repOk:false, pts:0, motif:'' };
 
-      if (!type && !num){ res.motif = "Ligne non renseignée."; return res; }
+      if (!type && !lien){ res.motif = "Ligne non renseignée."; return res; }
       if (!typeOk){
         res.motif = type
           ? "Type incorrect. Compte les éléments du milieu extérieur reliés par cette fonction."
@@ -494,13 +575,20 @@ var M1 = (function(){
       }
       res.pts = 1.5;
 
-      if (!num){ res.motif = "Type correct. Il manque le numéro."; return res; }
-      if (comptes[rep] > 1){
-        res.motif = "Le repère " + rep + " est utilisé deux fois : un repère doit désigner une seule fonction.";
+      if (!lien){ res.motif = "Type correct. Indique maintenant quel trait de ta pieuvre correspond."; return res; }
+      if (comptes[st.repere[f.id]] > 1){
+        res.motif = "Le repère " + rep + " est attribué à deux fonctions : un trait ne correspond qu'à une seule.";
         return res;
       }
-      if (f.type === 'FP' && num !== '1'){
-        res.motif = "L'objet n'a qu'une seule fonction principale : elle porte le repère FP1.";
+
+      // Le trait désigné relie-t-il bien le ou les bons éléments ?
+      var bon = (f.type === 'FP')
+        ? (f.via.indexOf(lien.de) !== -1 && f.via.indexOf(lien.a) !== -1)
+        : (lien.de === f.via[0]);
+      if (!bon){
+        res.motif = "Ce n'est pas le bon trait : " + rep + " relie " +
+                    (lien.type === 'FP' ? nomEME(lien.de) + " et " + nomEME(lien.a) : nomEME(lien.de)) +
+                    ", ce qui ne correspond pas à cette fonction.";
         return res;
       }
       res.repOk = true;
@@ -510,7 +598,7 @@ var M1 = (function(){
     });
   }
 
-  /** Met à jour les pastilles de repère et la colonne de retour. */
+  /** Met à jour la colonne de retour du tableau. */
   function rafraichirAnalyse(){
     var st = P11.state.m1;
     var res = evaluerAnalyse();
@@ -520,10 +608,6 @@ var M1 = (function(){
     document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
       var r = parId[tr.dataset.f];
       if (!r) return;
-      var cellRep = tr.querySelector('.a-rep');
-      cellRep.innerHTML = r.rep
-        ? '<span class="pill ' + (r.type === 'FP' ? 'fp' : 'fc') + '">' + r.rep + '</span>'
-        : '<span class="pill todo">—</span>';
 
       // Le retour ne s'affiche qu'après la première validation : avant, l'élève
       // essaierait les combinaisons jusqu'à voir un ✓ sans jamais réfléchir.
@@ -538,15 +622,19 @@ var M1 = (function(){
 
     var remplies = res.filter(function(r){ return r.type; }).length;
     var justes = res.filter(function(r){ return r.pts === 2; }).length;
-    document.getElementById('m1-tri-aide').innerHTML = !st.valide
-      ? (remplies === P11DATA.FONCTIONS.length
-          ? "Les six lignes sont renseignées. Clique sur <b>Valider le tableau</b> pour voir tes erreurs."
-          : "Renseigne le type et le numéro de chaque fonction. Restant : <b>" +
-            (P11DATA.FONCTIONS.length - remplies) + "</b>.")
-      : (justes === P11DATA.FONCTIONS.length
-          ? "<b>Les six lignes sont justes.</b> Tu peux passer à la vérification de la mission."
-          : "<b>" + justes + " / " + P11DATA.FONCTIONS.length + "</b> lignes justes. " +
-            "Survole une ligne pour lire la remarque, corrige, le retour se met à jour aussitôt.");
+    var sansPieuvre = !P11.state.m1.liens.length;
+
+    document.getElementById('m1-tri-aide').innerHTML = sansPieuvre
+      ? "Trace d'abord ta pieuvre à l'étape 2 : les repères du tableau viennent de tes traits."
+      : !st.valide
+        ? (remplies === P11DATA.FONCTIONS.length
+            ? "Les six lignes sont renseignées. Clique sur <b>Valider le tableau</b> pour voir tes erreurs."
+            : "Pour chaque fonction, choisis son type puis le trait de ta pieuvre qui lui correspond. " +
+              "Restant : <b>" + (P11DATA.FONCTIONS.length - remplies) + "</b>.")
+        : (justes === P11DATA.FONCTIONS.length
+            ? "<b>Les six lignes sont justes.</b> Tu peux passer à la vérification de la mission."
+            : "<b>" + justes + " / " + P11DATA.FONCTIONS.length + "</b> lignes justes. " +
+              "Survole une ligne pour lire la remarque, corrige, le retour se met à jour aussitôt.");
   }
 
   /** Réaffiche les choix enregistrés dans les listes déroulantes. */
@@ -555,8 +643,8 @@ var M1 = (function(){
     document.querySelectorAll('#m1-analyse tr').forEach(function(tr){
       var id = tr.dataset.f;
       tr.querySelector('.a-type').value = st.typage[id] || '';
-      tr.querySelector('.a-num').value  = st.numeros[id] || '';
     });
+    majChoixReperes();
     rafraichirAnalyse();
   }
 
@@ -674,14 +762,40 @@ var M1 = (function(){
     P11.majEnTete();
   }
 
+  /**
+   * Corrigé de la pieuvre, exprimé AVEC LES REPÈRES DE L'ÉLÈVE.
+   *
+   * Les traits sont numérotés dans l'ordre où ils ont été tracés : deux élèves
+   * n'ont donc pas la même numérotation, et un corrigé qui imposerait la
+   * sienne serait illisible pour l'un comme pour l'autre. On cherche donc, pour
+   * chaque fonction, le trait que CET élève a tracé vers le bon élément, et
+   * c'est ce repère qui est affiché. Si le trait manque, on le dit.
+   */
   function corrigeHTML(){
-    var h = '<p style="margin:0 0 8px"><b>La pieuvre du robinet automatique</b></p><ul>';
-    h += '<li><b>FP1</b> (fonction principale) : <i>utilisateur ↔ eau</i> — permettre à l\'utilisateur de se laver les mains avec de l\'eau.</li>';
-    P11DATA.FONCTIONS.filter(function(f){ return f.type==='FC'; }).forEach(function(f){
-      h += '<li><b>' + f.rep + '</b> : objet ↔ <i>' + nomEME(f.via[0]) + '</i> — ' + P11.esc(f.texte.toLowerCase()) + '.</li>';
+    function traitVers(f){
+      var liens = P11.state.m1.liens;
+      for (var i=0;i<liens.length;i++){
+        var l = liens[i];
+        if (f.type === 'FP'){
+          if (l.type === 'FP' && f.via.indexOf(l.de) !== -1 && f.via.indexOf(l.a) !== -1) return l;
+        } else if (l.type === 'FC' && l.de === f.via[0]) return l;
+      }
+      return null;
+    }
+
+    var h = '<p style="margin:0 0 8px"><b>La pieuvre du robinet automatique</b>, ' +
+            'avec les repères de ton propre tracé :</p><ul>';
+    P11DATA.FONCTIONS.forEach(function(f){
+      var l = traitVers(f);
+      var rep = l ? '<b>' + repereDuLien(l) + '</b>' : '<em>trait non tracé</em>';
+      var lien = f.type === 'FP'
+        ? '<i>' + nomEME(f.via[0]) + ' ↔ ' + nomEME(f.via[1]) + '</i>, à travers l\'objet'
+        : 'objet ↔ <i>' + nomEME(f.via[0]) + '</i>';
+      h += '<li>' + rep + ' (' + f.type + ') : ' + lien + ' — ' + P11.esc(f.texte.toLowerCase()) + '.</li>';
     });
-    h += '</ul><div class="corr">Le repère est toujours le même : <b>deux</b> éléments du milieu extérieur reliés ' +
-         'à travers l\'objet → fonction principale ; <b>un seul</b> élément relié à l\'objet → fonction contrainte.</div>';
+    h += '</ul><div class="corr">Le critère de décision est toujours le même : <b>deux</b> éléments du ' +
+         'milieu extérieur reliés à travers l\'objet → fonction principale ; <b>un seul</b> élément relié ' +
+         'à l\'objet → fonction contrainte. Les numéros, eux, suivent simplement l\'ordre de ton tracé.</div>';
     return h;
   }
 
