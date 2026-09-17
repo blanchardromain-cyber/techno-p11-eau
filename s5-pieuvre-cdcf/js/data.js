@@ -107,6 +107,27 @@ var P11DATA = (function(){
     emoji:'🚰',
     resume:"L'objet technique étudié depuis la séance 3. Reprends-le pour consolider.",
     contexte:"Le collège remplace les robinets des sanitaires par des robinets à détection, pour arrêter le gaspillage aux récréations.",
+
+    demande:{
+      de:"Intendance du collège Saint Pierre",
+      titre:"Remplacement des robinets des sanitaires",
+      corps:[
+        "Nous souhaitons équiper les lavabos des sanitaires du rez-de-chaussée de robinets à détection. Les robinets actuels restent régulièrement ouverts après le passage des élèves, et la consommation d'eau aux récréations est devenue le premier poste de gaspillage du bâtiment.",
+        "Le robinet devra délivrer de l'eau dès qu'un élève présente ses mains sous le bec, et s'arrêter seul. Le débit sera celui d'un robinet de lavabo courant, de l'ordre de cinq litres par minute : en dessous, les élèves n'arrivent pas à se rincer et laissent couler plus longtemps.",
+        "Le capteur devra détecter les mains à une dizaine de centimètres du bec. Réglé plus court, l'élève ne déclenche rien et s'énerve ; réglé plus long, le robinet coule au passage de chacun devant le lavabo.",
+        "L'appareil sera installé dans un local humide, nettoyé à grande eau chaque soir. Son boîtier électronique devra donc être totalement étanche aux poussières et résister aux jets d'eau : nous exigeons un indice de protection IP65.",
+        "Enfin, chaque lavage ne devra pas consommer plus d'un demi-litre d'eau, contre environ deux litres aujourd'hui. C'est cette exigence qui justifie l'investissement.",
+        "Le matériel sera garanti cinq ans pièces et main-d'œuvre."
+      ]
+    },
+    modele:{
+      phrase:"Le matériel sera garanti cinq ans pièces et main-d'œuvre.",
+      fonction:"Être garanti par le fabricant",
+      critere:"La durée de garantie",
+      niveau:"5",
+      unite:"ans",
+      pourquoi:"Le texte ne dit pas « longtemps » mais « cinq ans » : c'est une durée, elle se mesure en années. Critère et niveau se lisent dans la même phrase."
+    },
     lignes:[
       { rep:'FP1',
         fonction:"Distribuer de l'eau pour se laver les mains",
@@ -166,6 +187,27 @@ var P11DATA = (function(){
     emoji:'🛢️',
     resume:"Une cuve raccordée à la gouttière du collège pour arroser le potager sans eau potable.",
     contexte:"Le collège arrose son potager pédagogique avec l'eau du robinet. Le conseil de vie collégienne propose d'installer une cuve de récupération sous la gouttière du préau.",
+
+    demande:{
+      de:"Conseil de vie collégienne",
+      titre:"Installation d'un récupérateur d'eau de pluie sous le préau",
+      corps:[
+        "Le potager pédagogique est arrosé à l'eau potable toute l'année, alors que le toit du préau reçoit chaque hiver de quoi couvrir largement nos besoins. Nous demandons l'installation d'une cuve de récupération raccordée à la descente de gouttière.",
+        "La cuve devra contenir au moins cinq cents litres. C'est ce qu'il faut pour tenir une quinzaine de jours d'arrosage en été sans repasser au robinet.",
+        "L'eau qui descend du toit emporte des feuilles et des aiguilles de pin. Un filtre devra les arrêter avant la cuve, avec des mailles d'un millimètre au maximum : au-delà, les aiguilles passent et la cuve s'encrasse en une saison.",
+        "La cuve restera dehors toute l'année. Elle devra supporter sans se fissurer les gelées de l'hiver vendéen, jusqu'à moins dix degrés, comme la chaleur d'un plein soleil d'été, jusqu'à cinquante degrés.",
+        "Le raccordement se fera sur la descente existante du préau, qui mesure quatre-vingts millimètres de diamètre. Il n'est pas question de modifier la gouttière du bâtiment.",
+        "L'ensemble ne devra pas dépasser trois cents euros, budget voté par le conseil."
+      ]
+    },
+    modele:{
+      phrase:"L'ensemble ne devra pas dépasser trois cents euros, budget voté par le conseil.",
+      fonction:"Respecter le budget du conseil",
+      critere:"Le coût de l'installation",
+      niveau:"300",
+      unite:"€",
+      pourquoi:"« Ne devra pas dépasser » annonce un maximum : le niveau est une valeur plafond, pas une valeur exacte."
+    },
     lignes:[
       { rep:'FP1', fonction:"Permettre aux élèves d'arroser le potager avec l'eau de pluie",
         critere:['volume disponible','volume','capacite','reserve','quantite'],
@@ -208,6 +250,27 @@ var P11DATA = (function(){
     emoji:'🌱',
     resume:"Un réseau de tuyaux percés qui dose l'eau au pied de chaque plante du potager.",
     contexte:"Arrosé à l'arrosoir, le potager du collège reçoit trop d'eau d'un coup et rien pendant les vacances. Un arrosage goutte-à-goutte automatique apporterait juste ce qu'il faut.",
+
+    demande:{
+      de:"Club jardin du collège",
+      titre:"Arrosage automatique du potager pédagogique",
+      corps:[
+        "Nous arrosons le potager à l'arrosoir, deux fois par semaine. L'eau arrive d'un coup, ruisselle entre les planches, et pendant les vacances scolaires personne n'est là : chaque été, la moitié des plantations est perdue. Nous demandons un arrosage goutte-à-goutte automatique.",
+        "Chaque plante doit recevoir l'eau à son pied, goutte à goutte et non en jet. Un goutteur de maraîchage courant délivre entre deux et quatre litres par heure ; c'est cet ordre de grandeur qu'il nous faut, le sol ayant le temps d'absorber au fur et à mesure.",
+        "Le système devra se déclencher seul, deux fois par jour, pendant une vingtaine de minutes à chaque fois. Un arrosage tôt le matin limite l'évaporation : la même durée profite alors bien davantage aux racines.",
+        "Il n'y a aucune prise de courant au potager et nous ne souhaitons pas en faire tirer une. Le programmateur devra donc tenir seul au moins six mois, soit une saison de culture complète entre deux interventions.",
+        "Enfin, nous attendons de ce dispositif une économie d'eau d'au moins cinquante pour cent par rapport à l'arrosoir. C'est l'argument que nous porterons devant le conseil d'administration.",
+        "Le réseau devra desservir les quarante mètres de planches du potager."
+      ]
+    },
+    modele:{
+      phrase:"Le réseau devra desservir les quarante mètres de planches du potager.",
+      fonction:"Desservir toutes les planches du potager",
+      critere:"La longueur du réseau",
+      niveau:"40",
+      unite:"m",
+      pourquoi:"Attention à ne pas confondre la grandeur et l'objet : ce ne sont pas « les planches » que l'on mesure, c'est la longueur de tuyau nécessaire pour les atteindre."
+    },
     lignes:[
       { rep:'FP1', fonction:"Permettre au jardinier d'apporter l'eau au pied des plantes",
         critere:['debit par goutteur','debit','quantite par plante','apport'],
@@ -250,6 +313,27 @@ var P11DATA = (function(){
     emoji:'🏕️',
     resume:"Une unité transportable qui rend potable l'eau d'une rivière après une catastrophe.",
     contexte:"Après une inondation, l'eau du réseau n'est plus potable. Une ONG demande une station compacte capable d'alimenter un village de 300 personnes.",
+
+    demande:{
+      de:"Association Eau d'Urgence",
+      titre:"Station de potabilisation pour zone sinistrée",
+      corps:[
+        "Après une inondation, le réseau d'eau potable est coupé ou contaminé pendant plusieurs semaines. Nous cherchons une station capable de rendre potable l'eau d'une rivière voisine, pour un village d'environ trois cents habitants.",
+        "L'eau produite devra être sûre : la station devra éliminer les bactéries à hauteur de 99,99 pour cent. On ne parle pas ici d'une eau « presque propre » — en dessous de ce taux, le risque d'épidémie reste entier.",
+        "Les Nations unies retiennent quinze litres par personne et par jour comme minimum vital en situation d'urgence. Pour trois cents habitants et une dizaine d'heures de fonctionnement quotidien, il faudra donc produire au moins six cents litres par heure.",
+        "Les routes étant souvent coupées, la station devra être portée à deux personnes sur un chemin : nous fixons une masse maximale de vingt-cinq kilogrammes. Au-delà, il faut un véhicule, et le matériel n'arrive pas.",
+        "Le réseau électrique est lui aussi hors service. Alimentée par panneau solaire et batterie, la station devra fonctionner au moins huit heures par jour sans autre source d'énergie.",
+        "Deux techniciens devront pouvoir la monter sur place en moins d'un quart d'heure."
+      ]
+    },
+    modele:{
+      phrase:"Deux techniciens devront pouvoir la monter sur place en moins d'un quart d'heure.",
+      fonction:"Être montée rapidement sur le terrain",
+      critere:"Le temps de montage",
+      niveau:"15",
+      unite:"min",
+      pourquoi:"« Un quart d'heure » n'est pas un nombre : il faut le traduire. Un niveau s'écrit toujours en chiffres, avec son unité."
+    },
     lignes:[
       { rep:'FP1', fonction:"Permettre aux habitants de boire l'eau de la rivière sans risque",
         critere:['taux d elimination','elimination des bacteries','taux','efficacite','pourcentage de bacteries'],
