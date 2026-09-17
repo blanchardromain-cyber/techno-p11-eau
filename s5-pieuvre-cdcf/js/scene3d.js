@@ -540,44 +540,276 @@ var SCENE3D = (function(){
     var planSol = new THREE.Plane(new THREE.Vector3(0,1,0), 0);
     var pointSol = new THREE.Vector3();
 
-    /** Construit la géométrie d'une pièce du kit. */
-    function geometrie(kit){
-      var t = kit.taille;
-      switch (kit.forme){
-        case 'cylindre': return new THREE.CylinderGeometry(t[0], t[1], t[2], 28);
-        case 'tube':     return new THREE.CylinderGeometry(t[0], t[1], t[2], 18);
-        case 'cone':     return new THREE.ConeGeometry(t[0], t[1], 22);
-        case 'plaque':   return new THREE.BoxGeometry(t[0], t[1], t[2]);
-        default:         return new THREE.BoxGeometry(t[0], t[1], t[2]);
+    /* ====================== Les pièces du kit ============================
+       Chaque pièce est un ASSEMBLAGE de primitives, pas une primitive seule.
+       Un cylindre bleu ne dit rien à un élève ; une cuve avec ses nervures,
+       son couvercle et son robinet de puisage se reconnaît sans légende, et
+       c'est ce qui permet de lire une maquette d'un coup d'œil au moment de
+       la projeter.
+
+       Les modèles sont construits par le code plutôt que chargés depuis des
+       fichiers : rien à télécharger, donc rien que le filtre du réseau puisse
+       bloquer, et le dépôt reste léger. Les nombres de segments sont bas
+       (16 à 24) pour rester fluides sur les tablettes du collège.
+       ================================================================== */
+
+    // Matériaux communs. Les créer une fois évite d'en fabriquer un par pièce
+    // posée, ce qui finirait par peser sur des maquettes d'une dizaine d'objets.
+    var MAT = {
+      plastique: function(c){
+        return new THREE.MeshStandardMaterial({ color:c, roughness:0.55, metalness:0.05,
+                                                envMapIntensity:0.35 });
+      },
+      metal: function(c){
+        return new THREE.MeshStandardMaterial({ color:c || 0xb9c2cc, roughness:0.32,
+                                                metalness:0.85, envMapIntensity:0.8 });
+      },
+      verre: function(){
+        return new THREE.MeshStandardMaterial({ color:0xdcefff, roughness:0.08, metalness:0.1,
+                                                transparent:true, opacity:0.42,
+                                                envMapIntensity:1.0 });
+      },
+      sombre: function(){
+        return new THREE.MeshStandardMaterial({ color:0x2b3440, roughness:0.45, metalness:0.25,
+                                                envMapIntensity:0.4 });
       }
+    };
+
+    /** Texture d'un panneau photovoltaïque : la grille de cellules. */
+    var texCellules = null;
+    function textureCellules(){
+      if (texCellules) return texCellules;
+      var c = document.createElement('canvas');
+      c.width = c.height = 128;
+      var g = c.getContext('2d');
+      g.fillStyle = '#12306b'; g.fillRect(0,0,128,128);
+      g.fillStyle = '#1d4a9e';
+      for (var y=0;y<4;y++){
+        for (var x=0;x<4;x++){ g.fillRect(x*32+3, y*32+3, 26, 26); }
+      }
+      // Les fins rubans clairs des connexions entre cellules
+      g.strokeStyle = 'rgba(210,230,255,.55)'; g.lineWidth = 1.4;
+      for (var i=0;i<4;i++){
+        g.beginPath(); g.moveTo(i*32+12, 0); g.lineTo(i*32+12, 128); g.stroke();
+        g.beginPath(); g.moveTo(i*32+22, 0); g.lineTo(i*32+22, 128); g.stroke();
+      }
+      texCellules = new THREE.CanvasTexture(c);
+      if (THREE.SRGBColorSpace && 'colorSpace' in texCellules) texCellules.colorSpace = THREE.SRGBColorSpace;
+      else if (THREE.sRGBEncoding) texCellules.encoding = THREE.sRGBEncoding;
+      return texCellules;
     }
 
-    /* L'élévation était volontairement absente de la première version : toutes
-       les pièces reposaient sur l'établi et ne se déplaçaient qu'au sol. C'est
-       insuffisant pour une maquette — une cuve se pose sur un support, un
-       panneau solaire se met en hauteur, un tuyau passe au-dessus d'un bac.
-       Chaque pièce garde donc une hauteur `elev`, ajoutée à sa hauteur de pose.
-       Le déplacement à la souris reste au sol : la hauteur se règle aux
-       boutons, sinon un glisser en perspective devient impossible à viser. */
+    /** Raccourci : ajoute un maillage au groupe, avec position et rotation. */
+    function part(groupe, geo, mat, pos, rot){
+      var m = new THREE.Mesh(geo, mat);
+      if (pos) m.position.set(pos[0], pos[1], pos[2]);
+      if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      groupe.add(m);
+      return m;
+    }
+
+    /* --- Les huit modèles ------------------------------------------------ */
+
+    function modeleCuve(couleur){
+      var g = new THREE.Group();
+      var corps = MAT.plastique(couleur);
+      part(g, new THREE.CylinderGeometry(0.36, 0.36, 0.04, 24), MAT.sombre(), [0, 0.02, 0]);      // socle
+      part(g, new THREE.CylinderGeometry(0.34, 0.34, 0.72, 24), corps, [0, 0.40, 0]);             // fût
+      [0.16, 0.40, 0.64].forEach(function(h){                                                     // nervures
+        part(g, new THREE.TorusGeometry(0.345, 0.018, 8, 24), corps, [0, h, 0], [Math.PI/2, 0, 0]);
+      });
+      part(g, new THREE.CylinderGeometry(0.30, 0.345, 0.07, 24), corps, [0, 0.79, 0]);            // épaulement
+      part(g, new THREE.CylinderGeometry(0.11, 0.11, 0.05, 20), MAT.sombre(), [0, 0.84, 0]);      // trappe
+      // Robinet de puisage, en bas : c'est lui qui dit « cuve » et non « fût ».
+      part(g, new THREE.CylinderGeometry(0.028, 0.028, 0.14, 12), MAT.metal(0xc8a24a),
+           [0, 0.14, 0.40], [Math.PI/2, 0, 0]);
+      part(g, new THREE.TorusGeometry(0.045, 0.012, 8, 14), MAT.metal(0xc8a24a),
+           [0, 0.21, 0.40], [0, Math.PI/2, 0]);
+      return g;
+    }
+
+    function modeleTuyau(couleur){
+      var g = new THREE.Group();
+      var mat = MAT.plastique(couleur);
+      // Léger coude : un tuyau parfaitement droit se confond avec une barre.
+      var courbe = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.60, 0.07, 0),
+        new THREE.Vector3(-0.18, 0.07, 0.10),
+        new THREE.Vector3( 0.22, 0.07, -0.08),
+        new THREE.Vector3( 0.60, 0.07, 0)
+      ]);
+      part(g, new THREE.TubeGeometry(courbe, 28, 0.055, 14, false), mat);
+      // Raccords aux deux extrémités
+      part(g, new THREE.CylinderGeometry(0.072, 0.072, 0.08, 16), MAT.metal(),
+           [-0.60, 0.07, 0], [0, 0, Math.PI/2]);
+      part(g, new THREE.CylinderGeometry(0.072, 0.072, 0.08, 16), MAT.metal(),
+           [0.60, 0.07, 0], [0, 0, Math.PI/2]);
+      return g;
+    }
+
+    function modelePompe(couleur){
+      var g = new THREE.Group();
+      var carter = MAT.plastique(couleur);
+      part(g, new THREE.BoxGeometry(0.44, 0.05, 0.26), MAT.sombre(), [0, 0.025, 0]);          // socle
+      // Volute : le corps rond caractéristique d'une pompe centrifuge
+      part(g, new THREE.CylinderGeometry(0.17, 0.17, 0.13, 24), carter,
+           [-0.10, 0.22, 0], [Math.PI/2, 0, 0]);
+      part(g, new THREE.CylinderGeometry(0.06, 0.06, 0.13, 16), MAT.metal(),
+           [-0.10, 0.22, 0.10], [Math.PI/2, 0, 0]);                                            // aspiration
+      part(g, new THREE.CylinderGeometry(0.05, 0.05, 0.16, 16), MAT.metal(),
+           [-0.10, 0.37, 0]);                                                                  // refoulement
+      // Moteur, avec ses ailettes de refroidissement
+      part(g, new THREE.CylinderGeometry(0.125, 0.125, 0.30, 20), MAT.metal(0x8f9aa6),
+           [0.16, 0.22, 0], [0, 0, Math.PI/2]);
+      [0.08, 0.16, 0.24].forEach(function(dx){
+        part(g, new THREE.TorusGeometry(0.128, 0.011, 6, 18), MAT.metal(0x8f9aa6),
+             [dx, 0.22, 0], [0, Math.PI/2, 0]);
+      });
+      part(g, new THREE.BoxGeometry(0.09, 0.07, 0.09), MAT.sombre(), [0.30, 0.22, 0]);         // boîte à bornes
+      return g;
+    }
+
+    function modeleFiltre(couleur){
+      var g = new THREE.Group();
+      part(g, new THREE.CylinderGeometry(0.135, 0.135, 0.11, 20), MAT.plastique(couleur), [0, 0.45, 0]); // tête
+      // Piquages d'entrée et de sortie, de part et d'autre de la tête
+      part(g, new THREE.CylinderGeometry(0.045, 0.045, 0.12, 14), MAT.metal(),
+           [-0.17, 0.45, 0], [0, 0, Math.PI/2]);
+      part(g, new THREE.CylinderGeometry(0.045, 0.045, 0.12, 14), MAT.metal(),
+           [0.17, 0.45, 0], [0, 0, Math.PI/2]);
+      // Bol transparent : on doit voir la cartouche, c'est tout l'intérêt
+      part(g, new THREE.CylinderGeometry(0.12, 0.105, 0.36, 24, 1, false), MAT.verre(), [0, 0.21, 0]);
+      part(g, new THREE.CylinderGeometry(0.068, 0.068, 0.30, 16), MAT.plastique(0xf2efe4), [0, 0.21, 0]);
+      // Plis de la cartouche, suggérés par quelques nervures verticales
+      for (var i=0;i<10;i++){
+        var a = i * Math.PI * 2 / 10;
+        part(g, new THREE.BoxGeometry(0.012, 0.29, 0.03), MAT.plastique(0xe4dfcd),
+             [Math.cos(a)*0.068, 0.21, Math.sin(a)*0.068], [0, -a, 0]);
+      }
+      part(g, new THREE.CylinderGeometry(0.105, 0.09, 0.04, 20), MAT.plastique(couleur), [0, 0.02, 0]);
+      return g;
+    }
+
+    function modeleCapteur(couleur){
+      var g = new THREE.Group();
+      part(g, new THREE.BoxGeometry(0.05, 0.16, 0.05), MAT.metal(0x9aa6b2), [0, 0.08, 0]);      // support
+      part(g, new THREE.BoxGeometry(0.19, 0.12, 0.07), MAT.plastique(couleur), [0, 0.22, 0]);   // boîtier
+      part(g, new THREE.SphereGeometry(0.035, 16, 12), MAT.sombre(), [0, 0.22, 0.045]);         // lentille
+      // Témoin lumineux : une pièce qui « vit » se reconnaît mieux
+      part(g, new THREE.SphereGeometry(0.013, 10, 8),
+           new THREE.MeshStandardMaterial({ color:0xff4d3d, emissive:0xb01a0d,
+                                            emissiveIntensity:0.9, roughness:0.4 }),
+           [0.06, 0.26, 0.038]);
+      // Câble, replié derrière
+      var fil = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 0.17, -0.03),
+        new THREE.Vector3(0.04, 0.09, -0.10),
+        new THREE.Vector3(-0.04, 0.03, -0.17)
+      ]);
+      part(g, new THREE.TubeGeometry(fil, 12, 0.012, 8, false), MAT.sombre());
+      return g;
+    }
+
+    function modelePanneau(couleur){
+      var g = new THREE.Group();
+      var alu = MAT.metal(0xc3cbd4);
+      // Deux pieds inclinés : un panneau posé à plat ne se lit pas
+      part(g, new THREE.BoxGeometry(0.04, 0.30, 0.04), alu, [-0.30, 0.15, -0.16], [0.35, 0, 0]);
+      part(g, new THREE.BoxGeometry(0.04, 0.30, 0.04), alu, [ 0.30, 0.15, -0.16], [0.35, 0, 0]);
+      part(g, new THREE.BoxGeometry(0.04, 0.16, 0.04), alu, [-0.30, 0.08, 0.18], [0.35, 0, 0]);
+      part(g, new THREE.BoxGeometry(0.04, 0.16, 0.04), alu, [ 0.30, 0.08, 0.18], [0.35, 0, 0]);
+
+      var plaque = new THREE.Group();
+      part(plaque, new THREE.BoxGeometry(0.80, 0.035, 0.52), alu, [0, 0, 0]);
+      var cellules = new THREE.MeshStandardMaterial({
+        color:0xffffff, map:textureCellules(), roughness:0.22, metalness:0.15, envMapIntensity:0.9
+      });
+      part(plaque, new THREE.BoxGeometry(0.74, 0.012, 0.46), cellules, [0, 0.022, 0]);
+      plaque.position.set(0, 0.28, 0);
+      plaque.rotation.x = -0.35;
+      g.add(plaque);
+      // La teinte du kit reste visible sur le cadre arrière
+      part(g, new THREE.BoxGeometry(0.30, 0.03, 0.05), MAT.plastique(couleur), [0, 0.20, -0.20]);
+      return g;
+    }
+
+    function modeleVanne(couleur){
+      var g = new THREE.Group();
+      var laiton = MAT.metal(0xc9a43f);
+      part(g, new THREE.SphereGeometry(0.115, 20, 14), laiton, [0, 0.13, 0]);                    // corps
+      // Brides d'entrée et de sortie
+      part(g, new THREE.CylinderGeometry(0.06, 0.06, 0.12, 16), laiton,
+           [-0.15, 0.13, 0], [0, 0, Math.PI/2]);
+      part(g, new THREE.CylinderGeometry(0.06, 0.06, 0.12, 16), laiton,
+           [ 0.15, 0.13, 0], [0, 0, Math.PI/2]);
+      part(g, new THREE.CylinderGeometry(0.075, 0.075, 0.025, 16), laiton,
+           [-0.21, 0.13, 0], [0, 0, Math.PI/2]);
+      part(g, new THREE.CylinderGeometry(0.075, 0.075, 0.025, 16), laiton,
+           [ 0.21, 0.13, 0], [0, 0, Math.PI/2]);
+      // Tige et volant : la pièce qu'on tourne, donc celle qu'on reconnaît
+      part(g, new THREE.CylinderGeometry(0.018, 0.018, 0.13, 10), MAT.metal(), [0, 0.30, 0]);
+      var volant = MAT.plastique(couleur);
+      part(g, new THREE.TorusGeometry(0.085, 0.016, 8, 20), volant, [0, 0.36, 0], [Math.PI/2, 0, 0]);
+      part(g, new THREE.BoxGeometry(0.16, 0.016, 0.02), volant, [0, 0.36, 0]);
+      part(g, new THREE.BoxGeometry(0.02, 0.016, 0.16), volant, [0, 0.36, 0]);
+      return g;
+    }
+
+    function modeleGoutteur(couleur){
+      var g = new THREE.Group();
+      part(g, new THREE.ConeGeometry(0.022, 0.13, 10), MAT.sombre(), [0, 0.065, 0],
+           [Math.PI, 0, 0]);                                                                     // piquet
+      part(g, new THREE.CylinderGeometry(0.052, 0.036, 0.09, 16), MAT.plastique(couleur), [0, 0.175, 0]);
+      part(g, new THREE.CylinderGeometry(0.058, 0.058, 0.018, 16), MAT.sombre(), [0, 0.228, 0]);
+      part(g, new THREE.CylinderGeometry(0.014, 0.014, 0.05, 10), MAT.sombre(), [0, 0.25, 0.03],
+           [0.5, 0, 0]);                                                                         // embout
+      // La goutte : elle nomme la pièce à elle seule
+      var goutte = new THREE.Mesh(
+        new THREE.SphereGeometry(0.026, 14, 12),
+        new THREE.MeshStandardMaterial({ color:0x8fd4ff, roughness:0.05, metalness:0.1,
+                                         transparent:true, opacity:0.75, envMapIntensity:1.1 })
+      );
+      goutte.scale.set(1, 1.35, 1);
+      goutte.position.set(0, 0.10, 0.055);
+      goutte.castShadow = true;
+      g.add(goutte);
+      return g;
+    }
+
+    var MODELES = {
+      cuve:modeleCuve, tuyau:modeleTuyau, pompe:modelePompe, filtre:modeleFiltre,
+      capteur:modeleCapteur, panneau:modelePanneau, vanne:modeleVanne, goutteur:modeleGoutteur
+    };
+
+    /**
+     * Construit la pièce demandée, calée sur l'établi.
+     * Chaque modèle est dessiné en posant son point bas à y = 0 ; on mesure
+     * malgré tout la boîte englobante, pour qu'un modèle retouché plus tard ne
+     * se retrouve pas enterré ou flottant.
+     */
+    function construirePiece(kit){
+      var fabrique = MODELES[kit.id];
+      var g = fabrique ? fabrique(kit.couleur) : new THREE.Group();
+      if (!fabrique){
+        part(g, new THREE.BoxGeometry(0.25, 0.25, 0.25), MAT.plastique(kit.couleur), [0, 0.125, 0]);
+      }
+      var boite = new THREE.Box3().setFromObject(g);
+      g.userData.pose = -boite.min.y;
+      return g;
+    }
+
     var PAS_ELEVATION = 0.15;
 
     function ajouterPiece(kit, x, z, rot, elev){
-      var geo = geometrie(kit);
-      geo.computeBoundingBox();
-      var mat = new THREE.MeshStandardMaterial({ color:kit.couleur, metalness:0.15,
-                                                roughness:0.52, envMapIntensity:0.35 });
-      var m = new THREE.Mesh(geo, mat);
-      m.rotation.y = rot || 0;
-      // Hauteur à laquelle la pièce touche l'établi, selon sa forme.
-      // Un tuyau est couché : c'est ce qui le distingue d'une colonne.
-      if (kit.forme === 'tube'){ m.rotation.z = Math.PI/2; m.userData.pose = kit.taille[0]; }
-      else m.userData.pose = -geo.boundingBox.min.y;
-      m.userData.elev = Math.max(0, elev || 0);
-      m.position.set(x || 0, m.userData.pose + m.userData.elev, z || 0);
-      m.castShadow = true; m.receiveShadow = true;
-      m.userData.kit = kit.id;
-      scene.add(m);
-      var p = { mesh:m, kit:kit.id, id:'p' + Date.now() + Math.floor(Math.random()*1000) };
+      var g = construirePiece(kit);
+      g.rotation.y = rot || 0;
+      g.userData.elev = Math.max(0, elev || 0);
+      g.position.set(x || 0, g.userData.pose + g.userData.elev, z || 0);
+      g.userData.kit = kit.id;
+      scene.add(g);
+      var p = { mesh:g, kit:kit.id, id:'p' + Date.now() + Math.floor(Math.random()*1000) };
       pieces.push(p);
       return p;
     }
@@ -585,18 +817,33 @@ var SCENE3D = (function(){
     /** Monte ou descend la pièce sélectionnée d'un cran. */
     function elever(sens){
       if (!selection) return false;
-      var m = selection.mesh;
-      m.userData.elev = Math.max(0, Math.min(3, m.userData.elev + sens * PAS_ELEVATION));
-      m.position.y = m.userData.pose + m.userData.elev;
+      var g = selection.mesh;
+      g.userData.elev = Math.max(0, Math.min(3, g.userData.elev + sens * PAS_ELEVATION));
+      g.position.y = g.userData.pose + g.userData.elev;
       return true;
     }
 
+    /**
+     * Met en évidence la pièce sélectionnée.
+     * Une pièce étant un assemblage, la surbrillance parcourt ses maillages.
+     * Les matériaux étant partagés entre pièces de même type, on ne peut pas
+     * teinter le matériau : on pose un contour lumineux sur le groupe entier.
+     */
+    var halo = null;
     function surbrillance(){
-      pieces.forEach(function(p){
-        var choisi = selection && p.id === selection.id;
-        p.mesh.material.emissive = new THREE.Color(choisi ? 0x1b3f66 : 0x000000);
-        p.mesh.material.emissiveIntensity = choisi ? 0.45 : 0;
-      });
+      if (halo){ scene.remove(halo); halo = null; }
+      if (!selection) return;
+      var boite = new THREE.Box3().setFromObject(selection.mesh);
+      var taille = boite.getSize(new THREE.Vector3());
+      var centre = boite.getCenter(new THREE.Vector3());
+      halo = new THREE.Box3Helper(
+        new THREE.Box3(
+          centre.clone().sub(taille.clone().multiplyScalar(0.58)),
+          centre.clone().add(taille.clone().multiplyScalar(0.58))
+        ),
+        new THREE.Color(0x0EA5E9)
+      );
+      scene.add(halo);
     }
 
     /* --- Sélection et déplacement à la souris / au doigt ------------------ */
@@ -612,11 +859,14 @@ var SCENE3D = (function(){
     function clicScene(e){
       coords(e);
       rayon.setFromCamera(souris, camera);
-      var touches = rayon.intersectObjects(pieces.map(function(p){ return p.mesh; }), false);
+      // Une pièce est un assemblage : le rayon touche l'un de ses maillages,
+      // et il faut remonter jusqu'au groupe pour savoir laquelle a été visée.
+      var touches = rayon.intersectObjects(pieces.map(function(p){ return p.mesh; }), true);
       if (touches.length){
-        var m = touches[0].object;
-        selection = pieces.filter(function(p){ return p.mesh === m; })[0] || null;
-        glisse = true;
+        var o = touches[0].object;
+        while (o && !o.userData.kit) o = o.parent;
+        selection = pieces.filter(function(p){ return p.mesh === o; })[0] || null;
+        glisse = !!selection;
         surbrillance();
         if (onSelection) onSelection(selection ? selection.id : null);
       } else {
@@ -667,8 +917,12 @@ var SCENE3D = (function(){
         for (var i=0;i<pieces.length;i++){
           if (pieces[i].id === id){
             scene.remove(pieces[i].mesh);
-            pieces[i].mesh.geometry.dispose();
-            pieces[i].mesh.material.dispose();
+            // Une pièce compte plusieurs maillages : on libère chacun.
+            // Les matériaux sont partagés entre pièces de même type, ils ne
+            // sont donc pas détruits ici.
+            pieces[i].mesh.traverse(function(o){
+              if (o.geometry) o.geometry.dispose();
+            });
             pieces.splice(i,1);
             break;
           }
@@ -701,8 +955,14 @@ var SCENE3D = (function(){
       /** Image PNG de la maquette, insérée dans le dossier final. */
       snapshot:function(){
         try {
+          // Le cadre de sélection ne doit pas figurer sur la photo remise au
+          // professeur ni sur celle projetée en classe.
+          var visible = halo && halo.visible;
+          if (halo) halo.visible = false;
           renderer.render(scene, camera);
-          return renderer.domElement.toDataURL('image/png');
+          var png = renderer.domElement.toDataURL('image/png');
+          if (halo) halo.visible = visible;
+          return png;
         } catch(e){ return ''; }
       },
       recadrer:function(){ etat.theta = 0.8; etat.phi = 1.02; etat.r = 6.2; ctrl.place(); },
