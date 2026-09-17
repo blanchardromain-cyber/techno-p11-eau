@@ -61,7 +61,31 @@ var CLOUD = (function(){
     var b = EVAL.bilan();
     var ost = P11.ostParId(s.m2.ost);
 
-    return {
+    /* --- Mission 1 : le repère attribué à chaque fonction ----------------
+       Les repères sont propres à chaque élève, puisqu'ils suivent l'ordre de
+       son tracé. On les liste dans l'ordre de référence des fonctions, ce qui
+       permet au professeur de lire une colonne d'un coup d'œil. */
+    var reperes = P11DATA.FONCTIONS.map(function(f){
+      var lid = s.m1.repere[f.id];
+      var lien = null;
+      for (var i=0;i<s.m1.liens.length;i++){ if (s.m1.liens[i].lid === lid) lien = s.m1.liens[i]; }
+      if (!lien) return '—';
+      var memeType = s.m1.liens.filter(function(l){ return l.type === lien.type; });
+      return lien.type + (memeType.indexOf(lien) + 1);
+    });
+
+    /* --- Mission 2 : critère, niveau et unité de chaque ligne ------------- */
+    var m2 = {};
+    for (var n = 1; n <= 4; n++){
+      var l = ost && ost.lignes[n-1];
+      var r = l ? (s.m2.reponses[l.rep] || {}) : {};
+      m2['m2_' + n + '_rep']     = l ? l.rep : '';
+      m2['m2_' + n + '_critere'] = r.critere || '';
+      m2['m2_' + n + '_niveau']  = r.valeur  || '';
+      m2['m2_' + n + '_unite']   = r.unite   || '';
+    }
+
+    var base = {
       capsule: P11DATA.CLOUD.capsule,
       dateISO: new Date().toISOString(),
       code:    s.badge.code,
@@ -70,13 +94,15 @@ var CLOUD = (function(){
       nom1:    s.badge.nom1,   prenom1: s.badge.prenom1,
       nom2:    s.badge.nom2,   prenom2: s.badge.prenom2,
 
-      m1:        s.m1.score,
-      m1_liens:  s.m1.detail ? s.m1.detail.liens  : null,
-      m1_analyse:s.m1.detail ? s.m1.detail.typage : null,
-      m2:        s.m2.score,
-      m2_objet:  ost ? ost.nom : '',
-      m3_auto:   s.m3.score,
-      m3_prof:   s.m3.prof.points,
+      m1:          s.m1.score,
+      m1_liens:    s.m1.detail ? s.m1.detail.liens  : null,
+      m1_analyse:  s.m1.detail ? s.m1.detail.typage : null,
+      m1_reperes:  reperes.join(' / '),
+      m2:          s.m2.score,
+      m2_objet:    ost ? ost.nom : '',
+      m3_auto:     s.m3.score,
+      m3_prof:     s.m3.prof.points,
+      m3_appreciation: s.m3.score === null ? '' : EVAL.appreciationM3(),
 
       total:   b.obtenu,
       sur:     b.maxi,
@@ -89,6 +115,12 @@ var CLOUD = (function(){
       aides:        (s.m2.aides || []).join(' '),
       remarque:     s.m3.prof.remarque
     };
+
+    // Les seize colonnes de la mission 2 sont ajoutées à plat : dans un
+    // tableur, une colonne par champ se trie et se met en forme, ce qu'une
+    // chaîne unique ne permet pas.
+    Object.keys(m2).forEach(function(k){ base[k] = m2[k]; });
+    return base;
   }
 
   /** Neutralise ce que Google Sheets prendrait pour une formule. */
