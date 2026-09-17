@@ -17,8 +17,90 @@ var BADGE = (function(){
   'use strict';
 
   var mode = 'seul';
+  var CLE_IDENTITE = 'p11s5:identite';   // brouillon d'identité, portée session
+
+  /* Champs d'identité : quel formateur s'applique à chacun. */
+  var CHAMPS = [
+    { id:'badge-nom1',    cle:'nom1',    fmt:'nom'    },
+    { id:'badge-prenom1', cle:'prenom1', fmt:'prenom' },
+    { id:'badge-nom2',    cle:'nom2',    fmt:'nom'    },
+    { id:'badge-prenom2', cle:'prenom2', fmt:'prenom' }
+  ];
+
+  /**
+   * Applique un formatage à la frappe sans faire sauter le curseur.
+   * Une conversion de casse ne change pas la longueur du texte : la position
+   * du curseur reste donc valable. Elle n'est abandonnée que si la longueur a
+   * bougé — c'est-à-dire quand deux espaces consécutifs viennent d'être réduits.
+   */
+  function brancherFormatage(el, formateur, apres){
+    function appliquer(){
+      var pos = el.selectionStart;
+      var avant = el.value;
+      var net = formateur(avant);
+      if (net !== avant){
+        el.value = net;
+        if (net.length === avant.length){
+          try { el.setSelectionRange(pos, pos); } catch(e){}
+        }
+      }
+      if (apres) apres();
+    }
+    el.addEventListener('input', appliquer);
+    el.addEventListener('blur', appliquer);
+  }
+
+  /**
+   * Mémorise le formulaire en cours de saisie.
+   *
+   * Uniquement un BROUILLON, effacé dès que le badge est créé : il ne sert qu'à
+   * rattraper un rechargement survenu au milieu de la saisie. Le conserver
+   * au-delà repeuplerait le formulaire pour l'élève suivant, qui écraserait le
+   * seul nom qu'il corrige et rendrait son travail sous un binôme fantôme.
+   * Une fois le badge créé, c'est le dossier lui-même qui remplit les champs.
+   */
+  function noterIdentite(){
+    if (P11.state.badge.code) return;      // badge actif : plus de brouillon
+    var d = { mode:mode, classe:valeur('badge-classe') };
+    CHAMPS.forEach(function(c){ d[c.cle] = valeur(c.id); });
+    P11.ssSet(CLE_IDENTITE, JSON.stringify(d));
+  }
+
+  function relireIdentite(){
+    if (P11.state.badge.code) return;      // le dossier ouvert fait foi
+    try {
+      var d = JSON.parse(P11.ssGet(CLE_IDENTITE) || 'null');
+      if (!d) return;
+      CHAMPS.forEach(function(c){
+        var el = document.getElementById(c.id);
+        if (el && d[c.cle]) el.value = d[c.cle];
+      });
+      if (d.classe) document.getElementById('badge-classe').value = d.classe;
+      choisirMode(d.mode === 'binome' ? 'binome' : 'seul');
+    } catch(e){ /* brouillon illisible : on repart d'un formulaire vide */ }
+  }
+
+  function valeur(id){
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
 
   function init(){
+    // Le menu des classes vient de data.js : une classe qui change d'intitulé
+    // ne se corrige qu'à un seul endroit.
+    var sel = document.getElementById('badge-classe');
+    sel.innerHTML = '<option value="">Choisir…</option>' +
+      P11DATA.CLASSES.map(function(c){
+        return '<option value="' + P11.esc(c) + '">' + P11.esc(c) + '</option>';
+      }).join('');
+    sel.addEventListener('change', noterIdentite);
+
+    CHAMPS.forEach(function(c){
+      var el = document.getElementById(c.id);
+      if (!el) return;
+      brancherFormatage(el, c.fmt === 'nom' ? P11.formaterNom : P11.formaterPrenom, noterIdentite);
+    });
+
     // Texte de l'appel d'offres, tiré de data.js
     document.getElementById('brief-de').textContent = P11DATA.BRIEF.de;
     document.getElementById('brief-titre').textContent = P11DATA.BRIEF.titre;
@@ -35,12 +117,14 @@ var BADGE = (function(){
     document.getElementById('badge-reprendre').addEventListener('click', reprendre);
     document.getElementById('badge-importer').addEventListener('change', importer);
     document.getElementById('badge-copier').addEventListener('click', copierCode);
+    document.getElementById('badge-fermer').addEventListener('click', fermer);
 
     // Entrée au clavier depuis le champ « code » : reprise directe.
     document.getElementById('badge-code-repris').addEventListener('keydown', function(e){
       if (e.key === 'Enter') reprendre();
     });
 
+    relireIdentite();
     if (P11.modeProf()) preparerVueProf();
   }
 
@@ -48,36 +132,47 @@ var BADGE = (function(){
     mode = m;
     document.getElementById('mode-seul').setAttribute('aria-pressed', m === 'seul');
     document.getElementById('mode-binome').setAttribute('aria-pressed', m === 'binome');
-    document.getElementById('champ-eleve2').style.display = (m === 'binome') ? '' : 'none';
+    document.getElementById('champs-eleve2').style.display = (m === 'binome') ? '' : 'none';
     document.getElementById('badge-mode-aide').textContent = (m === 'binome')
       ? "Un seul poste pour deux : alternez aux commandes à chaque mission. Le dossier portera vos deux noms."
       : "Tu travailles seul : tu pourras tout de même partager ton dossier avec le code d'équipe.";
   }
 
   function creer(){
-    var e1 = document.getElementById('badge-eleve1').value.trim();
-    var e2 = document.getElementById('badge-eleve2').value.trim();
-    var cl = document.getElementById('badge-classe').value.trim();
+    var n1 = valeur('badge-nom1'),    p1 = valeur('badge-prenom1');
+    var n2 = valeur('badge-nom2'),    p2 = valeur('badge-prenom2');
+    var cl = valeur('badge-classe');
 
-    if (!e1){
-      P11.signaler('Indique au moins ton prénom et ton nom.');
-      document.getElementById('badge-eleve1').focus();
-      return;
-    }
-    if (mode === 'binome' && !e2){
-      P11.signaler('En binôme, les deux noms sont nécessaires.');
-      document.getElementById('badge-eleve2').focus();
+    // Contrôles dans l'ordre où l'élève lit le formulaire, un message à la fois.
+    var manque =
+        !n1 ? ['badge-nom1',    'Indique ton nom de famille.']
+      : !p1 ? ['badge-prenom1', 'Indique ton prénom.']
+      : (mode === 'binome' && !n2) ? ['badge-nom2',    'En binôme, le nom du second élève est nécessaire.']
+      : (mode === 'binome' && !p2) ? ['badge-prenom2', 'En binôme, le prénom du second élève est nécessaire.']
+      : !cl ? ['badge-classe',  'Choisis ta classe dans la liste.']
+      : null;
+    if (manque){
+      P11.signaler(manque[1]);
+      var el = document.getElementById(manque[0]);
+      el.classList.add('f-ko');
+      el.focus();
+      setTimeout(function(){ el.classList.remove('f-ko'); }, 2500);
       return;
     }
 
     // Un nouveau badge repart d'un état vierge : on ne mélange pas deux équipes.
     P11.state = P11.etatVierge();
     P11.state.badge = {
-      mode: mode, eleve1: e1, eleve2: e2, classe: cl,
+      mode: mode,
+      nom1: n1, prenom1: p1,
+      nom2: mode === 'binome' ? n2 : '',
+      prenom2: mode === 'binome' ? p2 : '',
+      classe: cl,
       code: P11.genererCode(cl),
       cree: new Date().toISOString()
     };
     P11.sauver(true);
+    P11.ssRemove(CLE_IDENTITE);   // le brouillon a rempli son office
 
     M1.refletEtat(); M2.refletEtat(); M3.refletEtat();
     refletEtat();
@@ -123,6 +218,31 @@ var BADGE = (function(){
     lecteur.readAsText(f);
   }
 
+  /**
+   * Libère le poste pour l'élève suivant.
+   * Le dossier n'est pas supprimé : seule la session en cours est oubliée, si
+   * bien qu'un rechargement ne le rouvre plus. Il reste accessible par son code
+   * et dans la liste du mode professeur.
+   */
+  function fermer(){
+    var code = P11.state.badge.code;
+    if (!code) return;
+    P11.sauver(true);
+    P11.ssRemove(P11.CLE_SESSION);
+    P11.ssRemove(CLE_IDENTITE);
+    P11.state = P11.etatVierge();
+    CHAMPS.forEach(function(c){
+      var el = document.getElementById(c.id); if (el) el.value = '';
+    });
+    document.getElementById('badge-classe').value = '';
+    choisirMode('seul');
+    M1.refletEtat(); M2.refletEtat(); M3.refletEtat();
+    refletEtat();
+    P11.majEnTete();
+    P11.aller('accueil');
+    P11.signaler('Dossier ' + code + ' fermé. Note bien ce code pour le rouvrir.', 5000);
+  }
+
   function copierCode(){
     var code = P11.state.badge.code;
     if (!code) return;
@@ -156,9 +276,11 @@ var BADGE = (function(){
       ' · ' + (b.mode === 'binome' ? 'binôme' : 'seul');
 
     // Les champs sont repeuplés pour qu'un changement de nom reste possible.
-    document.getElementById('badge-eleve1').value = b.eleve1 || '';
-    document.getElementById('badge-eleve2').value = b.eleve2 || '';
-    document.getElementById('badge-classe').value = b.classe || '';
+    document.getElementById('badge-nom1').value    = b.nom1 || '';
+    document.getElementById('badge-prenom1').value = b.prenom1 || '';
+    document.getElementById('badge-nom2').value    = b.nom2 || '';
+    document.getElementById('badge-prenom2').value = b.prenom2 || '';
+    document.getElementById('badge-classe').value  = b.classe || '';
     choisirMode(b.mode || 'seul');
   }
 
@@ -178,17 +300,25 @@ var BADGE = (function(){
       }
       box.innerHTML =
         '<div class="table-scroll"><table class="grille"><thead><tr>' +
-        '<th>Code</th><th>Équipe</th><th>M1</th><th>M2</th><th>M3 auto</th><th>Dernière activité</th><th></th>' +
+        '<th>Code</th><th>Classe</th><th>Équipe</th><th>M1</th><th>M2</th><th>M3 auto</th>' +
+        '<th>Projeter</th><th>Dernière activité</th><th></th>' +
         '</tr></thead><tbody>' +
         codes.map(function(c){
           var s = c.etat;
           return '<tr><td><b>' + P11.esc(c.code) + '</b></td>' +
+                 '<td>' + P11.esc(c.classe || '—') + '</td>' +
                  '<td>' + P11.esc(c.eleves) + '</td>' +
                  '<td>' + (s.m1.score == null ? '—' : P11.fmt(s.m1.score)) + '</td>' +
                  '<td>' + (s.m2.score == null ? '—' : P11.fmt(s.m2.score)) + '</td>' +
                  '<td>' + (s.m3.score == null ? '—' : P11.fmt(s.m3.score)) + '</td>' +
+                 '<td class="lv' + (s.m3.presentation ? ' on' : '') + '">' +
+                   (s.m3.presentation ? '★' : '') + '</td>' +
                  '<td>' + P11.esc(dateCourte(s.maj)) + '</td>' +
-                 '<td><button class="btn sec small" data-open="' + P11.esc(c.code) + '">Ouvrir</button></td></tr>';
+                 '<td><button class="btn sec small" data-open="' + P11.esc(c.code) + '">Ouvrir</button>' +
+                 (s.m3.presentation
+                   ? ' <button class="btn gold small" data-projeter="' + P11.esc(c.code) + '">Projeter</button>'
+                   : '') +
+                 '</td></tr>';
         }).join('') +
         '</tbody></table></div>';
 
@@ -198,6 +328,15 @@ var BADGE = (function(){
             M1.refletEtat(); M2.refletEtat(); M3.refletEtat();
             refletEtat(); P11.majEnTete();
             P11.aller('dossier');
+          }
+        });
+      });
+      box.querySelectorAll('[data-projeter]').forEach(function(b){
+        b.addEventListener('click', function(){
+          if (P11.charger(b.dataset.projeter)){
+            M1.refletEtat(); M2.refletEtat(); M3.refletEtat();
+            refletEtat(); P11.majEnTete();
+            PRESENTATION.ouvrir();
           }
         });
       });
