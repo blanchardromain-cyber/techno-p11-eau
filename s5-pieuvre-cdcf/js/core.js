@@ -475,7 +475,7 @@ var P11 = (function(){
   /** Avancement d'une mission, en %. Sert aux jauges, pas à la note. */
   function avancement(m){
     if (m === 'm1'){
-      var nbT = Object.keys(state.m1.typage).length;
+      var nbT = Object.keys(state.m1.repere).length;
       var nbL = state.m1.liens.length;
       return Math.min(100, Math.round(((Math.min(nbL,6)/6)*40 + (nbT/P11DATA.FONCTIONS.length)*60)));
     }
