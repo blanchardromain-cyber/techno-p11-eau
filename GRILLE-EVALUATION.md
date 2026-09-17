@@ -38,22 +38,42 @@ deux missions, non pénalisé deux fois.
 Une contrainte tracée vers un EME qui appartient à la fonction principale est
 signalée à l'élève : c'est l'erreur de raisonnement la plus fréquente.
 
-### 2.2 Classement des six fonctions (12 points)
+### 2.2 Tableau d'analyse fonctionnelle (12 points)
 
-2 points par fonction correctement typée, sur les six énoncés de la fiche papier.
+L'élève attribue à chaque fonction son **type** et son **numéro**. Le repère se
+compose des deux : type `FC` + numéro `2` donne `FC2`.
 
-| Énoncé | Attendu |
-|---|---|
-| Permettre à l'utilisateur de se laver les mains avec de l'eau | **FP1** |
-| Détecter la présence des mains | FC1 |
-| Résister à l'environnement humide | FC2 |
-| Être alimenté en énergie | FC4 |
-| Se fixer sur le lavabo | FC5 |
-| Respecter le budget | FC6 |
+**L'ordre des six lignes est tiré au sort à chaque ouverture de la page.** Deux
+élèves voisins n'ont donc pas le même tableau, et celui qui refait l'activité ne
+peut pas rejouer une suite de réponses apprise par cœur.
 
-Le retour donné à l'élève ne se limite pas à juste / faux : il rappelle à chaque
-ligne le **critère de décision** — deux éléments du milieu extérieur reliés à
-travers l'objet, ou un seul élément auquel l'objet doit s'adapter.
+**2 points par ligne**, décomposés ainsi :
+
+| Élément | Points | Ce qui est vérifié |
+|---|---:|---|
+| Type | 1,5 | FP ou FC — c'est la notion de la séance |
+| Repère | 0,5 | FP1 pour la fonction principale, un numéro différent pour chaque contrainte |
+
+Le repère **ne se compare pas à une liste figée** : après tirage au sort, l'ordre
+attendu serait indevinable. Ce qui est vérifié est la règle — un repère désigne
+une fonction et une seule, et son préfixe correspond à son type. C'est
+exactement ce à quoi sert un repère dans un cahier des charges.
+
+| Énoncé | Type attendu | Repère de référence |
+|---|---|---|
+| Permettre à l'utilisateur de se laver les mains avec de l'eau | **FP** | FP1 |
+| Détecter la présence des mains | FC | FC1 |
+| Résister à l'environnement humide | FC | FC2 |
+| Être alimenté en énergie | FC | FC3 |
+| Se fixer sur le lavabo | FC | FC4 |
+| Respecter le budget | FC | FC5 |
+
+Le retour ne s'affiche **qu'après la première validation** : avant cela, l'élève
+essaierait les combinaisons jusqu'à voir un ✓ sans jamais réfléchir. Une fois
+validé, il se met à jour en direct pendant la correction, et une remarque
+apparaît au survol de chaque ligne. Elle ne dit pas seulement juste ou faux :
+elle rappelle le **critère de décision** — deux éléments du milieu extérieur
+reliés à travers l'objet, ou un seul élément auquel l'objet doit s'adapter.
 
 ---
 
@@ -80,7 +100,24 @@ grandeur : un élève qui écrit « débit : 5 cm » a compris le mot, pas la no
 | FP1 | Distribuer de l'eau pour se laver les mains | le débit | ≈ 5 L/min | 3 à 8 L/min |
 | FC1 | Détecter la présence des mains | la distance de détection | ≈ 10 cm | 5 à 20 cm |
 | FC2 | Résister à l'environnement humide | l'indice de protection (IP) | IP65 | second chiffre ≥ 4 |
-| FC3 | Limiter la consommation d'eau | le volume par lavage, ou la temporisation | ≤ 0,5 L — ou ≈ 6 s | 0,2 à 1 L, ou 3 à 15 s |
+| FC6 | Limiter la consommation d'eau | le volume par lavage, ou la temporisation | ≤ 0,5 L — ou ≈ 6 s | 0,2 à 1 L, ou 3 à 15 s |
+
+> **FC6 et non FC3 :** les six fonctions de la pieuvre occupent FP1 et FC1 à FC5
+> en mission 1. Conserver FC3 ici, comme sur la fiche papier, donnerait deux
+> fonctions différentes sous le même repère d'une mission à l'autre. Cette
+> fonction n'est du reste reliée à aucun élément du milieu extérieur : c'est une
+> exigence de performance ajoutée au cahier des charges, pas une contrainte du
+> milieu. Pour revenir à la fiche, une seule ligne à changer dans `js/data.js`.
+
+### Les coups de pouce
+
+Trois aides repliées accompagnent le tableau, à ouvrir une par une :
+reconnaître FP et FC, ce qu'est un critère, quel niveau de détail est attendu.
+
+**Elles n'enlèvent aucun point.** Les aides consultées sont simplement notées
+dans le dossier et remontées dans la colonne `aides` du classeur : un travail
+juste sans aucune aide ouverte n'est pas la même chose qu'un travail juste après
+les trois — mais c'est une information, pas une sanction.
 
 Les trois autres objets — récupérateur d'eau de pluie, arrosage goutte-à-goutte,
 station de potabilisation mobile — suivent la même structure. Leurs niveaux de
@@ -149,12 +186,22 @@ noms et reçoit la même note.
 **Faire recopier le code d'équipe sur le cahier.** C'est lui qui rouvre le
 dossier à la séance suivante, sur le même poste.
 
+**Fin d'heure.** Faire cliquer sur « Fermer ce dossier et libérer le poste » :
+la classe suivante repart de l'écran de badge au lieu de rouvrir le dossier
+précédent à son nom. Le travail reste enregistré et se rouvre avec son code.
+
 **Rendu.** Impression du dossier, ou enregistrement en PDF depuis la fenêtre
 d'impression. Le dossier contient l'identité de l'équipe, les trois productions,
-la note et le positionnement.
+la note et le positionnement. Si la remontée Google Sheets est installée (voir
+`apps-script/LISEZ-MOI.md`), les résultats arrivent en plus, tout seuls, dans un
+classeur — une ligne par équipe, mise à jour à chaque vérification.
 
-**Projection.** Les adresses `#m1`, `#m2`, `#m3` ouvrent directement une mission :
-utile pour un temps de mise en commun au vidéoprojecteur.
+**Projection.** Les adresses `#m1`, `#m2`, `#m3` ouvrent directement une mission,
+utile pour une mise en commun. Pour les solutions de la mission 3, les équipes
+volontaires cochent « Je propose ma solution pour la présentation » ; en mode
+`?prof` elles portent une étoile et un bouton **Projeter** ouvre l'affichage
+plein écran. Compter **deux ou trois passages** en fin d'heure : l'activité n'est
+pas conçue pour repasser toutes les maquettes.
 
 ---
 
