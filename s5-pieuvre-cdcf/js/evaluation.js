@@ -29,10 +29,18 @@ var EVAL = (function(){
     var m3p = s.m3.prof.points;
 
     var obtenu = (m1 || 0) + (m2 || 0) + (m3a || 0) + (m3p || 0);
-    // Le total de référence exclut la part professeur tant qu'elle n'est pas
-    // saisie : sinon, un dossier parfait plafonnerait à 52/60 avant correction.
-    var maxi = P11DATA.BAREME.m1.total + P11DATA.BAREME.m2.total + P11DATA.BAREME.m3.auto
-             + (m3p === null || m3p === undefined ? 0 : P11DATA.BAREME.m3.prof);
+
+    /* Le dénominateur ne compte QUE ce qui a été rendu.
+       Une mission jamais vérifiée en est exclue : sans cela, un élève qui vient
+       de réussir la mission 1 et n'a pas encore ouvert les suivantes lisait
+       7,5/20 et « maîtrise insuffisante » au milieu de l'heure. La part du
+       professeur suit la même règle, sinon un dossier parfait plafonnerait à
+       52/60 avant correction. */
+    var rendu = function(v){ return v !== null && v !== undefined; };
+    var maxi = (rendu(m1)  ? P11DATA.BAREME.m1.total : 0)
+             + (rendu(m2)  ? P11DATA.BAREME.m2.total : 0)
+             + (rendu(m3a) ? P11DATA.BAREME.m3.auto  : 0)
+             + (rendu(m3p) ? P11DATA.BAREME.m3.prof  : 0);
 
     var pct = maxi ? (obtenu / maxi) * 100 : 0;
     var note = maxi ? Math.round((obtenu / maxi) * 20 * 2) / 2 : 0;   // au demi-point
@@ -43,7 +51,7 @@ var EVAL = (function(){
     return {
       m1:m1, m2:m2, m3a:m3a, m3p:m3p,
       obtenu:obtenu, maxi:maxi, pct:Math.round(pct), note:note, niveau:niveau,
-      rendues: [m1,m2,m3a].filter(function(v){ return v !== null && v !== undefined; }).length
+      rendues: [m1,m2,m3a].filter(rendu).length
     };
   }
 
@@ -119,7 +127,8 @@ var EVAL = (function(){
       h += '<div class="fb partial" style="margin-top:12px"><b class="t">≈ Dossier incomplet</b>' +
            (3 - b.rendues) + ' mission' + (3-b.rendues>1?'s n\'ont':' n\'a') +
            ' pas encore été vérifiée' + (3-b.rendues>1?'s':'') +
-           '. La note ne tient compte que de ce qui a été rendu.</div>';
+           '. La note ci-dessus ne porte que sur les missions rendues : elle se ' +
+           'recalculera quand tu auras vérifié les autres.</div>';
     }
     h += '<p class="hint">' + P11.esc(b.niveau.texte) + '</p>';
 
