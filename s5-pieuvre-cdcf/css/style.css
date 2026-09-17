@@ -698,9 +698,8 @@ body.est-prof .prof-only{ display:block }
   .cdcf.analyse select{ font-size:12.5px; padding:7px 2px }
   .modele-ligne{ grid-template-columns:1fr 1fr; gap:10px }
   .demande{ padding:16px 18px; font-size:14px }
-  .cdcf.analyse th:nth-child(1), .cdcf.analyse td:nth-child(1){ width:54px }
-  .cdcf.analyse th:nth-child(2), .cdcf.analyse td:nth-child(2){ width:120px }
-  .cdcf.analyse th:nth-child(4), .cdcf.analyse td:nth-child(4){ width:38px }
+  .cdcf.analyse th:nth-child(1), .cdcf.analyse td:nth-child(1){ width:76px }
+  .cdcf.analyse th:nth-child(3), .cdcf.analyse td:nth-child(3){ width:38px }
 }
 
 /* Respect du réglage système « réduire les animations » */
