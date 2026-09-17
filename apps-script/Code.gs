@@ -24,9 +24,20 @@ var NOM_FEUILLE = 'P11-S5';
 
 // Colonnes, dans l'ordre. Ajouter une colonne à la FIN ne casse rien ;
 // en insérer une au milieu décale l'existant.
+// L'ordre est pense pour la LECTURE : identite (A-I), puis immediatement la
+// note, le niveau et les deux observations (J-M), qui sont ce qu'on regarde en
+// premier. Le detail des missions vient ensuite, a droite, pour qui veut
+// comprendre d'ou sort la note.
 var COLONNES = [
+  // A a I — qui, quand
   'dateISO', 'date', 'classe', 'code', 'mode',
   'nom1', 'prenom1', 'nom2', 'prenom2',
+
+  // J a M — l'essentiel, visible sans faire defiler
+  'note20', 'niveau', 'm3_appreciation', 'remarque',
+
+  // N, O — d'ou vient la note sur 20
+  'total', 'sur',
 
   // Mission 1 : note, detail et reperes attribues par l'eleve.
   // Les reperes suivent l'ordre de trace de chaque eleve : ils sont donc
@@ -42,11 +53,10 @@ var COLONNES = [
   'm2_3_rep', 'm2_3_critere', 'm2_3_niveau', 'm2_3_unite',
   'm2_4_rep', 'm2_4_critere', 'm2_4_niveau', 'm2_4_unite',
 
-  // Mission 3 : part automatique, part professeur, appreciation generee.
-  'm3_auto', 'm3_prof', 'm3_appreciation',
+  // Mission 3 : part automatique, part professeur
+  'm3_auto', 'm3_prof',
 
-  'total', 'sur', 'note20', 'niveau',
-  'solution', 'probleme', 'presentation', 'aides', 'remarque',
+  'solution', 'probleme', 'presentation', 'aides',
   'capsule', 'raison'
 ];
 
@@ -123,14 +133,58 @@ function _feuille() {
   }
   if (f.getLastRow() === 0) {
     f.appendRow(COLONNES);
-    f.setFrozenRows(1);
-    f.getRange(1, 1, 1, COLONNES.length).setFontWeight('bold');
-    f.setColumnWidth(COLONNES.indexOf('probleme') + 1, 320);
-    f.setColumnWidth(COLONNES.indexOf('remarque') + 1, 260);
-    f.setColumnWidth(COLONNES.indexOf('m3_appreciation') + 1, 420);
-    f.setColumnWidth(COLONNES.indexOf('m1_reperes') + 1, 170);
+    _miseEnForme(f);
+  } else {
+    _migrerEntetes(f);
   }
   return f;
+}
+
+function _miseEnForme(f) {
+  f.setFrozenRows(1);
+  f.setFrozenColumns(Math.min(4, COLONNES.length));   // jusqu'au code d'equipe
+  f.getRange(1, 1, 1, COLONNES.length).setFontWeight('bold');
+  var large = { probleme: 320, remarque: 300, m3_appreciation: 430, m1_reperes: 170, niveau: 70 };
+  Object.keys(large).forEach(function (c) {
+    var i = COLONNES.indexOf(c);
+    if (i >= 0) f.setColumnWidth(i + 1, large[c]);
+  });
+}
+
+/**
+ * Remet la feuille au format courant quand l'ordre des colonnes a change.
+ *
+ * Sans cela, changer COLONNES ecrirait les nouvelles lignes dans un ordre que
+ * l'ancienne ligne d'en-tetes ne decrit plus : la feuille deviendrait fausse
+ * sans le moindre message. On relit donc les donnees existantes PAR NOM DE
+ * COLONNE, puis on les reecrit dans le nouvel ordre. Les colonnes disparues
+ * sont abandonnees, les nouvelles arrivent vides.
+ */
+function _migrerEntetes(f) {
+  var largeur = Math.max(f.getLastColumn(), 1);
+  var entetes = f.getRange(1, 1, 1, largeur).getValues()[0];
+
+  var identique = entetes.length === COLONNES.length &&
+                  COLONNES.every(function (c, i) { return entetes[i] === c; });
+  if (identique) return;
+
+  var dernier = f.getLastRow();
+  var anciennes = dernier > 1 ? f.getRange(2, 1, dernier - 1, largeur).getValues() : [];
+
+  var nouvelles = anciennes.map(function (ligne) {
+    var parNom = {};
+    entetes.forEach(function (nom, i) { parNom[nom] = ligne[i]; });
+    return COLONNES.map(function (c) {
+      return (parNom[c] === undefined || parNom[c] === null) ? '' : parNom[c];
+    });
+  });
+
+  f.clear();
+  f.getRange(1, 1, 1, COLONNES.length).setValues([COLONNES]);
+  if (nouvelles.length) {
+    f.getRange(2, 1, nouvelles.length, COLONNES.length).setValues(nouvelles);
+  }
+  _miseEnForme(f);
 }
 
 /**
