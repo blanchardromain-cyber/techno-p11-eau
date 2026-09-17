@@ -62,15 +62,15 @@ var P11DATA = (function(){
       pourquoi:"L'objet subit l'humidité de la salle d'eau : il doit s'y adapter. Un seul élément relié, donc une fonction contrainte." },
 
     { id:'f4', texte:"Être alimenté en énergie",
-      type:'FC', rep:'FC4', via:['energie'],
+      type:'FC', rep:'FC3', via:['energie'],
       pourquoi:"Le robinet dépend de l'énergie pour fonctionner. Un seul élément relié : contrainte." },
 
     { id:'f5', texte:"Se fixer sur le lavabo",
-      type:'FC', rep:'FC5', via:['lavabo'],
+      type:'FC', rep:'FC4', via:['lavabo'],
       pourquoi:"L'objet doit s'adapter au lavabo existant (perçage, diamètre). Un seul élément relié : contrainte." },
 
     { id:'f6', texte:"Respecter le budget",
-      type:'FC', rep:'FC6', via:['budget'],
+      type:'FC', rep:'FC5', via:['budget'],
       pourquoi:"Le budget est imposé au concepteur, il ne dépend pas de l'usage. Un seul élément relié : contrainte." }
   ];
 
@@ -136,7 +136,14 @@ var P11DATA = (function(){
         aide:"Tu as vu cette norme à la séance 4 : deux chiffres, le premier pour les poussières, le second pour l'eau.",
         commentaire:"Le second chiffre doit valoir au moins 4 (projections d'eau). IP65 = étanche aux poussières et aux jets." },
 
-      { rep:'FC3',
+      // Repère FC6 et non FC3 : les six fonctions de la pieuvre occupent déjà
+      // FP1 et FC1 à FC5 en mission 1. Garder FC3 ici, comme sur la fiche
+      // papier, donnerait deux fonctions différentes sous le même repère d'une
+      // mission à l'autre. « Limiter la consommation » n'est d'ailleurs reliée
+      // à aucun EME sur la pieuvre : c'est une exigence de performance, ajoutée
+      // au cahier des charges. Pour revenir à la numérotation de la fiche,
+      // remettre 'FC3' ici — c'est la seule ligne à changer.
+      { rep:'FC6',
         fonction:"Limiter la consommation d'eau",
         critere:['volume par lavage','volume','temporisation','duree','temps d ecoulement','consommation'],
         critereAttendu:"Le volume d'eau par lavage (ou la durée de temporisation)",
@@ -367,9 +374,112 @@ var P11DATA = (function(){
     'raccorder','se deplacer','contenir','isoler','purifier','pomper','couper','fonctionner'
   ];
 
+  /* ---------------------------------------------------------------------
+     7. Les classes de 4e du collège
+        Servent au menu déroulant du badge et au préfixe du code d'équipe.
+     --------------------------------------------------------------------- */
+  var CLASSES = ['4A', '4B', '4C', '4D', '4E', '4F', '4G'];
+
+  /* ---------------------------------------------------------------------
+     8. Coup de pouce de la mission 2
+
+     Trois aides séparées plutôt qu'un bloc unique : l'élève qui bloque sur
+     « FP ou FC ? » n'a pas besoin de relire ce qu'est un niveau, et lui servir
+     les trois d'un coup revient à lui donner la réponse.
+     --------------------------------------------------------------------- */
+  var COUPS_DE_POUCE = [
+    {
+      id:'fpfc',
+      titre:"FP ou FC ? La question à se poser",
+      html:
+        "<p>Ne regarde pas le sens de la phrase, <b>compte les éléments du milieu extérieur reliés</b>.</p>" +
+        "<ul>" +
+        "<li><b>Deux</b> éléments reliés, le trait traversant l'objet → <span class=\"pill fp\">FP</span> " +
+        "<b>fonction principale</b>. C'est la raison d'être de l'objet.</li>" +
+        "<li><b>Un seul</b> élément relié à l'objet → <span class=\"pill fc\">FC</span> " +
+        "<b>fonction contrainte</b>. L'objet doit s'adapter à cet élément.</li>" +
+        "</ul>" +
+        "<div class=\"corr\">Un objet technique n'a en général <b>qu'une seule</b> fonction principale. " +
+        "Si tu en trouves deux, l'une des deux est une contrainte déguisée.</div>",
+      // Schéma minimal : deux EME reliés à travers l'objet, puis un seul.
+      // Le trait de la FP est tracé AVANT l'objet : il passe donc dessous et
+      // ressort de l'autre côté, ce qui est exactement ce qu'on veut montrer.
+      svg:
+        '<svg viewBox="0 0 430 120" width="100%" style="max-width:430px;margin-top:12px" role="img" ' +
+        '     aria-label="À gauche, une fonction principale relie deux éléments du milieu extérieur ' +
+        'en traversant l\'objet ; à droite, une fonction contrainte relie l\'objet à un seul élément.">' +
+        '  <g font-family="Inter,Arial" font-size="11" text-anchor="middle">' +
+        '    <text x="108" y="20" fill="#0F766E" font-weight="800">FP — relie 2 EME</text>' +
+        '    <path d="M64 70 H152" fill="none" stroke="#0F766E" stroke-width="3.5"/>' +
+        '    <rect x="6" y="58" width="58" height="24" rx="12" fill="#fff" stroke="#2E75B6" stroke-width="1.5"/>' +
+        '    <text x="35" y="74" fill="#1F3864" font-weight="600">EME 1</text>' +
+        '    <rect x="152" y="58" width="58" height="24" rx="12" fill="#fff" stroke="#2E75B6" stroke-width="1.5"/>' +
+        '    <text x="181" y="74" fill="#1F3864" font-weight="600">EME 2</text>' +
+        '    <circle cx="108" cy="70" r="25" fill="#2E75B6"/>' +
+        '    <text x="108" y="74" fill="#fff" font-weight="700">objet</text>' +
+        '    <line x1="228" y1="34" x2="228" y2="106" stroke="#d7e2ec" stroke-width="1.5"/>' +
+        '    <text x="330" y="20" fill="#7C3AED" font-weight="800">FC — relie 1 EME</text>' +
+        '    <path d="M303 70 H356" fill="none" stroke="#7C3AED" stroke-width="3"/>' +
+        '    <circle cx="278" cy="70" r="25" fill="#2E75B6"/>' +
+        '    <text x="278" y="74" fill="#fff" font-weight="700">objet</text>' +
+        '    <rect x="356" y="58" width="58" height="24" rx="12" fill="#fff" stroke="#2E75B6" stroke-width="1.5"/>' +
+        '    <text x="385" y="74" fill="#1F3864" font-weight="600">EME</text>' +
+        '  </g></svg>'
+    },
+    {
+      id:'critere',
+      titre:"Qu'est-ce qu'un critère ?",
+      html:
+        "<p>Le critère, c'est <b>la grandeur que l'on mesure</b> pour savoir si la fonction est remplie. " +
+        "Pose-toi la question : « avec quel instrument je vérifie ? »</p>" +
+        "<table class=\"grille\"><thead><tr><th>Fonction</th><th>Critère ✔</th><th>Pas un critère ✘</th></tr></thead><tbody>" +
+        "<tr><td>Distribuer de l'eau</td><td>le débit</td><td>« que ça marche bien »</td></tr>" +
+        "<tr><td>Détecter les mains</td><td>la distance de détection</td><td>« la rapidité »</td></tr>" +
+        "<tr><td>Résister à l'humidité</td><td>l'indice de protection IP</td><td>« être solide »</td></tr>" +
+        "<tr><td>Être transportable</td><td>la masse</td><td>« pas trop lourd »</td></tr>" +
+        "</tbody></table>" +
+        "<div class=\"corr\">Si ta réponse ne se mesure pas avec un instrument ou une norme, " +
+        "ce n'est pas encore un critère.</div>"
+    },
+    {
+      id:'niveau',
+      titre:"Quel niveau de détail attend-on ?",
+      html:
+        "<p>Le niveau, c'est <b>la valeur à atteindre : un nombre et son unité</b>. " +
+        "C'est lui qui engage le fabricant.</p>" +
+        "<table class=\"grille\"><thead><tr><th>Trop vague ✘</th><th>Attendu ✔</th><th>Pourquoi</th></tr></thead><tbody>" +
+        "<tr><td>« économiser l'eau »</td><td>au maximum 0,5 L par lavage</td><td>on peut le vérifier avec un récipient gradué</td></tr>" +
+        "<tr><td>« 10 »</td><td>10 cm</td><td>10 tout seul ne veut rien dire</td></tr>" +
+        "<tr><td>« étanche »</td><td>IP65</td><td>« étanche » à quoi, jusqu'où ?</td></tr>" +
+        "<tr><td>« assez grand »</td><td>au moins 500 L</td><td>assez grand pour qui ?</td></tr>" +
+        "</tbody></table>" +
+        "<div class=\"corr\">Test rapide : si deux fabricants peuvent comprendre ton niveau " +
+        "de deux façons différentes, il n'est pas assez précis.</div>"
+    }
+  ];
+
+  /* ---------------------------------------------------------------------
+     9. Envoi des résultats au professeur (Google Sheets)
+
+     URL du déploiement Apps Script et secret partagé. Tant que l'URL vaut
+     'A_REMPLIR', l'envoi est simplement désactivé : l'activité fonctionne
+     normalement, le rendu se fait par impression. Voir apps-script/LISEZ-MOI.md.
+
+     Le secret n'est pas un chiffrement : il filtre les requêtes parasites.
+     Il doit être identique ici et dans Code.gs.
+     --------------------------------------------------------------------- */
+  var CLOUD = {
+    url: 'A_REMPLIR',
+    secret: 'P11-S5-RB-2026',
+    // Nom de la séquence écrit dans la feuille, pour distinguer les activités
+    // si d'autres viennent s'y ajouter plus tard.
+    capsule: 'p11-s5'
+  };
+
   return {
     EME:EME, FONCTIONS:FONCTIONS, HOTSPOTS:HOTSPOTS,
     OST:OST, PISTES:PISTES, KIT3D:KIT3D,
-    BAREME:BAREME, NIVEAUX:NIVEAUX, BRIEF:BRIEF, MEMO:MEMO, VERBES:VERBES
+    BAREME:BAREME, NIVEAUX:NIVEAUX, BRIEF:BRIEF, MEMO:MEMO, VERBES:VERBES,
+    CLASSES:CLASSES, COUPS_DE_POUCE:COUPS_DE_POUCE, CLOUD:CLOUD
   };
 })();
