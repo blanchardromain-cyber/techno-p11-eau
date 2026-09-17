@@ -1,0 +1,598 @@
+/* ============================================================================
+   P11 · Séance 5 — Pieuvre et cahier des charges
+   Feuille de style unique de l'activité « Bureau d'études AQUALAB ».
+
+   La charte reprend celle des autres outils du dépôt (bete-a-cornes.html,
+   quiz-ip.html, tableur-facture.html) : police Inter, bleu marine #1F3864,
+   bleu #2E75B6, cartes blanches sur fond #f4f7fb. Elle l'étend avec ce dont
+   une activité en trois missions a besoin : barre de progression, plateau de
+   pieuvre, tableau de CDCF, atelier 3D, dossier imprimable.
+
+   Organisation :
+     1. Variables et base           6. Pieuvre (module 1)
+     2. Mise en page et cartes      7. CDCF (module 2)
+     3. Boutons et champs           8. Atelier 3D (module 3)
+     4. Retours pédagogiques        9. Dossier et impression
+     5. En-tête, badge, missions   10. Responsive et préférences système
+   ========================================================================== */
+
+/* ------------------------------ 1. Variables ------------------------------ */
+:root{
+  color-scheme: light;
+
+  /* Charte commune aux outils P11 */
+  --navy:#1F3864;
+  --blue:#2E75B6;
+  --light:#DEEAF6;
+  --lighter:#EAF1FA;
+  --grey:#6b7280;
+
+  /* Retours d'évaluation : mêmes trois niveaux que la bête à cornes */
+  --ok:#1E8E5A;
+  --warn:#B7791F;
+  --ko:#C0392B;
+  --ok-bg:#e7f6ee;
+  --warn-bg:#fdf5e6;
+  --ko-bg:#fbeae8;
+
+  /* Couleurs propres à la séance 5 */
+  --fp:#0F766E;          /* fonction principale */
+  --fp-bg:#d8f3ef;
+  --fc:#7C3AED;          /* fonction contrainte */
+  --fc-bg:#ede4ff;
+  --aqua:#0EA5E9;        /* accent « eau » de la narration */
+  --gold:#C08A2E;        /* sceaux et validations du dossier */
+
+  --line:#e4ebf3;
+  --shadow:0 2px 8px rgba(31,56,100,.06);
+  --shadow-lift:0 10px 28px rgba(31,56,100,.16);
+  --radius:14px;
+}
+
+*{ box-sizing:border-box }
+
+html{ scroll-behavior:smooth }
+
+body{
+  font-family:'Inter',Arial,Helvetica,sans-serif;
+  margin:0;
+  background:#f4f7fb;
+  color:#1f2430;
+  line-height:1.5;
+  /* Dégradé très discret : évoque l'eau sans nuire à la lisibilité au vidéoprojecteur */
+  background-image:
+    radial-gradient(1200px 600px at 12% -10%, rgba(14,165,233,.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(46,117,182,.10), transparent 55%);
+  background-attachment:fixed;
+}
+
+.wrap{ max-width:1080px; margin:0 auto; padding:18px 16px 70px }
+
+/* Élément présent dans le DOM mais réservé aux lecteurs d'écran */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* ------------------------- 2. Mise en page et cartes ---------------------- */
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px 22px;
+  margin-top:18px;
+  box-shadow:var(--shadow);
+}
+.card.tight{ padding:16px 18px }
+
+h2{
+  color:var(--blue);
+  font-size:17px;
+  margin:0 0 16px;
+  border-bottom:2px solid var(--light);
+  padding-bottom:8px;
+}
+h3{ color:var(--navy); font-size:15px; margin:20px 0 10px }
+
+.lead{ color:var(--grey); font-size:14px; margin:0 0 16px }
+.hint{ color:var(--grey); font-size:12.5px; margin:10px 0 0 }
+.center-text{ text-align:center }
+
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px }
+.grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px }
+
+/* Écrans : un seul est visible à la fois, changé par core.js */
+.screen{ display:none; animation:appear .32s ease both }
+.screen.active{ display:block }
+@keyframes appear{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+
+/* ------------------------- 3. Boutons et champs --------------------------- */
+.btn{
+  background:var(--blue); color:#fff; border:none; border-radius:10px;
+  padding:13px 20px; font-size:15px; font-weight:700; font-family:inherit;
+  cursor:pointer; margin:4px 8px 4px 0; transition:.15s;
+}
+.btn:hover{ background:#255f96; transform:translateY(-1px) }
+.btn:active{ transform:none }
+.btn:disabled{ background:#b9c8db; cursor:not-allowed; transform:none }
+.btn.sec{ background:#fff; color:var(--blue); border:2px solid var(--blue) }
+.btn.sec:hover{ background:var(--lighter) }
+.btn.ghost{ background:transparent; color:var(--grey); border:1px solid var(--line) }
+.btn.ghost:hover{ background:#f7fafd; color:var(--navy) }
+.btn.small{ padding:8px 14px; font-size:13px; border-radius:8px }
+.btn.gold{ background:var(--gold) }
+.btn.gold:hover{ background:#a4741f }
+
+/* Accessibilité clavier : un contour visible partout */
+:focus-visible{ outline:3px solid var(--aqua); outline-offset:2px; border-radius:6px }
+
+label.field{ display:block; margin:0 0 12px }
+label.field > span{
+  display:block; font-size:12.5px; font-weight:700; color:var(--navy);
+  margin-bottom:5px; letter-spacing:.01em;
+}
+input[type=text], input[type=number], select, textarea{
+  width:100%; font-family:inherit; font-size:14.5px; color:#1f2430;
+  border:1.5px solid #cfdcec; border-radius:9px; padding:10px 12px;
+  background:#fff; outline:none; transition:.15s;
+}
+input[type=text]:focus, input[type=number]:focus, select:focus, textarea:focus{
+  border-color:var(--blue); box-shadow:0 0 0 3px rgba(46,117,182,.14);
+}
+textarea{ resize:vertical; min-height:80px; line-height:1.55 }
+input::placeholder, textarea::placeholder{ color:#a9bcd6 }
+
+/* État de validation posé sur un champ par le moteur d'évaluation */
+.f-ok    { border-color:var(--ok)  !important; background:var(--ok-bg)   !important }
+.f-partial{ border-color:var(--warn)!important; background:var(--warn-bg) !important }
+.f-ko    { border-color:var(--ko)  !important; background:var(--ko-bg)   !important }
+
+/* --------------------- 4. Retours pédagogiques ---------------------------- */
+.fb{ margin-top:14px; padding:14px 16px; border-radius:10px; font-size:14px }
+.fb.ok     { background:var(--ok-bg);   color:#13633d; border-left:5px solid var(--ok) }
+.fb.partial{ background:var(--warn-bg); color:#7a5410; border-left:5px solid var(--warn) }
+.fb.ko     { background:var(--ko-bg);   color:#8e2018; border-left:5px solid var(--ko) }
+.fb.info   { background:var(--lighter); color:var(--navy); border-left:5px solid var(--blue) }
+.fb b.t{ display:block; margin-bottom:4px }
+.fb ul{ margin:8px 0 0; padding-left:20px }
+.fb li{ margin:3px 0 }
+
+/* Encadré « corrigé », affiché seulement au second essai */
+.corr{
+  margin-top:8px; color:var(--navy); background:#fff; border-radius:8px;
+  padding:9px 11px; font-weight:600; border:1px solid var(--line);
+}
+.corr em{ font-weight:500; color:var(--grey); font-style:normal }
+
+.score{
+  font-size:15px; font-weight:800; color:var(--navy); margin-top:16px;
+  background:var(--lighter); border-radius:10px; padding:12px 14px; text-align:center;
+}
+.again{
+  margin-top:14px; font-size:14px; color:var(--navy); background:var(--lighter);
+  border-radius:10px; padding:12px 14px; font-weight:600;
+}
+
+/* Petite pastille de statut réutilisée dans les tableaux */
+.pill{
+  display:inline-block; border-radius:999px; padding:2px 10px;
+  font-size:11.5px; font-weight:800; letter-spacing:.02em;
+}
+.pill.ok{ background:var(--ok-bg); color:#13633d }
+.pill.partial{ background:var(--warn-bg); color:#7a5410 }
+.pill.ko{ background:var(--ko-bg); color:#8e2018 }
+.pill.todo{ background:#eef2f7; color:var(--grey) }
+.pill.fp{ background:var(--fp-bg); color:var(--fp) }
+.pill.fc{ background:var(--fc-bg); color:var(--fc) }
+
+/* ------------------ 5. En-tête, badge, barre de missions ------------------ */
+header.band{
+  background:linear-gradient(135deg,var(--navy) 0%,#2a4a80 55%,#1d5f92 100%);
+  color:#fff; border-radius:var(--radius); padding:18px 22px;
+  box-shadow:0 6px 18px rgba(31,56,100,.18); position:relative; overflow:hidden;
+}
+/* Ondes décoratives : purement visuelles, retirées du flux pour l'impression */
+header.band::after{
+  content:""; position:absolute; inset:auto -40px -70px -40px; height:150px;
+  background:radial-gradient(60% 100% at 50% 0%, rgba(14,165,233,.35), transparent 70%);
+  pointer-events:none;
+}
+header.band .k{ font-size:12px; letter-spacing:.04em; color:#bcd2ee; font-weight:600 }
+header.band h1{ margin:6px 0 0; font-size:22px; font-weight:800; position:relative }
+header.band p{ margin:6px 0 0; color:#dce8f8; font-size:14px; position:relative }
+
+.band-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap }
+
+/* Identité de l'équipe, affichée en haut à droite une fois le badge créé */
+.team-chip{
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.26);
+  border-radius:10px; padding:8px 12px; font-size:12.5px; position:relative;
+  backdrop-filter:blur(3px); max-width:280px;
+}
+.team-chip b{ display:block; font-size:13px }
+.team-chip .code{
+  font-family:'Courier New',monospace; letter-spacing:.08em; font-weight:700;
+  color:#bfe6ff;
+}
+
+/* Barre de navigation entre les trois missions.
+   `position:relative` la place au-dessus de la vague décorative du bandeau
+   (header.band::after), qui teintait sinon le bas des cartes en bleu. */
+.missions{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px;
+  position:relative;
+}
+.mission-tab{
+  background:#fff; border:1.5px solid var(--line); border-radius:12px;
+  padding:12px 12px; cursor:pointer; text-align:left; font-family:inherit;
+  transition:.18s; box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.mission-tab:hover{ border-color:var(--blue); transform:translateY(-2px); box-shadow:var(--shadow-lift) }
+.mission-tab[aria-current="true"]{ border-color:var(--blue); background:var(--lighter) }
+.mission-tab .num{
+  display:block; font-size:11px; font-weight:800; color:var(--blue); letter-spacing:.06em;
+}
+.mission-tab .ttl{ display:block; font-size:13.5px; font-weight:700; color:var(--navy); margin-top:2px }
+.mission-tab .sub{ display:block; font-size:11.5px; color:var(--grey); margin-top:2px }
+/* `display:block` est indispensable : sur un <span> resté inline, la hauteur
+   est ignorée et la barre intérieure s'échappe de la carte. */
+.mission-tab .bar{
+  display:block; height:5px; border-radius:999px; background:#e8eef6;
+  margin-top:9px; overflow:hidden;
+}
+.mission-tab .bar > i{
+  display:block; height:100%; width:0%; border-radius:999px;
+  background:linear-gradient(90deg,var(--aqua),var(--blue)); transition:width .6s ease;
+}
+.mission-tab.locked{ opacity:.55 }
+.mission-tab.done{ border-color:var(--ok) }
+.mission-tab.done .num{ color:var(--ok) }
+
+/* Bandeau narratif de l'appel d'offres */
+.brief{
+  background:linear-gradient(135deg,#0b3a5e,#12557f); color:#e8f4ff;
+  border-radius:var(--radius); padding:18px 22px; margin-top:18px;
+  border-left:6px solid var(--aqua);
+}
+.brief h2{ color:#9fdcff; border-bottom-color:rgba(159,220,255,.3); margin-bottom:10px }
+.brief p{ margin:0 0 8px; font-size:14.5px }
+.brief p:last-child{ margin-bottom:0 }
+.brief .from{ font-size:12px; color:#8fb6d4; letter-spacing:.03em; text-transform:uppercase; font-weight:700 }
+
+/* Choix seul / binôme sur l'écran de badge */
+.mode-choice{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:6px 0 18px }
+.mode-opt{
+  border:2px solid var(--line); border-radius:12px; padding:16px; cursor:pointer;
+  background:#fff; text-align:center; transition:.15s; font-family:inherit;
+}
+.mode-opt:hover{ border-color:var(--blue) }
+.mode-opt[aria-pressed="true"]{ border-color:var(--blue); background:var(--lighter) }
+.mode-opt .ico{ font-size:26px; display:block; line-height:1 }
+.mode-opt .nm{ display:block; font-weight:800; color:var(--navy); margin-top:8px; font-size:15px }
+.mode-opt .ds{ display:block; font-size:12px; color:var(--grey); margin-top:4px }
+
+.codebox{
+  font-family:'Courier New',monospace; font-size:22px; font-weight:700;
+  letter-spacing:.14em; color:var(--navy); background:var(--lighter);
+  border:2px dashed var(--blue); border-radius:10px; padding:14px; text-align:center;
+}
+
+/* ----------------------- 6. Pieuvre — module 1 ---------------------------- */
+.octo-stage{
+  position:relative; width:100%; aspect-ratio:10/7; min-height:340px;
+  background:
+    radial-gradient(circle at 50% 50%, #fff 0%, #f3f8fd 62%, #e9f1fa 100%);
+  border:1px solid var(--line); border-radius:12px; overflow:hidden;
+}
+.octo-stage svg{ position:absolute; inset:0; width:100%; height:100% }
+
+/* Nœuds EME positionnés en pourcentage par module1.js */
+.eme{
+  position:absolute; transform:translate(-50%,-50%);
+  background:#fff; border:2px solid var(--blue); border-radius:999px;
+  padding:7px 13px; font-size:12.5px; font-weight:700; color:var(--navy);
+  cursor:pointer; white-space:nowrap; box-shadow:var(--shadow); transition:.16s;
+  font-family:inherit;
+}
+.eme:hover{ background:var(--lighter); transform:translate(-50%,-50%) scale(1.06) }
+.eme[aria-pressed="true"]{ background:var(--aqua); border-color:var(--aqua); color:#fff }
+.eme.linked{ border-color:var(--ok); background:var(--ok-bg) }
+.eme .ico{ margin-right:5px }
+
+/* Objet technique au centre de la pieuvre */
+.octo-core{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  background:var(--blue); color:#fff; border-radius:50%; width:150px; height:150px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-weight:800; font-size:14px; padding:14px; line-height:1.25;
+  box-shadow:0 8px 22px rgba(46,117,182,.35); border:3px solid #fff;
+}
+.octo-core.pulse{ animation:pulse 2.4s ease-in-out infinite }
+@keyframes pulse{
+  0%,100%{ box-shadow:0 8px 22px rgba(46,117,182,.35) }
+  50%    { box-shadow:0 8px 34px rgba(46,117,182,.6) }
+}
+
+/* Traits de la pieuvre : dessinés progressivement */
+.octo-stage path.link{ fill:none; stroke-width:2.5; stroke-linecap:round }
+.octo-stage path.link.fp{ stroke:var(--fp); stroke-width:3.5 }
+.octo-stage path.link.fc{ stroke:var(--fc) }
+.octo-stage path.link.draw{ animation:draw .75s ease forwards }
+@keyframes draw{ from{ stroke-dashoffset:var(--len) } to{ stroke-dashoffset:0 } }
+.octo-stage path.ghost{ fill:none; stroke:#c6d6e8; stroke-width:2; stroke-dasharray:5 6 }
+
+/* Étiquette posée au milieu d'un trait tracé */
+.link-tag{
+  position:absolute; transform:translate(-50%,-50%);
+  background:#fff; border-radius:999px; padding:2px 9px; font-size:11px;
+  font-weight:800; border:1.5px solid; pointer-events:none; white-space:nowrap;
+}
+.link-tag.fp{ color:var(--fp); border-color:var(--fp) }
+.link-tag.fc{ color:var(--fc); border-color:var(--fc) }
+
+/* Consigne contextuelle affichée sous le plateau */
+.octo-status{
+  margin-top:12px; background:var(--lighter); border-radius:10px; padding:11px 14px;
+  font-size:13.5px; color:var(--navy); font-weight:600; min-height:44px;
+  display:flex; align-items:center; gap:10px;
+}
+.octo-status .step{
+  background:var(--blue); color:#fff; border-radius:999px; min-width:24px; height:24px;
+  display:inline-flex; align-items:center; justify-content:center; font-size:12px; flex:none;
+}
+
+/* Tri FP / FC par glisser-déposer (avec repli au clic) */
+.sortzone{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px }
+.bin{
+  border:2px dashed #c6d6e8; border-radius:12px; padding:12px; min-height:150px;
+  background:#fbfdff; transition:.15s;
+}
+.bin.fp{ border-color:var(--fp) }
+.bin.fc{ border-color:var(--fc) }
+.bin.over{ background:var(--lighter); border-style:solid }
+.bin h4{
+  margin:0 0 4px; font-size:13.5px; color:var(--navy);
+  display:flex; align-items:center; gap:8px;
+}
+.bin .rule{ font-size:11.5px; color:var(--grey); margin:0 0 10px; line-height:1.4 }
+.chip{
+  background:#fff; border:1.5px solid var(--line); border-radius:9px;
+  padding:9px 11px; font-size:13px; margin:0 0 8px; cursor:grab;
+  box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; transition:.15s;
+}
+.chip:hover{ border-color:var(--blue) }
+.chip:active{ cursor:grabbing }
+.chip.dragging{ opacity:.45 }
+.chip .grip{ color:#b9c8db; font-size:15px; flex:none; line-height:1 }
+.chip .txt{ flex:1 }
+.chip.ok{ border-color:var(--ok); background:var(--ok-bg) }
+.chip.ko{ border-color:var(--ko); background:var(--ko-bg) }
+.chip .why{ display:block; font-size:11.5px; margin-top:4px; font-weight:600 }
+.chip.ok .why{ color:#13633d }
+.chip.ko .why{ color:#8e2018 }
+.pool{ margin-top:14px }
+
+/* Scène 3D et ses points chauds */
+.scene-holder{
+  position:relative; width:100%; height:380px; border-radius:12px; overflow:hidden;
+  background:linear-gradient(180deg,#eaf3fb,#d9e9f6); border:1px solid var(--line);
+}
+.scene-holder canvas{ display:block; width:100%; height:100%; touch-action:none }
+.hotspot{
+  position:absolute; transform:translate(-50%,-50%); width:26px; height:26px;
+  border-radius:50%; background:rgba(14,165,233,.92); border:2px solid #fff;
+  color:#fff; font-size:12px; font-weight:800; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.28); transition:.15s;
+}
+.hotspot:hover{ transform:translate(-50%,-50%) scale(1.22) }
+.hotspot.found{ background:var(--ok) }
+.scene-cap{
+  position:absolute; left:10px; bottom:10px; right:10px;
+  background:rgba(15,42,70,.86); color:#eaf4ff; border-radius:9px;
+  padding:9px 12px; font-size:12.5px; line-height:1.45; pointer-events:none;
+}
+.scene-tools{
+  position:absolute; right:10px; top:10px; display:flex; gap:6px; flex-direction:column;
+}
+.scene-tools button{
+  background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:8px;
+  width:34px; height:34px; cursor:pointer; font-size:15px; color:var(--navy);
+  font-family:inherit; transition:.15s;
+}
+.scene-tools button:hover{ background:#fff; color:var(--blue) }
+
+/* --------------------------- 7. CDCF — module 2 --------------------------- */
+.ost-picker{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px }
+.ost-card{
+  border:2px solid var(--line); border-radius:12px; padding:16px; background:#fff;
+  cursor:pointer; text-align:left; font-family:inherit; transition:.16s;
+  display:flex; gap:14px; align-items:flex-start;
+}
+.ost-card:hover{ border-color:var(--blue); transform:translateY(-2px); box-shadow:var(--shadow-lift) }
+.ost-card[aria-pressed="true"]{ border-color:var(--blue); background:var(--lighter) }
+.ost-card .emoji{ font-size:30px; line-height:1; flex:none }
+.ost-card h4{ margin:0 0 4px; font-size:14.5px; color:var(--navy) }
+.ost-card p{ margin:0; font-size:12.5px; color:var(--grey); line-height:1.45 }
+
+.cdcf{ width:100%; border-collapse:separate; border-spacing:0; font-size:13.5px }
+.cdcf th{
+  background:var(--navy); color:#fff; text-align:left; padding:10px 12px;
+  font-size:12px; letter-spacing:.03em; font-weight:700;
+}
+.cdcf th:first-child{ border-radius:9px 0 0 0 }
+.cdcf th:last-child{ border-radius:0 9px 0 0 }
+.cdcf td{ border-bottom:1px solid var(--line); padding:10px 12px; vertical-align:top }
+.cdcf tr:nth-child(even) td{ background:#fbfdff }
+.cdcf .rep{ font-weight:800; color:var(--navy); white-space:nowrap }
+.cdcf .fn{ min-width:190px }
+.cdcf input{ font-size:13.5px; padding:8px 10px }
+.cdcf .niv{ display:flex; gap:6px }
+.cdcf .niv input:first-child{ flex:1; min-width:70px }
+.cdcf .niv select{ width:110px; flex:none; font-size:13px; padding:8px 6px }
+.cdcf td.stat{ width:52px; text-align:center }
+.table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+
+/* Bandeau de progression du dossier d'appel d'offres */
+.progress-strip{
+  display:flex; align-items:center; gap:14px; background:var(--lighter);
+  border-radius:12px; padding:12px 16px; margin-top:16px;
+}
+.progress-strip .bar{ flex:1; height:10px; background:#d7e4f2; border-radius:999px; overflow:hidden }
+.progress-strip .bar > i{
+  display:block; height:100%; width:0%; border-radius:999px;
+  background:linear-gradient(90deg,var(--aqua),var(--fp)); transition:width .7s cubic-bezier(.22,1,.36,1);
+}
+.progress-strip .pct{ font-weight:800; color:var(--navy); font-size:14px; min-width:44px; text-align:right }
+
+/* Sceau de validation, apparaît quand une mission est complète */
+.seal{
+  display:inline-flex; align-items:center; gap:8px; border:2px solid var(--gold);
+  color:var(--gold); border-radius:999px; padding:6px 14px; font-weight:800;
+  font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+  transform:rotate(-2deg); animation:stamp .45s cubic-bezier(.3,1.6,.5,1) both;
+}
+@keyframes stamp{ from{ transform:rotate(-2deg) scale(2.2); opacity:0 } to{ transform:rotate(-2deg) scale(1); opacity:1 } }
+
+/* --------------------- 8. Atelier 3D — module 3 --------------------------- */
+.kit{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px }
+.kit button{
+  border:1.5px solid var(--line); border-radius:10px; background:#fff; cursor:pointer;
+  padding:10px 6px; font-family:inherit; font-size:11.5px; font-weight:700;
+  color:var(--navy); transition:.15s; line-height:1.3;
+}
+.kit button:hover{ border-color:var(--blue); background:var(--lighter); transform:translateY(-2px) }
+.kit button .ico{ display:block; font-size:22px; margin-bottom:4px }
+
+.parts-list{ margin-top:12px; max-height:180px; overflow-y:auto }
+.part-row{
+  display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px;
+  font-size:12.5px; border:1px solid var(--line); margin-bottom:6px; background:#fff;
+  cursor:pointer; transition:.12s;
+}
+.part-row:hover{ border-color:var(--blue) }
+.part-row[aria-current="true"]{ border-color:var(--aqua); background:#eaf7ff }
+.part-row .sw{ width:12px; height:12px; border-radius:3px; flex:none }
+.part-row .nm{ flex:1 }
+.part-row .del{
+  border:none; background:transparent; color:var(--ko); cursor:pointer;
+  font-size:15px; padding:0 4px; font-family:inherit;
+}
+
+/* Éditeur libre de pieuvre du module 3 */
+.func-editor{ margin-top:8px }
+.func-row{
+  display:grid; grid-template-columns:86px 1fr 150px 130px 40px; gap:8px;
+  align-items:start; margin-bottom:10px;
+}
+.func-row select, .func-row input{ font-size:13px; padding:8px 10px }
+.func-row .rm{
+  border:none; background:var(--ko-bg); color:var(--ko); border-radius:8px;
+  cursor:pointer; font-size:15px; font-family:inherit; height:38px;
+}
+
+/* ---------------------- 9. Dossier et impression -------------------------- */
+.dossier{ background:#fff; border-radius:var(--radius); padding:24px 26px; border:1px solid var(--line) }
+.dossier h1{ font-size:21px; color:var(--navy); margin:0 0 4px }
+.dossier .meta{ color:var(--grey); font-size:13px; margin:0 0 18px }
+.dossier section{ margin-top:22px }
+.dossier .snap{
+  width:100%; max-width:520px; border-radius:10px; border:1px solid var(--line); display:block;
+}
+
+/* Grille de compétence : les 4 niveaux de maîtrise du cycle 4 */
+.grille{ width:100%; border-collapse:collapse; font-size:13px; margin-top:10px }
+.grille th, .grille td{ border:1px solid var(--line); padding:9px 11px; text-align:left }
+.grille th{ background:var(--lighter); color:var(--navy); font-size:12px }
+.grille td.lvl{ text-align:center; width:64px; font-weight:800 }
+.grille td.lvl.on{ background:var(--ok-bg); color:#13633d }
+
+.bigscore{
+  display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;
+  background:var(--lighter); border-radius:12px; padding:20px; margin-top:6px;
+}
+.bigscore .n{ font-size:40px; font-weight:800; color:var(--navy); line-height:1 }
+.bigscore .n small{ font-size:17px; color:var(--grey); font-weight:700 }
+.bigscore .lv{
+  font-size:14px; font-weight:800; border-radius:10px; padding:10px 16px;
+  background:#fff; border:2px solid var(--blue); color:var(--navy);
+}
+
+/* Bloc réservé au professeur : masqué tant que le mode prof n'est pas actif.
+   Même principe que `.prof-only` sur le site principal. */
+.prof-only{ display:none }
+body.est-prof .prof-only{ display:block }
+.prof-badge{
+  background:var(--gold); color:#fff; border-radius:8px; padding:3px 10px;
+  font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+}
+
+.footer{ color:var(--grey); font-size:11px; text-align:center; margin-top:26px }
+.footer a{ color:var(--blue) }
+
+/* Notification discrète (sauvegarde, copie de code…) */
+.toast{
+  position:fixed; left:50%; bottom:24px; transform:translate(-50%,120%);
+  background:var(--navy); color:#fff; border-radius:10px; padding:11px 18px;
+  font-size:13.5px; font-weight:600; box-shadow:var(--shadow-lift);
+  transition:transform .3s cubic-bezier(.22,1,.36,1); z-index:60; max-width:90vw;
+}
+.toast.show{ transform:translate(-50%,0) }
+
+/* Fenêtre modale (aide, corrigé professeur) */
+.modal-back{
+  position:fixed; inset:0; background:rgba(15,32,58,.55); display:none;
+  align-items:center; justify-content:center; padding:18px; z-index:50;
+}
+.modal-back.show{ display:flex }
+.modal{
+  background:#fff; border-radius:var(--radius); max-width:640px; width:100%;
+  max-height:86vh; overflow-y:auto; padding:24px 26px; box-shadow:var(--shadow-lift);
+}
+.modal h3{ margin-top:0 }
+
+@media print{
+  body{ background:#fff; background-image:none }
+  .no-print, header.band, .missions, .btn, .toast, .modal-back{ display:none !important }
+  .wrap{ max-width:none; padding:0 }
+  .card, .dossier{ box-shadow:none; border:1px solid #ccc; break-inside:avoid }
+  .screen{ display:none !important }
+  .screen.print-me{ display:block !important }
+  a[href]:after{ content:"" }
+}
+
+/* ------------------ 10. Responsive et préférences système ----------------- */
+@media (max-width:900px){
+  .missions{ grid-template-columns:1fr 1fr }
+  .grid3{ grid-template-columns:1fr }
+  .ost-picker{ grid-template-columns:1fr }
+  .func-row{ grid-template-columns:1fr 1fr; gap:6px }
+  .func-row .rm{ grid-column:2; justify-self:end; width:44px }
+}
+@media (max-width:680px){
+  .wrap{ padding:14px 12px 60px }
+  .grid2{ grid-template-columns:1fr }
+  .sortzone{ grid-template-columns:1fr }
+  .mode-choice{ grid-template-columns:1fr }
+  .octo-stage{ aspect-ratio:auto; height:470px }
+  .eme{ font-size:11px; padding:5px 8px }
+  .eme .ico{ margin-right:3px }
+  /* Objet central réduit : sur téléphone, le cercle des pastilles doit encore
+     pouvoir le contourner sans le recouvrir. */
+  .octo-core{ width:104px; height:104px; font-size:11.5px; padding:10px }
+  .kit{ grid-template-columns:repeat(3,1fr) }
+  .scene-holder{ height:300px }
+  .missions{ grid-template-columns:1fr 1fr; gap:8px }
+  header.band h1{ font-size:19px }
+  .cdcf{ font-size:12.5px }
+  .cdcf .niv{ flex-direction:column }
+  .cdcf .niv select{ width:100% }
+}
+
+/* Respect du réglage système « réduire les animations » */
+@media (prefers-reduced-motion:reduce){
+  *, *::before, *::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important;
+  }
+}
