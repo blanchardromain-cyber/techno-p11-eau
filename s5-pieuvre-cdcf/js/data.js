@@ -387,16 +387,19 @@ var P11DATA = (function(){
     { t:"L'eau de pluie de la cour",     d:"La cour est goudronnée : l'eau file dans le caniveau. Comment la garder sur place ?" }
   ];
 
-  // Kit de pièces de la maquette 3D. `couleur` sert aussi de pastille dans la liste.
+  // Kit de pièces de la maquette 3D.
+  // `couleur` est la teinte dominante de la pièce : elle sert de pastille dans
+  // la liste, et le modèle 3D la reprend sur sa partie principale. La forme des
+  // pièces, elle, est décrite dans scene3d.js — c'est du rendu, pas du cours.
   var KIT3D = [
-    { id:'cuve',    nom:"Cuve",        ico:'🛢️', couleur:0x2E75B6, forme:'cylindre', taille:[0.45,0.45,0.9] },
-    { id:'tuyau',   nom:"Tuyau",       ico:'➖', couleur:0x9AA7B4, forme:'tube',     taille:[0.09,0.09,1.4] },
-    { id:'pompe',   nom:"Pompe",       ico:'⚙️', couleur:0xB7791F, forme:'cube',     taille:[0.4,0.35,0.4] },
-    { id:'filtre',  nom:"Filtre",      ico:'🧽', couleur:0x1E8E5A, forme:'cylindre', taille:[0.25,0.25,0.5] },
-    { id:'capteur', nom:"Capteur",     ico:'📡', couleur:0xC0392B, forme:'cube',     taille:[0.2,0.2,0.2] },
-    { id:'solaire', nom:"Panneau",     ico:'🔆', couleur:0x0F766E, forme:'plaque',   taille:[0.8,0.05,0.55] },
-    { id:'vanne',   nom:"Vanne",       ico:'🔩', couleur:0x7C3AED, forme:'cube',     taille:[0.22,0.22,0.22] },
-    { id:'goutteur',nom:"Goutteur",    ico:'💧', couleur:0x0EA5E9, forme:'cone',     taille:[0.14,0.22,0.14] }
+    { id:'cuve',    nom:"Cuve",     ico:'🛢️', couleur:0x2E75B6 },
+    { id:'tuyau',   nom:"Tuyau",    ico:'➖', couleur:0x9AA7B4 },
+    { id:'pompe',   nom:"Pompe",    ico:'⚙️', couleur:0xB7791F },
+    { id:'filtre',  nom:"Filtre",   ico:'🧽', couleur:0x1E8E5A },
+    { id:'capteur', nom:"Capteur",  ico:'📡', couleur:0xC0392B },
+    { id:'panneau', nom:"Panneau",  ico:'🔆', couleur:0x0F766E },
+    { id:'vanne',   nom:"Vanne",    ico:'🔩', couleur:0x7C3AED },
+    { id:'goutteur',nom:"Goutteur", ico:'💧', couleur:0x0EA5E9 }
   ];
 
   /* ---------------------------------------------------------------------
@@ -553,7 +556,9 @@ var P11DATA = (function(){
      Il doit être identique ici et dans Code.gs.
      --------------------------------------------------------------------- */
   var CLOUD = {
-    url: 'A_REMPLIR',
+    // L'URL doit être entre apostrophes : sans elles, tout le fichier cesse
+    // d'être lu et l'activité ne démarre plus.
+    url: 'https://script.google.com/macros/s/AKfycbxeRCsQG0sMFp07OaAflAD_H6aJ3aH9g--lS6P37PUl8m4OkzIL62Hi_jjsTcurS4eC/exec',
     secret: 'P11-S5-RB-2026',
     // Nom de la séquence écrit dans la feuille, pour distinguer les activités
     // si d'autres viennent s'y ajouter plus tard.
