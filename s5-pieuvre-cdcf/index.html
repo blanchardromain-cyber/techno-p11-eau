@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Pieuvre et cahier des charges</title>
+<meta name="description" content="Activité de technologie 4e : analyser une pieuvre, rédiger un cahier des charges fonctionnel et concevoir une solution pour économiser l'eau.">
+<meta name="author" content="Collège Saint Pierre – Les Essarts">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=2026-09-17s">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐙</text></svg>">
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ===================== EN-TÊTE ET NAVIGATION ======================== -->
+  <header class="band">
+    <div class="band-top">
+      <div>
+        <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
+        <h1>Bureau d'études — Pieuvre et cahier des charges</h1>
+        <p>Séance 5 · Compétence CT 2.1 — S'approprier un cahier des charges.</p>
+      </div>
+      <div class="team-chip" id="team-chip" style="display:none"></div>
+    </div>
+
+    <nav class="missions" aria-label="Les trois missions">
+      <button class="mission-tab" data-go="m1" type="button" aria-current="false">
+        <span class="num">MISSION 1</span>
+        <span class="ttl">Décryptage de la pieuvre</span>
+        <span class="sub">Le robinet automatique en 3D</span>
+        <span class="bar"><i></i></span>
+      </button>
+      <button class="mission-tab" data-go="m2" type="button" aria-current="false">
+        <span class="num">MISSION 2</span>
+        <span class="ttl">Cahier des charges</span>
+        <span class="sub">Critères et niveaux</span>
+        <span class="bar"><i></i></span>
+      </button>
+      <button class="mission-tab" data-go="m3" type="button" aria-current="false">
+        <span class="num">MISSION 3</span>
+        <span class="ttl">Défi créatif</span>
+        <span class="sub">Ta solution, en maquette 3D</span>
+        <span class="bar"><i></i></span>
+      </button>
+      <button class="mission-tab" data-go="dossier" type="button" aria-current="false">
+        <span class="num">DOSSIER</span>
+        <span class="ttl">Rendu et note</span>
+        <span class="sub">Impression et export</span>
+        <span class="bar"><i style="width:0"></i></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ======================================================================
+       ÉCRAN 0 — BADGE DE BUREAU D'ÉTUDES
+       ==================================================================== -->
+  <div class="screen active" id="ecran-accueil">
+
+    <div class="brief">
+      <div class="from" id="brief-de"></div>
+      <h2 id="brief-titre" style="margin-top:6px"></h2>
+      <div id="brief-corps"></div>
+    </div>
+
+    <section class="card">
+      <h2>Ton badge de bureau d'études</h2>
+
+      <div id="badge-form">
+        <p class="lead">Avant de répondre à l'appel d'offres, identifie ton équipe.
+          Un code te sera donné : il te permettra de retrouver ton dossier à la séance suivante.</p>
+
+        <div class="mode-choice">
+          <button class="mode-opt" id="mode-seul" type="button" aria-pressed="true">
+            <span class="ico" aria-hidden="true">🧑‍💻</span>
+            <span class="nm">Je travaille seul</span>
+            <span class="ds">Un poste, un dossier</span>
+          </button>
+          <button class="mode-opt" id="mode-binome" type="button" aria-pressed="false">
+            <span class="ico" aria-hidden="true">🧑‍🤝‍🧑</span>
+            <span class="nm">Nous sommes en binôme</span>
+            <span class="ds">Un poste, deux noms</span>
+          </button>
+        </div>
+        <p class="hint" id="badge-mode-aide" style="margin-top:-8px;margin-bottom:16px"></p>
+
+        <div class="grid2">
+          <label class="field"><span>Nom et prénom</span>
+            <input type="text" id="badge-eleve1" placeholder="Ex. Dupont Camille" autocomplete="off">
+          </label>
+          <label class="field" id="champ-eleve2" style="display:none"><span>Nom et prénom du binôme</span>
+            <input type="text" id="badge-eleve2" placeholder="Ex. Martin Sacha" autocomplete="off">
+          </label>
+        </div>
+        <label class="field" style="max-width:220px"><span>Classe</span>
+          <input type="text" id="badge-classe" placeholder="Ex. 4B" autocomplete="off" maxlength="6">
+        </label>
+
+        <button class="btn" id="badge-creer" type="button">Créer mon badge et commencer</button>
+      </div>
+
+      <div id="badge-resultat" style="display:none">
+        <p class="lead" style="margin-bottom:10px">Badge actif. <b>Recopie ce code sur ton cahier</b> :
+          il rouvre ton dossier sur ce poste, et il identifie ton travail auprès du professeur.</p>
+        <div class="codebox" id="badge-code-affiche">—</div>
+        <p class="center-text" style="margin:12px 0 4px" id="badge-identite"></p>
+        <p class="center-text">
+          <button class="btn sec small" id="badge-copier" type="button">Copier le code</button>
+          <button class="btn small" type="button" onclick="P11.aller('m1')">Commencer la mission 1</button>
+        </p>
+      </div>
+    </section>
+
+    <section class="card tight">
+      <h2>Reprendre un dossier</h2>
+      <div class="grid2">
+        <label class="field"><span>Code d'équipe (sur ce poste)</span>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="badge-code-repris" placeholder="Ex. 4B-K7M2" autocomplete="off"
+                   style="text-transform:uppercase">
+            <button class="btn sec small" id="badge-reprendre" type="button" style="flex:none">Ouvrir</button>
+          </div>
+        </label>
+        <label class="field"><span>Fichier exporté (autre poste)</span>
+          <input type="file" id="badge-importer" accept="application/json,.json">
+        </label>
+      </div>
+      <p class="hint">Le travail est enregistré dans le navigateur de ce poste.
+        Pour changer d'ordinateur, exporte ton dossier depuis l'onglet « Dossier », puis réimporte le fichier ici.</p>
+    </section>
+
+    <!-- Réservé au professeur : n'apparaît qu'avec ?prof dans l'adresse -->
+    <section class="card prof-only">
+      <h2><span class="prof-badge">Professeur</span> Dossiers enregistrés sur ce poste</h2>
+      <p class="lead">Chaque poste ne connaît que les dossiers créés dessus.
+        Pour rassembler une classe, demande aux élèves d'exporter leur fichier JSON.</p>
+      <button class="btn sec small" id="prof-rafraichir" type="button">Rafraîchir la liste</button>
+      <div id="prof-dossiers" style="margin-top:12px"></div>
+    </section>
+  </div>
+
+  <!-- ======================================================================
+       ÉCRAN 1 — MISSION 1 : DÉCRYPTAGE DE LA PIEUVRE
+       ==================================================================== -->
+  <div class="screen" id="ecran-m1">
+
+    <section class="card">
+      <h2>1 · Repère les éléments du milieu extérieur sur l'objet réel</h2>
+      <p class="lead">Fais tourner le robinet avec la souris (ou le doigt) et ouvre les cinq repères.
+        Chaque repère désigne un <b>élément du milieu extérieur</b> : quelque chose qui n'appartient pas
+        à l'objet, mais avec lequel il doit compter.</p>
+
+      <div class="scene-holder" id="m1-scene">
+        <div class="scene-tools">
+          <button id="m1-rotation" type="button" title="Arrêter la rotation" aria-label="Arrêter la rotation">⏸</button>
+          <button id="m1-recadrer" type="button" title="Replacer la vue" aria-label="Replacer la vue">⟳</button>
+        </div>
+        <div class="scene-cap" id="m1-legende">
+          Clique sur un repère numéroté pour découvrir l'élément du milieu extérieur correspondant.
+        </div>
+      </div>
+      <!-- Repli sans 3D : les points chauds deviennent une liste de boutons.
+           Rendu visible par module1.js uniquement dans ce cas. -->
+      <div id="m1-hs-liste" style="display:none"></div>
+      <p class="hint" id="m1-hs-compte">Éléments repérés : 0 / 5</p>
+    </section>
+
+    <section class="card">
+      <h2>2 · Trace la pieuvre</h2>
+      <p class="lead">
+        Une <b>fonction principale</b> relie <b>deux</b> éléments du milieu extérieur : son trait traverse l'objet.
+        Une <b>fonction contrainte</b> relie l'objet à <b>un seul</b> élément : l'objet doit s'adapter à lui.
+        Choisis d'abord le type, puis clique sur les éléments.
+      </p>
+
+      <p>
+        <button class="btn sec small" id="m1-mode-FP" type="button" aria-pressed="false"
+                style="border-color:var(--fp);color:var(--fp)">Tracer une fonction principale</button>
+        <button class="btn sec small" id="m1-mode-FC" type="button" aria-pressed="false"
+                style="border-color:var(--fc);color:var(--fc)">Tracer une fonction contrainte</button>
+        <button class="btn ghost small" id="m1-annuler" type="button">Annuler le dernier trait</button>
+        <button class="btn ghost small" id="m1-effacer" type="button">Tout effacer</button>
+      </p>
+
+      <div class="octo-stage" id="m1-stage"></div>
+      <div class="octo-status" id="m1-statut"></div>
+      <p class="hint" id="m1-compte"></p>
+    </section>
+
+    <section class="card">
+      <h2>3 · Classe les six fonctions de la fiche</h2>
+      <p class="lead" id="m1-tri-aide">Fais glisser chaque fonction dans la bonne colonne —
+        ou clique dessus puis clique sur la colonne.</p>
+
+      <div class="sortzone">
+        <div class="bin fp" id="bin-FP">
+          <h4><span class="pill fp">FP</span> Fonction principale</h4>
+          <p class="rule">Relie DEUX éléments du milieu extérieur à travers l'objet.
+            C'est la raison d'être de l'objet technique.</p>
+          <div class="contenu"></div>
+        </div>
+        <div class="bin fc" id="bin-FC">
+          <h4><span class="pill fc">FC</span> Fonction contrainte</h4>
+          <p class="rule">Relie l'objet à UN SEUL élément du milieu extérieur.
+            L'objet doit s'adapter à cet élément.</p>
+          <div class="contenu"></div>
+        </div>
+      </div>
+
+      <div class="pool" id="m1-pool"></div>
+      <p><button class="btn ghost small" id="m1-rendre" type="button">Remettre toutes les fonctions en bas</button></p>
+    </section>
+
+    <section class="card">
+      <h2>4 · Vérification</h2>
+      <button class="btn" id="m1-verif" type="button">Vérifier la mission 1</button>
+      <button class="btn sec" id="m1-memo" type="button">Voir le mémo</button>
+      <div id="m1-sortie"></div>
+      <p style="margin-top:16px">
+        <button class="btn sec small" type="button" onclick="P11.aller('m2')">Passer à la mission 2 →</button>
+      </p>
+    </section>
+  </div>
+
+  <!-- ======================================================================
+       ÉCRAN 2 — MISSION 2 : LE CAHIER DES CHARGES
+       ==================================================================== -->
+  <div class="screen" id="ecran-m2">
+
+    <section class="card">
+      <h2>1 · Choisis l'objet technique de ton appel d'offres</h2>
+      <p class="lead">Quatre commandes sont sur la table du bureau d'études.
+        Choisis celle que ton équipe traitera : tu en rédigeras le cahier des charges fonctionnel.</p>
+      <div class="ost-picker" id="m2-picker"></div>
+    </section>
+
+    <div id="m2-table-zone" style="display:none">
+      <section class="card">
+        <h2>2 · Complète le cahier des charges fonctionnel</h2>
+        <div class="fb info" style="margin-top:0" id="m2-contexte"></div>
+
+        <p class="lead" style="margin-top:14px">
+          Pour chaque fonction, indique le <b>critère</b> — la grandeur que l'on mesure — puis le
+          <b>niveau</b> : une valeur chiffrée et son unité. Vérifie chaque ligne séparément :
+          au premier essai tu reçois une aide, au second le corrigé.
+        </p>
+
+        <div id="m2-table"></div>
+
+        <div class="progress-strip" id="m2-jauge">
+          <span style="font-size:12.5px;font-weight:700;color:var(--navy)">Dossier d'appel d'offres</span>
+          <span class="bar"><i></i></span>
+          <span class="pct">0 %</span>
+        </div>
+
+        <p style="margin-top:16px">
+          <button class="btn" id="m2-verif" type="button">Vérifier le cahier des charges</button>
+          <button class="btn sec" id="m2-memo" type="button">Critère ou niveau ?</button>
+          <button class="btn ghost small" id="m2-changer" type="button">Changer d'objet</button>
+        </p>
+        <div id="m2-sortie"></div>
+        <p style="margin-top:16px">
+          <button class="btn sec small" type="button" onclick="P11.aller('m3')">Passer à la mission 3 →</button>
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       ÉCRAN 3 — MISSION 3 : LE DÉFI CRÉATIF
+       ==================================================================== -->
+  <div class="screen" id="ecran-m3">
+
+    <section class="card">
+      <h2>1 · Ta solution pour économiser l'eau au collège</h2>
+      <p class="lead">Invente un objet technique qui permettrait au collège de consommer moins d'eau.
+        Tu n'as pas à savoir le fabriquer : tu dois savoir en <b>écrire le cahier des charges</b>.</p>
+
+      <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:var(--navy)">
+        Pistes (elles posent un problème, pas une solution)</p>
+      <div id="m3-pistes" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px"></div>
+
+      <label class="field"><span>Nom de ta solution</span>
+        <input type="text" id="m3-nom" placeholder="Ex. HydroRécup, La douche minute…" autocomplete="off">
+      </label>
+      <label class="field"><span>Quel problème résous-tu ? Pour qui ?</span>
+        <textarea id="m3-probleme" placeholder="Décris la situation actuelle et ce qui pose problème."></textarea>
+      </label>
+      <label class="field"><span>Comment ça marche ? (principe de fonctionnement)</span>
+        <textarea id="m3-principe" placeholder="Ce qui entre, ce qui sort, ce qui la déclenche, où elle est installée…"></textarea>
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>2 · La pieuvre de ta solution</h2>
+      <p class="lead">Une fonction principale, au moins trois contraintes.
+        Chaque fonction commence par un <b>verbe à l'infinitif</b>, et porte un critère mesurable
+        avec son niveau chiffré.</p>
+
+      <div class="func-editor" id="m3-fonctions"></div>
+      <p class="hint" id="m3-f-compte"></p>
+      <p>
+        <button class="btn sec small" id="m3-ajouter-fp" type="button">+ Fonction principale</button>
+        <button class="btn sec small" id="m3-ajouter" type="button">+ Fonction contrainte</button>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>3 · L'atelier de maquette</h2>
+      <p class="lead">Assemble ta solution avec les pièces du kit.
+        Clique sur une pièce du kit pour l'ajouter, puis fais-la glisser sur l'établi pour la placer.</p>
+
+      <div class="grid2" style="align-items:start">
+        <div>
+          <div class="kit" id="m3-kit"></div>
+          <p style="margin:12px 0 4px;font-size:12.5px;font-weight:700;color:var(--navy)">Pièces posées</p>
+          <div class="parts-list" id="m3-pieces"></div>
+          <p style="margin-top:10px">
+            <button class="btn ghost small" id="m3-pivoter" type="button">Pivoter la pièce</button>
+            <button class="btn ghost small" id="m3-recadrer3" type="button">Replacer la vue</button>
+            <button class="btn ghost small" id="m3-vider" type="button">Vider</button>
+          </p>
+        </div>
+        <div>
+          <div class="scene-holder" id="m3-scene"></div>
+          <p style="margin-top:10px">
+            <button class="btn sec small" id="m3-photo" type="button">📷 Photographier la maquette</button>
+          </p>
+          <p class="hint">La photo est jointe à ton dossier : c'est elle qui sera projetée
+            au moment de présenter ta solution.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4 · Vérification</h2>
+      <p class="lead">Sur les 20 points de cette mission, <b>12 sont vérifiés automatiquement</b> :
+        ce sont les points de forme, ceux que le cours permet de contrôler.
+        Les <b>8 autres</b> portent sur la pertinence et l'originalité de ton idée : seul le professeur peut les attribuer.</p>
+      <button class="btn" id="m3-verif" type="button">Vérifier la mission 3</button>
+      <div id="m3-sortie"></div>
+      <p style="margin-top:16px">
+        <button class="btn sec small" type="button" onclick="P11.aller('dossier')">Voir mon dossier →</button>
+      </p>
+    </section>
+  </div>
+
+  <!-- ======================================================================
+       ÉCRAN 4 — LE DOSSIER
+       ==================================================================== -->
+  <div class="screen print-me" id="ecran-dossier">
+
+    <section class="card no-print">
+      <h2>Ton dossier de conception</h2>
+      <p class="lead">Ce document rassemble les trois missions. Imprime-le (ou enregistre-le en PDF
+        depuis la fenêtre d'impression) pour le rendre, et garde le fichier JSON si tu dois
+        continuer sur un autre poste.</p>
+      <p>
+        <button class="btn" id="dossier-imprimer" type="button">🖨 Imprimer / enregistrer en PDF</button>
+        <button class="btn sec" id="dossier-json" type="button">⤓ Exporter le dossier (.json)</button>
+        <button class="btn sec" id="dossier-png" type="button">⤓ Image de la maquette (.png)</button>
+        <button class="btn ghost small" id="dossier-maj" type="button">Mettre à jour</button>
+      </p>
+    </section>
+
+    <div class="dossier" id="dossier-corps"></div>
+
+    <section class="card prof-only no-print">
+      <h2><span class="prof-badge">Professeur</span> Appréciation de la mission 3</h2>
+      <p class="lead">Ces points portent sur ce qu'une correction automatique ne peut pas juger :
+        la pertinence du besoin traité, l'originalité de la solution, sa faisabilité au collège,
+        et la cohérence entre la maquette et le cahier des charges.</p>
+      <div class="grid2">
+        <label class="field"><span>Points attribués (sur <span id="prof-max">8</span>)</span>
+          <input type="text" id="prof-points" placeholder="Ex. 6" inputmode="decimal">
+        </label>
+        <label class="field"><span>Remarque portée au dossier</span>
+          <input type="text" id="prof-remarque" placeholder="Ex. Idée simple et réalisable, niveaux à justifier.">
+        </label>
+      </div>
+      <p class="hint">La note sur 20 se recalcule dès que les points sont saisis.</p>
+    </section>
+  </div>
+
+  <div class="footer no-print">
+    Collège Saint Pierre – Les Essarts · Séquence P11 · Séance 5 —
+    <a href="../index.html">retour aux outils de la séquence</a>
+    <br><span style="opacity:.7">build 2026-09-17s</span>
+  </div>
+</div>
+
+<!-- Notification discrète -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Fenêtre modale (mémo, aides) -->
+<div class="modal-back" id="modal-back" role="dialog" aria-modal="true" aria-labelledby="modal-titre">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <h3 id="modal-titre" style="color:var(--blue)"></h3>
+      <button class="btn ghost small" id="modal-fermer" type="button" aria-label="Fermer">✕</button>
+    </div>
+    <div id="modal-corps"></div>
+  </div>
+</div>
+
+<!--
+  Three.js — chargé depuis un CDN.
+  S'il est bloqué par le filtre du réseau, `window.THREE` reste indéfini :
+  scene3d.js le détecte et bascule sur un schéma SVG équivalent. Aucune
+  fonctionnalité pédagogique n'est perdue, seule la 3D disparaît.
+  Version 0.150.1 : dernière à fournir une construction « script global »,
+  utilisable sans serveur (ouverture par double-clic depuis une clé USB).
+-->
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js" crossorigin="anonymous"></script>
+
+<script src="js/data.js?v=2026-09-17s"></script>
+<script src="js/core.js?v=2026-09-17s"></script>
+<script src="js/badge.js?v=2026-09-17s"></script>
+<script src="js/scene3d.js?v=2026-09-17s"></script>
+<script src="js/module1.js?v=2026-09-17s"></script>
+<script src="js/module2.js?v=2026-09-17s"></script>
+<script src="js/module3.js?v=2026-09-17s"></script>
+<script src="js/evaluation.js?v=2026-09-17s"></script>
+<script>
+  // Démarrage une fois le document et tous les scripts en place.
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', P11.init);
+  } else {
+    P11.init();
+  }
+</script>
+</body>
+</html>
