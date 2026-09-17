@@ -111,21 +111,38 @@ ligne par clic : la clé de remplacement est le code d'équipe. L'élève dispos
 plus d'un bouton **« Valider et envoyer à mon professeur »** dans son dossier,
 pour refaire l'envoi une dernière fois quand il a terminé.
 
+L'ordre des colonnes est pensé pour la lecture : **l'essentiel tient en
+colonnes J à M**, juste après l'identité, sans avoir à faire défiler.
+
 | Colonnes | Contenu |
 |---|---|
+| **A – I** | |
 | `date`, `classe`, `code`, `mode` | quand, qui, seul ou en binôme |
 | `nom1`, `prenom1`, `nom2`, `prenom2` | identité, déjà mise en forme |
+| **J – M — ce qu'on regarde en premier** | |
+| `note20` (**J**) | la note sur 20 |
+| `niveau` (**K**) | positionnement de compétence : MI, MF, MS ou TBM |
+| `m3_appreciation` (**L**) | observation générée automatiquement |
+| `remarque` (**M**) | observation saisie par le professeur |
+| **N et au-delà — le détail** | |
+| `total`, `sur` | d'où vient la note sur 20 |
 | `m1`, `m1_liens`, `m1_analyse` | mission 1 sur 20, et son détail |
 | `m1_reperes` | les repères attribués aux six fonctions, dans l'ordre de la fiche |
 | `m2`, `m2_objet` | mission 2 sur 20, et l'objet technique choisi |
 | `m2_1_rep` … `m2_4_unite` | les quatre lignes du cahier des charges : repère, critère, niveau et unité **tels que l'élève les a saisis** |
 | `m3_auto`, `m3_prof` | mission 3 : 12 points automatiques, 8 points professeur |
-| `m3_appreciation` | appréciation générée automatiquement pour la mission 3 |
-| `total`, `sur`, `note20`, `niveau` | note sur 20 et positionnement de compétence |
 | `solution`, `probleme` | l'idée proposée en mission 3 |
 | `presentation` | `oui` si l'équipe a été retenue pour la projection |
 | `aides` | coups de pouce consultés en mission 2 |
-| `remarque` | appréciation saisie par le professeur |
+
+Les quatre premières colonnes et la ligne d'en-têtes sont figées : le nom de
+l'équipe reste visible quand on fait défiler vers la droite.
+
+**Changer l'ordre des colonnes plus tard ?** Le script s'en charge : s'il
+constate que la ligne d'en-têtes ne correspond plus à `COLONNES`, il relit les
+données existantes **par nom de colonne** et les réécrit dans le nouvel ordre.
+Rien n'est perdu, rien ne se décale. Il faut simplement redéployer le script
+pour que le changement prenne effet.
 
 **À propos de `m1_reperes` :** les numéros suivent l'ordre dans lequel chaque
 élève a tracé sa pieuvre. Deux élèves justes n'ont donc pas la même suite —
