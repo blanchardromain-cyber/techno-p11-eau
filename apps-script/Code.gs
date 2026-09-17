@@ -221,6 +221,41 @@ function _json(o) {
 }
 
 /**
+ * Ajoute un menu « P11 » dans le classeur.
+ * Apparait au prochain rechargement de la page du classeur.
+ */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('P11')
+    .addItem('Reorganiser les colonnes', 'reorganiserColonnes')
+    .addSeparator()
+    .addItem('Tester l\'installation', 'testerInstallation')
+    .addToUi();
+}
+
+/**
+ * Applique tout de suite le nouvel ordre des colonnes.
+ *
+ * La reorganisation se declenche normalement au premier envoi qui suit un
+ * changement de COLONNES -- donc pas au moment du deploiement. Tant qu'aucun
+ * eleve n'a rien envoye, la feuille garde son ancien ordre et on peut croire
+ * que le deploiement a echoue. Cette fonction force le passage, sans rien
+ * ecrire d'autre.
+ *
+ * A lancer depuis le menu P11 du classeur, ou depuis l'editeur.
+ */
+function reorganiserColonnes() {
+  var f = _feuille();          // _feuille declenche la migration si besoin
+  var lignes = Math.max(0, f.getLastRow() - 1);
+  SpreadsheetApp.getUi().alert(
+    'Colonnes a jour dans l\'onglet « ' + NOM_FEUILLE + ' ».\n\n' +
+    'Ordre applique : identite en A-I, puis note20 (J), niveau (K), ' +
+    'observation generee (L) et observation du professeur (M).\n\n' +
+    lignes + ' ligne(s) de donnees conservee(s) et repositionnee(s).'
+  );
+}
+
+/**
  * À lancer une fois depuis l'éditeur, pour vérifier l'installation sans
  * attendre qu'un élève envoie quelque chose. Écrit une ligne de test que l'on
  * supprime ensuite à la main.
