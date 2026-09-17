@@ -224,7 +224,13 @@ var M3 = (function(){
     });
   }
 
+  // Le panneau solaire s'appelait « solaire » avant d'être modélisé.
+  // Sans cette correspondance, une maquette enregistrée perdrait sa pièce en
+  // silence à la réouverture.
+  var ANCIENS_IDS = { solaire:'panneau' };
+
   function kitParId(id){
+    id = ANCIENS_IDS[id] || id;
     for (var i=0;i<P11DATA.KIT3D.length;i++){ if (P11DATA.KIT3D[i].id === id) return P11DATA.KIT3D[i]; }
     return null;
   }
