@@ -56,42 +56,87 @@ var EVAL = (function(){
   }
 
   /**
-   * Appréciation de la mission 3, rédigée à partir du détail des points.
+   * Observation automatique : UNE seule, lue par le dossier ET par le classeur.
    *
-   * Elle ne remplace pas celle du professeur : elle résume ce que la machine a
-   * pu constater, pour que la ligne du classeur soit lisible sans rouvrir le
-   * dossier. Chaque phrase renvoie à un point du barème.
+   * Le dossier affichait le texte fixe du niveau atteint pendant que le
+   * classeur recevait le détail de la seule mission 3. Un élève à 17,5/20 dont
+   * la mission 3 était à moitié faite lisait « tu sais en rédiger un pour un
+   * objet nouveau » d'un côté, « dossier incomplet » de l'autre. Les deux
+   * affichages passent désormais par cette fonction : ils ne peuvent plus se
+   * contredire.
+   *
+   * Elle ne remplace pas l'appréciation du professeur : elle dit ce que la
+   * machine a pu constater. Chaque phrase renvoie à un point du barème.
+   * Renvoie une liste de phrases ; le dossier les affiche ligne à ligne, le
+   * classeur les reçoit bout à bout.
    */
-  function appreciationM3(){
-    var d = P11.state.m3.detail;
-    if (!d) return 'Mission 3 non vérifiée.';
-    var A = P11DATA.BAREME.m3;
-    var dit = [];
+  function phrasesAppreciation(){
+    var s = P11.state, b = bilan(), B = P11DATA.BAREME;
+    if (!b.rendues) return ['Aucune mission vérifiée pour le moment.'];
 
-    dit.push(d.dossier === 3
-      ? "fiche d'identité complète"
-      : "fiche d'identité incomplète (" + d.dossier + '/3)');
-    dit.push(d.structure === 2
-      ? 'structure de pieuvre correcte'
-      : 'structure de pieuvre à revoir (' + d.structure + '/2)');
-    dit.push(d.formulation === 3
-      ? "fonctions bien formulées à l'infinitif"
-      : "formulation des fonctions à revoir (" + d.formulation + '/3)');
-    dit.push(d.exigences === 3
-      ? 'exigences chiffrées avec leurs unités'
-      : 'critères ou niveaux incomplets (' + d.exigences + '/3)');
-    dit.push(d.maquette === 1 ? 'maquette représentée' : 'maquette absente');
+    var rendu = function(v){ return v !== null && v !== undefined; };
+    var provisoire = b.rendues < 3 || !rendu(b.m3p);
+    var p = [b.niveau.nom + ' (' + P11.fmt(b.note) + '/20' + (provisoire ? ', note provisoire' : '') + ').'];
 
-    var total = P11.state.m3.score;
-    var ouverture =
-        total >= 11 ? "Dossier de conception solide"
-      : total >= 8  ? "Dossier recevable"
-      : total >= 5  ? "Dossier incomplet"
-      :               "Dossier très incomplet";
+    // Le niveau porte sur l'ensemble : une mission faible peut s'y noyer.
+    // On la nomme, sauf si toutes le sont — le niveau le dit alors déjà.
+    var parts = [[1, b.m1, B.m1.total], [2, b.m2, B.m2.total], [3, b.m3a, B.m3.auto]]
+                  .filter(function(m){ return rendu(m[1]); });
+    var faibles = parts.filter(function(m){ return m[1] / m[2] < 0.6; })
+                       .map(function(m){ return m[0]; });
+    if (faibles.length && faibles.length < parts.length){
+      p.push('À reprendre en priorité : mission' + (faibles.length > 1 ? 's ' : ' ') +
+             faibles.join(' et ') + '.');
+    }
 
-    return ouverture + ' (' + P11.fmt(total) + '/' + A.auto + ' en automatique) : ' +
-           dit.join(', ') + '.';
+    /* --- Mission 1 ------------------------------------------------------ */
+    var d1 = s.m1.detail;
+    if (!rendu(b.m1)) p.push('Mission 1 non vérifiée.');
+    else p.push('Mission 1 (' + P11.fmt(b.m1) + '/' + B.m1.total + ')' + (d1
+      ? ' : ' + (d1.liens === B.m1.liens ? 'pieuvre juste'
+                                         : 'pieuvre à compléter (' + P11.fmt(d1.liens) + '/' + B.m1.liens + ')') +
+        ', ' + (d1.typage === B.m1.typage ? "tableau d'analyse juste"
+                                          : "tableau d'analyse à revoir (" + P11.fmt(d1.typage) + '/' + B.m1.typage + ')')
+      : '') + '.');
+
+    /* --- Mission 2 ------------------------------------------------------ */
+    if (!rendu(b.m2)) p.push('Mission 2 non vérifiée.');
+    else {
+      var aRevoir = (s.m2.detail || []).filter(function(d){ return d.pts < d.max; })
+                                       .map(function(d){ return d.rep; });
+      p.push('Mission 2 (' + P11.fmt(b.m2) + '/' + B.m2.total + ') : ' +
+             (aRevoir.length ? 'lignes à reprendre : ' + aRevoir.join(', ')
+                             : 'cahier des charges complet') + '.');
+    }
+
+    /* --- Mission 3 ------------------------------------------------------ */
+    var d = s.m3.detail;
+    if (!rendu(b.m3a)) p.push('Mission 3 non vérifiée.');
+    else {
+      var dit = [];
+      if (d){
+        dit.push(d.dossier === 3
+          ? "fiche d'identité complète"
+          : "fiche d'identité incomplète (" + d.dossier + '/3)');
+        dit.push(d.structure === 2
+          ? 'structure de pieuvre correcte'
+          : 'structure de pieuvre à revoir (' + d.structure + '/2)');
+        dit.push(d.formulation === 3
+          ? "fonctions bien formulées à l'infinitif"
+          : "formulation des fonctions à revoir (" + d.formulation + '/3)');
+        dit.push(d.exigences === 3
+          ? 'exigences chiffrées avec leurs unités'
+          : 'critères ou niveaux incomplets (' + d.exigences + '/3)');
+        dit.push(d.maquette === 1 ? 'maquette représentée' : 'maquette absente');
+      }
+      p.push('Mission 3 (' + P11.fmt(b.m3a) + '/' + B.m3.auto + ' en automatique)' +
+             (dit.length ? ' : ' + dit.join(', ') : '') + '.');
+      if (!rendu(b.m3p)) p.push('Part du professeur (' + B.m3.prof + ' points) en attente.');
+    }
+    return p;
   }
+
+  function appreciation(){ return phrasesAppreciation().join(' '); }
 
   /* ====================== Construction du dossier ========================= */
 
@@ -130,7 +175,10 @@ var EVAL = (function(){
            '. La note ci-dessus ne porte que sur les missions rendues : elle se ' +
            'recalculera quand tu auras vérifié les autres.</div>';
     }
-    h += '<p class="hint">' + P11.esc(b.niveau.texte) + '</p>';
+    // Même texte, mot pour mot, que la colonne « observation générée » du
+    // classeur du professeur (voir phrasesAppreciation).
+    h += '<div class="fb info" id="dossier-observation" style="margin-top:12px"><b class="t">Observation automatique</b>' +
+         phrasesAppreciation().map(P11.esc).join('<br>') + '</div>';
 
     // L'appréciation du professeur revient à l'élève : le travail ne circule
     // pas à sens unique. Elle apparaît dans le dossier et à l'impression.
@@ -396,6 +444,6 @@ var EVAL = (function(){
   }
 
   return { init:init, construireDossier:construireDossier, bilan:bilan,
-           appreciationM3:appreciationM3,
+           appreciation:appreciation,
            exporterJSON:exporterJSON, imprimer:imprimer };
 })();
