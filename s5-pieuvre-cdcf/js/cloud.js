@@ -102,7 +102,10 @@ var CLOUD = (function(){
       m2_objet:    ost ? ost.nom : '',
       m3_auto:     s.m3.score,
       m3_prof:     s.m3.prof.points,
-      m3_appreciation: s.m3.score === null ? '' : EVAL.appreciationM3(),
+      // Observation sur les trois missions, identique à celle du dossier.
+      // La clé garde son ancien nom : la renommer obligerait à redéployer le
+      // script du classeur.
+      m3_appreciation: b.rendues ? EVAL.appreciation() : '',
 
       total:   b.obtenu,
       sur:     b.maxi,
