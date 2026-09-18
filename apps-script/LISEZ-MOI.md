@@ -122,7 +122,7 @@ colonnes J à M**, juste après l'identité, sans avoir à faire défiler.
 | **J – M — ce qu'on regarde en premier** | |
 | `note20` (**J**) | la note sur 20 |
 | `niveau` (**K**) | positionnement de compétence : MI, MF, MS ou TBM |
-| `m3_appreciation` (**L**) | observation générée automatiquement |
+| `m3_appreciation` (**L**) | observation générée automatiquement **sur les trois missions** : la même, mot pour mot, que le bloc « Observation automatique » du dossier de l'élève. Le nom de la colonne est historique — le garder tel quel, le script s'en sert pour ranger les données |
 | `remarque` (**M**) | observation saisie par le professeur |
 | **N et au-delà — le détail** | |
 | `total`, `sur` | d'où vient la note sur 20 |
