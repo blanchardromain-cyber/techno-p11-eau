@@ -19,6 +19,7 @@ function doPost(e) {
     verrou.waitLock(25000);              // une classe entière valide parfois dans la même minute
     var d = JSON.parse(e.postData.contents);
     if (d.secret !== SECRET) return repondre({ ok: false, erreur: "secret" });
+    if (d.source === "capsule") return reporterCapsule(d);
     var classe = String(d.classe || "").toUpperCase().trim();
     if (CLASSES.indexOf(classe) < 0) return repondre({ ok: false, erreur: "classe" });
     var nom = propre(d.nom).toUpperCase(), prenom = propre(d.prenom);
@@ -54,6 +55,48 @@ function doPost(e) {
   } finally {
     try { verrou.releaseLock(); } catch (e2) {}
   }
+}
+
+/* ═══ Capsule du site Technologie : le professeur valide la copie dans le modal, le site envoie
+   les points validés (sur 40) de Q1 à C3. Identité = compte du site (« Prénom NOM », classe 4X).
+   C'est la dernière validation qui compte : la ligne est mise à jour à chaque validation.
+   Protection : une ligne du parcours papier (Q1-Q6 saisis à la main, ou C1-C3 envoyés par la page du tableur)
+   n'est jamais écrasée : l'envoi est refusé et noté au Journal. ═══ */
+var MARQUE_CAPSULE = "Capsule du site";
+var MAX_Q = [4, 4, 4, 4, 8, 4, 2, 6, 4];   // Q1 à Q6, C1 à C3 (colonnes B à J)
+function reporterCapsule(d) {
+  var classe = (String(d.classe || "").toUpperCase().match(/4[A-G]/) || [""])[0];
+  if (CLASSES.indexOf(classe) < 0) return repondre({ ok: false, erreur: "classe" });
+  var eleve = propre(d.eleve);
+  if (!eleve) return repondre({ ok: false, erreur: "identite" });
+  var p = d.pts || {};
+  var pts = ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "C1", "C2", "C3"].map(function (q, i) { return nombre(p[q], MAX_Q[i]); });
+  var total = pts.reduce(function (a, b) { return a + b; }, 0);
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), feuille = ss.getSheetByName(classe);
+  var ligne = trouverEleve(feuille, eleve, ""), statut, remarque = MARQUE_CAPSULE + " — validée le " +
+      Utilities.formatDate(new Date(), Session.getScriptTimeZone() || "Europe/Paris", "dd/MM/yyyy HH:mm");
+  if (ligne < 0) {
+    ligne = premiereLigneLibre(feuille);
+    feuille.getRange(ligne, COL.nom).setValue(sur(eleve));
+    feuille.getRange(ligne, COL.nom, 1, 1).setBackground("#FCE4D6");
+    remarque += " · ajouté : vérifier le nom";
+    statut = "ajoute";
+  } else {
+    /* parcours papier = points saisis à la main (Q1-Q6) ou envoyés par la page du tableur (C1-C3) */
+    var papier = feuille.getRange(ligne, 2, 1, 9).getValues()[0].some(function (v) { return v !== ""; });
+    var dejaCapsule = String(feuille.getRange(ligne, COL.remarque).getValue()).indexOf(MARQUE_CAPSULE) === 0;
+    statut = (papier && !dejaCapsule) ? "papier" : "note";
+  }
+  if (statut !== "papier") {
+    feuille.getRange(ligne, 2, 1, 9).setValues([pts]);
+    feuille.getRange(ligne, COL.date).setValue(new Date());
+    feuille.getRange(ligne, COL.detail).setValue(sur("Capsule : note validée " + propre(d.note) + "/20 · " + String(d.detail || "").slice(0, 300)));
+    feuille.getRange(ligne, COL.remarque).setValue(remarque);
+  }
+  ss.getSheetByName("Journal").appendRow([new Date(), classe, sur(eleve), "(capsule)", pts[6], pts[7], pts[8], total,
+    sur("Q1-Q6 : " + pts.slice(0, 6).join(" ; ") + " · note validée " + propre(d.note) + "/20"),
+    statut === "papier" ? "capsule refusée : copie papier déjà saisie" : (statut === "ajoute" ? "capsule : ajouté en bas de l'onglet" : "capsule : noté")]);
+  return repondre({ ok: true, statut: statut, ligne: ligne });
 }
 
 function doGet() {
@@ -114,7 +157,7 @@ function installer() {
     ["Pour autoriser un nouvel envoi : effacer les cellules C1, C2, C3 et la date de l'élève."],
     ["K à M : totaux par compétence ; N : total sur 40 ; O : note sur 20 ; P : note sur 30 (arrondi au demi-point supérieur)."],
     ["Couleurs (seuils de l'an dernier) : bleu > 88 % · vert > 64 % · jaune > 30 % · rouge ≤ 30 %."],
-    ["Les élèves qui passent toute l'évaluation dans la capsule du site Technologie sont notés dans le tableau de bord du site."],
+    ["Capsule du site Technologie (évaluation complète) : quand le professeur valide la copie, Q1 à C3 sont remplis ici (remarque « Capsule du site ») ; une ligne déjà saisie pour le papier n'est jamais écrasée (refus noté au Journal)."],
     ["Aide : techno-p11-eau/apps-script/LISEZ-MOI-EVAL1.md"]]);
   mode.getRange(1, 1).setFontWeight("bold").setFontSize(14).setFontColor("#1F3864");
   mode.setColumnWidth(1, 900);
