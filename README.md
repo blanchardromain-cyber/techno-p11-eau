@@ -14,32 +14,30 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 | `bete-a-cornes.html` | 3 | CT 2.5 | Exprime le besoin auquel répond le robinet automatique |
 | `quiz-ip.html` | 4 | CT 2.5 | Vérifie ses connaissances sur l'indice de protection |
 | `s5-pieuvre-cdcf/` | 5 | CT 2.1 | Pieuvre, cahier des charges et défi créatif (3 missions) |
-| `evaluation-1.html` | Éval. 1 | CT 2.5, CT 2.1, CT 5.1 | Évaluation n°1 en version numérique (robot explorateur, mini-tableur) |
+| `evaluation-1-tableur.html` | Éval. 1 | CT 5.1 | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
 
 La séance 5 prolonge la fiche papier *P11 — S5 : Pieuvre et cahier des charges*.
 Elle reprend le même objet technique que la séance 3, le robinet automatique :
 l'élève passe du besoin (bête à cornes) aux fonctions et à leurs exigences chiffrées.
 
-## L'évaluation n°1 en version numérique
+## L'évaluation n°1 : la partie C sur ordinateur
 
-`evaluation-1.html` est la version numérique de l'évaluation papier *P11 — Évaluation n°1*
+`evaluation-1-tableur.html` est la partie C (tableur) de l'évaluation papier *P11 — Évaluation n°1*
 (sujet, corrigé et fiche enseignant dans le Drive, dossier `Evaluations/P11_evaluation_1`).
-Mêmes questions, même barème de 40 points bruts ; la note s'affiche sur 20, 30 ou 40.
+Les élèves la passent à tour de rôle, 12 minutes chacun, pendant l'épreuve écrite.
 
-- **Un seul fichier** : les aides dys du site Technologie (confort de lecture, lecture
-  immersive) y sont intégrées ; les polices B612 viennent du site Technologie.
-- **Mini-tableur** : la même feuille que `tableur-facture.html` (B4, B6 et B8 fournies), prolongée
-  par une colonne « Avec la fuite » ; l'élève écrit B7, B9, B10, puis C7, C9, C10 et C11.
-- **Codes** : un code élève ouvre l'évaluation, un code professeur affiche le détail de la
-  correction et les réponses attendues. Ils figurent dans la fiche enseignant, pas ici.
-- **Correction** : sûre pour les menus et le mini-tableur (formules analysées, variantes
-  avec `SOMME` acceptées, recopie adaptée sans double pénalité) ; seulement *proposée*,
-  par mots-clés avec tolérance orthographique, pour les réponses rédigées.
-- **Envoi** : même mécanisme et même classeur que `tableur-facture.html` (onglet `Resultats`).
-  L'envoi est refusé depuis `localhost` ou un fichier local, pour ne pas polluer le classeur.
-- **Poste partagé** : le brouillon reste dans le navigateur jusqu'au clic sur « Libérer le poste ».
-- Le fichier est **généré** : on modifie la source `capsule_src.html` (dossier du sujet) puis
-  on relance `build_capsule.py`, qui y intègre les deux modules dys.
+- **Même feuille** que `tableur-facture.html` (B4, B6 et B8 fournies), prolongée par une colonne
+  « Avec la fuite » ; l'élève écrit B7, B9, B10, puis C7, C9, C10 et C11.
+- **Autoévaluée** : à la validation, la page affiche la note sur 12 (C1, C2, C3) et la reporte
+  dans le classeur « P11 — Évaluation n°1 — Report des notes » : voir
+  [`apps-script/LISEZ-MOI-EVAL1.md`](apps-script/LISEZ-MOI-EVAL1.md). La première validation fait foi.
+- **Rotation** : chronomètre de 12 minutes, bouton « Élève suivant » qui libère le poste.
+- **Un seul fichier** : aides dys du site Technologie intégrées, polices B612 servies par le site.
+- L'envoi est refusé depuis `localhost` ou un fichier local, pour ne pas polluer le classeur.
+- La **capsule complète** (parties A, B et C, pour les élèves qui ne passent pas l'épreuve papier)
+  est dans le site Technologie, avec le tableau de bord du professeur.
+- Fichiers **générés** : on modifie les sources du dossier `_sources` (`tableur_src.html`,
+  `moteur_tableur.js`, partagé avec la capsule), puis on relance `build_capsule.py`.
 
 ## Mettre en ligne une modification
 
