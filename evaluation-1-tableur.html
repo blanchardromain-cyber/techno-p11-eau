@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>P11 — Évaluation n°1 · Le robot explorateur et le coût de l'eau</title>
+<title>P11 — Évaluation n°1 · Partie C : le coût d'une fuite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,76 +11,33 @@
   :root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--ok:#1E8E5A;--ko:#C0392B;--grey:#6b7280;
         --creme:#FFF8E7;--vert:#EEF7F1;--form:#FFFDF5;--gris:#E7E9EE;--line:#cbd6e4}
   *{box-sizing:border-box}
-  html{scroll-padding-top:70px}
-  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.6;font-size:16px;
-       font-variant-numeric:tabular-nums}
-  /* barre d'outils : les modules dys y posent leurs boutons */
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.6;font-size:16px;font-variant-numeric:tabular-nums}
   .pbar{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #e4ebf3;box-shadow:0 2px 8px rgba(31,56,100,.06)}
-  .pbar-in{max-width:1400px;margin:0 auto;padding:8px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pbar-in{max-width:980px;margin:0 auto;padding:8px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .pbar-in .ttl{font-weight:800;color:var(--navy);font-size:14px;margin-right:auto}
-  .pbar-in .prog{font-size:13px;color:var(--grey)}
-  .tbtn{background:#fff;color:var(--blue);border:2px solid var(--blue);border-radius:9px;padding:6px 12px;font:600 14px 'Inter',Arial,sans-serif;cursor:pointer}
-  .tbtn:hover{background:var(--lighter)}
-  main{max-width:1400px;margin:0 auto;padding:18px 16px 60px}
+  .chrono{font-weight:800;color:var(--navy);background:var(--lighter);border-radius:8px;padding:4px 10px;font-size:15px}
+  .chrono.fin{background:#fbeae8;color:var(--ko)}
+  main{max-width:980px;margin:0 auto;padding:18px 16px 60px}
   header.band{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
   header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
   header.band h1{margin:6px 0 0;font-size:23px;font-weight:800;line-height:1.3}
   header.band p{margin:6px 0 0;color:#dce8f8;font-size:15px}
   .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
   .narrow{max-width:760px;margin-left:auto;margin-right:auto}
-  h2{color:var(--navy);font-size:20px;margin:0 0 4px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-     border-bottom:3px solid var(--blue);padding-bottom:6px}
-  h2 .comp{color:var(--blue);font-size:15px;font-weight:700}
-  h3{color:var(--navy);font-size:17px;margin:22px 0 8px}
-  h3 .num{color:var(--blue);margin-right:6px}
-  h3 .pts{color:var(--grey);font-size:13px;font-weight:600;margin-left:6px}
-  .consigne{margin:0 0 10px}
+  h2{color:var(--navy);font-size:20px;margin:0 0 6px;border-bottom:3px solid var(--blue);padding-bottom:6px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  h2 .comp{color:var(--blue);font-size:15px}
+  h3{color:var(--navy);font-size:17px;margin:18px 0 6px}
+  h3 .num{color:var(--blue);margin-right:6px} h3 .pts{color:var(--grey);font-size:13px;font-weight:600;margin-left:6px}
+  .consigne{margin:0 0 8px}
   label.lbl{display:block;font-weight:600;color:var(--navy);font-size:14px;margin:12px 0 4px}
-  input[type=text],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:16px 'Inter',Arial,sans-serif;
-       background:#fff;color:#1f2430;line-height:1.5}
-  textarea{min-height:64px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.18)}
-  input:disabled,select:disabled,textarea:disabled{background:#f3f5f8;color:#1f2430;opacity:1}
+  input[type=text],select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:16px 'Inter',Arial,sans-serif;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.18)}
+  input:disabled{background:#f3f5f8;color:#1f2430}
   .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:160px}
-  .champ{display:flex;gap:6px;align-items:flex-start}.champ>input,.champ>textarea{flex:1}
-  .mic{flex:none;background:var(--lighter);border:1px solid var(--line);border-radius:9px;width:42px;height:44px;cursor:pointer;font-size:18px}
-  .mic.on{background:#fde2df;border-color:var(--ko)}
   .rappel{background:var(--lighter);border-left:5px solid var(--blue);padding:10px 14px;border-radius:8px;font-size:15px;color:var(--navy);margin:8px 0 12px}
   .creme{background:var(--creme);border-left-color:#E0B65C}
-  .vert{background:var(--vert);border-left-color:var(--ok)}
-  table.t{border-collapse:collapse;width:100%;font-size:15px}
-  table.t th{background:var(--blue);color:#fff;padding:8px;text-align:center;font-weight:700}
-  table.t td{border:1px solid var(--line);padding:6px 8px;vertical-align:middle}
-  table.t td.q{background:var(--lighter);color:var(--navy);font-weight:700;text-align:center;white-space:nowrap}
-  table.t td.ex{color:var(--grey);font-style:italic}
+  .illus{width:100%;height:auto;border-radius:10px;border:1px solid #e4ebf3;margin:4px 0 8px}
   .tscroll{overflow-x:auto}
-  /* bête à cornes */
-  .bac{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--navy);border-radius:12px;overflow:hidden}
-  .bac>div{padding:12px}
-  .bac .obj{grid-column:1/3;background:var(--navy);color:#fff;text-align:center;font-weight:800;letter-spacing:.05em;padding:10px}
-  .bac .but{grid-column:1/3}
-  .bac .g{border-right:1px solid var(--line)}
-  .phrase{line-height:2.6;font-size:16px}
-  .phrase input{display:inline-block;width:auto;min-width:210px;max-width:100%;padding:6px 10px}
-  .choix{display:flex;gap:18px;margin:6px 0}
-  .choix label{display:flex;gap:6px;align-items:center;font-weight:600;cursor:pointer}
-  .choix input{width:20px;height:20px}
-  /* document technique */
-  .layout{display:grid;grid-template-columns:minmax(360px,42%) 1fr;gap:22px;align-items:start;margin-top:18px}
-  .layout.dt-ferme{grid-template-columns:1fr}
-  .layout.dt-ferme #dt{display:none}
-  #dt{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto;margin-top:0}
-  #dt h2{font-size:17px}
-  #dt h4{color:var(--blue);margin:14px 0 6px;font-size:15px}
-  ol.dt1{list-style:none;margin:0;padding:0}
-  ol.dt1 li{display:flex;gap:10px;padding:5px 0;border-bottom:1px dashed #e4ebf3;font-size:15px}
-  ol.dt1 li b.pu{color:var(--blue);font-size:18px;flex:none;width:24px;text-align:center}
-  table.dt td,table.dt th{font-size:14px;padding:4px 7px}
-  table.dt td.k{background:var(--lighter);color:var(--navy);font-weight:700}
-  .dtnote{font-size:13px;color:var(--grey);font-style:italic}
-  #copie .card:first-child{margin-top:0}
-  .layout>*{min-width:0}          /* sans cela, un tableau large élargit la grille au lieu de défiler dans son cadre */
-  /* mini-tableur */
   table.ss{border-collapse:collapse;width:100%;font-size:15px;min-width:620px}
   table.ss th,table.ss td{border:1px solid #c4d0e0;padding:0}
   table.ss thead th{background:var(--navy);color:#fff;text-align:center;padding:6px;font-weight:700}
@@ -98,75 +55,47 @@
   .chip{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--lighter);color:var(--navy);border-radius:6px;padding:1px 7px;font-size:13px;font-weight:700;pointer-events:none}
   .legende{font-size:13.5px;color:var(--grey);margin-top:6px}
   .legende span{display:inline-block;width:14px;height:14px;border:1px solid #c4d0e0;vertical-align:-2px;margin:0 4px 0 10px;border-radius:3px}
-  /* boutons, messages */
+  .phrase{line-height:2.4}
+  .phrase input{display:inline-block;width:130px;padding:6px 10px}
   .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:12px 18px;font:700 16px 'Inter',Arial,sans-serif;cursor:pointer;margin:14px 8px 0 0}
-  .btn:hover{background:#255f96}
-  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
-  .btn.ok{background:var(--ok)}
+  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)} .btn.ok{background:var(--ok)}
   .btn:disabled{background:#9bb6d4;border-color:#9bb6d4;color:#fff;cursor:not-allowed}
   .msg{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:15px}
   .msg.ok{background:#e7f6ee;color:#13633d;border-left:5px solid var(--ok)}
   .msg.ko{background:#fbeae8;color:#8e2018;border-left:5px solid var(--ko)}
   .msg.info{background:var(--lighter);color:var(--navy);border-left:5px solid var(--blue)}
   .cache{display:none!important}
-  /* résultat */
-  .note{font-size:46px;font-weight:800;color:var(--navy);line-height:1.1}
-  .echelles button{background:#fff;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font:700 14px 'Inter',Arial,sans-serif;cursor:pointer;margin-right:6px}
-  .echelles button.act{background:var(--blue);color:#fff}
-  .niv{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;color:#fff}
-  table.res td,table.res th{font-size:14px}
-  table.res td.n{text-align:center;white-space:nowrap}
+  .note{font-size:44px;font-weight:800;color:var(--navy);line-height:1.1;margin:6px 0}
+  table.res{border-collapse:collapse;width:100%;font-size:15px;margin-top:8px}
+  table.res th{background:var(--blue);color:#fff;padding:7px;text-align:left}
+  table.res td{border:1px solid var(--line);padding:6px 8px} table.res td.n{text-align:center;white-space:nowrap}
   .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
   .privacy{font-size:12px;color:var(--grey);margin-top:12px;border-top:1px dashed #d6deea;padding-top:10px}
-  .prof-bandeau{background:#FDF1DC;border:1px solid #F0D089;color:#6B4A00;border-radius:10px;padding:8px 12px;font-size:14px;margin-top:12px}
-  @media (max-width:1050px){
-    .layout{grid-template-columns:1fr}
-    #dt{position:fixed;top:56px;left:8px;right:8px;bottom:8px;max-height:none;z-index:50;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-    .layout:not(.dt-ouvert) #dt{display:none}
-  }
-  @media (max-width:600px){
-    .pbar-in{padding:6px 10px;gap:6px}
-    .pbar-in .ttl{display:none}
-    .pbar-in .prog{width:100%;font-size:12px}
-    .tbtn{padding:4px 9px;font-size:13px}
-    main{padding:12px 10px 50px}
-    .card{padding:16px 14px}
-    header.band h1{font-size:20px}
-    .bac{grid-template-columns:1fr}.bac .obj,.bac .but{grid-column:1}.bac .g{border-right:none;border-bottom:1px solid var(--line)}
-  }
-  @media print{
-    .pbar,.btn,.mic,.tbtn,#gate,#ident,.no-print,.cl-regle,.cl-masque{display:none!important}
-    body{background:#fff;font-size:12px}
-    .layout{display:block}
-    #dt{display:none!important}
-    .card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
-  }
+  @media (max-width:600px){ .pbar-in .ttl{display:none} main{padding:12px 10px 50px} .card{padding:16px 14px} header.band h1{font-size:20px} }
+  @media print{ .pbar,.btn,#gate,#ident,.cl-regle,.cl-masque{display:none!important} body{background:#fff} .card{box-shadow:none} }
 </style>
 </head>
 <body>
 <div class="pbar"><div class="pbar-in">
-  <span class="ttl">P11 · Évaluation n°1</span>
-  <span class="prog" id="prog"></span>
-  <button type="button" class="tbtn cache" id="btnDT" data-nolecture>📄 Document technique</button>
+  <span class="ttl">P11 · Évaluation n°1 · Partie C</span>
+  <span class="chrono cache" id="chrono" title="Temps de ton tour sur l'ordinateur">12:00</span>
 </div></div>
 
 <main>
   <header class="band">
     <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
-    <h1>Évaluation n°1 — Le besoin, le cahier des charges et le coût de l'eau</h1>
-    <p>Objet étudié : le robot explorateur de la société Robot Scan</p>
+    <h1>Évaluation n°1 — Partie C : le coût d'une fuite</h1>
+    <p>Sur l'ordinateur, 12 minutes chacun. Ta note part toute seule au professeur quand tu valides.</p>
   </header>
 
-  <!-- 1. code d'accès -->
   <section class="card narrow" id="gate">
     <h2>Code d'accès</h2>
-    <p class="consigne">Écris le code donné par ton professeur au début de l'évaluation.</p>
-    <div class="champ"><input type="text" id="code" autocomplete="off" aria-label="Code d'accès"></div>
+    <p class="consigne">Écris le code donné par ton professeur.</p>
+    <input type="text" id="code" autocomplete="off" aria-label="Code d'accès">
     <button type="button" class="btn" id="btnCode">Entrer</button>
     <div class="msg ko cache" id="codeMsg"></div>
   </section>
 
-  <!-- 2. identité -->
   <section class="card narrow cache" id="ident">
     <h2>Qui es-tu ?</h2>
     <div class="row">
@@ -176,165 +105,143 @@
         <select id="classe"><option value="" selected disabled>Choisir…</option>
         <option>4A</option><option>4B</option><option>4C</option><option>4D</option><option>4E</option><option>4F</option><option>4G</option></select></div>
     </div>
-    <div class="rappel">
-      <b>Consignes.</b> Tu as 50 minutes. Le document technique (DT) s'ouvre avec le bouton <b>📄 Document technique</b>,
-      en haut de la page. Tes réponses sont enregistrées au fur et à mesure sur cet ordinateur. À la fin, clique sur
-      <b>Valider ma copie</b> : tu ne pourras plus la modifier.
-    </div>
+    <div class="rappel">Écris ton nom et ton prénom <b>comme sur ta copie</b> : c'est ce qui range ta note au bon endroit.
+      Le chronomètre de 12 minutes démarre quand tu cliques sur <b>Commencer</b>.</div>
     <button type="button" class="btn" id="btnStart">Commencer</button>
     <div class="msg ko cache" id="identMsg"></div>
   </section>
 
-  <div class="prof-bandeau cache" id="profBandeau">Mode professeur : la copie affiche, après validation, le détail de la correction et les réponses attendues.
-    <button type="button" class="tbtn" id="btnCorrige" style="margin-left:8px">Afficher le corrigé complet</button></div>
-
-  <!-- 3. l'évaluation -->
-  <div class="layout cache" id="layout">
-    <aside class="card" id="dt" aria-label="Document technique">
-      <h2>Document technique <button type="button" class="tbtn" id="btnDTfermer" data-nolecture>✕ Fermer</button></h2>
-      <h4>DT1 — La demande de la société Robot Scan</h4>
-      <ol class="dt1" id="dt1"></ol>
-      <h4>DT2 — Fiche technique du prototype RS-1 (proposé par le bureau d'études)</h4>
-      <div class="tscroll"><table class="t dt" id="dt2"></table></div>
-      <h4>DT3 — L'indice de protection IP</h4>
-      <p class="dtnote">L'indice IP s'écrit avec deux chiffres, par exemple IP64. Plus le chiffre est grand, mieux l'objet est protégé.</p>
-      <div class="tscroll"><table class="t dt" id="dt3"><thead><tr><th>Chiffre</th><th>1ᵉʳ chiffre : protection contre les solides et les poussières</th><th>2ᵉ chiffre : protection contre l'eau</th></tr></thead><tbody></tbody></table></div>
-    </aside>
-
-    <div id="copie">
-      <!-- PARTIE A -->
-      <section class="card" id="partA">
-        <h2>Partie A — Le besoin <span class="comp">CT 2.5 · 12 points</span></h2>
-
-        <h3><span class="num">Q1</span>Le QQOQCP<span class="pts">(4 pts)</span></h3>
-        <p class="consigne">Lis le DT1. Complète le QQOQCP du robot explorateur. Deux lignes sont déjà remplies pour t'aider.</p>
-        <div class="tscroll"><table class="t">
-          <thead><tr><th>Question</th><th>Ce que l'on cherche</th><th>Ta réponse</th></tr></thead>
-          <tbody>
-            <tr><td class="q">Quoi ?</td><td>À quel besoin répond le robot ?</td><td><div class="champ"><input type="text" id="q1_quoi"></div></td></tr>
-            <tr><td class="q">Qui ?</td><td>Qui est concerné ?</td><td><div class="champ"><input type="text" id="q1_qui"></div></td></tr>
-            <tr><td class="q">Où ?</td><td>À quel endroit ?</td><td><div class="champ"><input type="text" id="q1_ou"></div></td></tr>
-            <tr><td class="q">Quand ?</td><td>À quel moment ?</td><td class="ex">Exemple : à tout moment de l'année (ligne ①).</td></tr>
-            <tr><td class="q">Comment ?</td><td>Avec quoi ?</td><td class="ex">Exemple : avec un robot télécommandé qui filme.</td></tr>
-            <tr><td class="q">Pourquoi ?</td><td>Pour quelle raison ce besoin apparaît-il ?</td><td><div class="champ"><input type="text" id="q1_pourquoi"></div></td></tr>
-          </tbody></table></div>
-
-        <h3><span class="num">Q2</span>La bête à cornes<span class="pts">(4 pts)</span></h3>
-        <p class="consigne">Complète la bête à cornes du robot explorateur, puis écris la phrase qui exprime le besoin.</p>
-        <div class="bac">
-          <div class="g"><label class="lbl" for="q2_aqui">À qui le robot rend-il service ?</label><div class="champ"><input type="text" id="q2_aqui"></div></div>
-          <div><label class="lbl" for="q2_surquoi">Sur quoi le robot agit-il ?</label><div class="champ"><input type="text" id="q2_surquoi"></div></div>
-          <div class="obj">ROBOT EXPLORATEUR</div>
-          <div class="but"><label class="lbl" for="q2_but">Dans quel but le robot existe-t-il ?</label><div class="champ"><input type="text" id="q2_but"></div></div>
-        </div>
-        <p class="lbl" style="margin-top:14px">Le besoin :</p>
-        <p class="phrase">L'objet technique nommé <input type="text" id="q2_p_nom" aria-label="nom de l'objet">
-          rend service à <input type="text" id="q2_p_aqui" aria-label="à qui">
-          en agissant sur <input type="text" id="q2_p_surquoi" aria-label="sur quoi">
-          pour <input type="text" id="q2_p_but" aria-label="dans quel but">.</p>
-
-        <h3><span class="num">Q3</span>L'indice de protection<span class="pts">(4 pts)</span></h3>
-        <p class="consigne">Pour répondre à la ligne ⑤ du DT1, le robot doit avoir l'indice de protection IP64. Utilise le tableau DT3.</p>
-        <label class="lbl" for="q3_a">a) Que signifie le 1ᵉʳ chiffre (6) ?</label><div class="champ"><input type="text" id="q3_a"></div>
-        <label class="lbl" for="q3_b">b) Que signifie le 2ᵉ chiffre (4) ?</label><div class="champ"><input type="text" id="q3_b"></div>
-        <p class="lbl">c) Cet indice est-il adapté au robot ? Réponds par oui ou non, puis justifie avec la ligne ⑤ du DT1.</p>
-        <div class="choix" role="radiogroup"><label><input type="radio" name="q3_c" value="oui"> Oui</label><label><input type="radio" name="q3_c" value="non"> Non</label></div>
-        <div class="champ"><textarea id="q3_just" aria-label="justification"></textarea></div>
-      </section>
-
-      <!-- PARTIE B -->
-      <section class="card" id="partB">
-        <h2>Partie B — Le cahier des charges <span class="comp">CT 2.1 · 16 points</span></h2>
-
-        <h3><span class="num">Q4</span>La pieuvre : FP ou FC ?<span class="pts">(4 pts)</span></h3>
-        <div class="rappel">Rappel : sur la pieuvre, une fonction principale (FP) relie deux éléments du milieu extérieur (EME)
-          en passant par l'objet ; une fonction contrainte (FC) relie l'objet à un seul EME.</div>
-        <p class="consigne">Pour chaque fonction du robot, choisis FP ou FC, puis le ou les EME reliés.</p>
-        <div class="tscroll"><table class="t" id="q4tab">
-          <thead><tr><th>Fonction du robot</th><th>FP ou FC ?</th><th>EME relié(s)</th></tr></thead><tbody></tbody></table></div>
-
-        <h3><span class="num">Q5</span>Le cahier des charges fonctionnel<span class="pts">(8 pts)</span></h3>
-        <p class="consigne">Complète le cahier des charges fonctionnel du robot à l'aide du DT1. Un niveau s'écrit avec un nombre et son unité.</p>
-        <div class="tscroll"><table class="t" id="q5tab">
-          <thead><tr><th>Rep.</th><th>Fonction</th><th>Critère</th><th>Niveau</th></tr></thead><tbody></tbody></table></div>
-
-        <h3><span class="num">Q6</span>Le prototype respecte-t-il le cahier des charges ?<span class="pts">(4 pts)</span></h3>
-        <p class="consigne">Le bureau d'études propose le prototype RS-1 (DT2). Compare-le au cahier des charges (DT1).</p>
-        <p class="lbl">a) Cite une exigence que le prototype respecte. Justifie en comparant la valeur demandée (DT1) et la valeur du prototype (DT2).</p>
-        <label class="lbl" for="q6a_ex">Exigence</label><select id="q6a_ex"></select>
-        <div class="row"><div><label class="lbl" for="q6a_dem">Valeur demandée (DT1)</label><div class="champ"><input type="text" id="q6a_dem"></div></div>
-          <div><label class="lbl" for="q6a_pro">Valeur du prototype (DT2)</label><div class="champ"><input type="text" id="q6a_pro"></div></div></div>
-        <p class="lbl" style="margin-top:18px">b) Une exigence n'est pas respectée. Laquelle ? Justifie de la même façon.</p>
-        <label class="lbl" for="q6b_ex">Exigence</label><select id="q6b_ex"></select>
-        <div class="row"><div><label class="lbl" for="q6b_dem">Valeur demandée (DT1)</label><div class="champ"><input type="text" id="q6b_dem"></div></div>
-          <div><label class="lbl" for="q6b_pro">Valeur du prototype (DT2)</label><div class="champ"><input type="text" id="q6b_pro"></div></div></div>
-      </section>
-
-      <!-- PARTIE C -->
-      <section class="card" id="partC">
-        <h2>Partie C — Le coût d'une fuite <span class="comp">CT 5.1 · 12 points</span></h2>
-        <div class="rappel"><b>La situation.</b> Chez la famille Martin, la consommation d'eau a bondi. Le robot explorateur a trouvé
-          la cause : une fuite sur la canalisation enterrée, entre le compteur et la maison. Cette fuite a fait perdre 35 m³
-          d'eau en un an. Sans la fuite, la famille consomme 110 m³ par an. Tu vas calculer ce que cette fuite coûte, avec
-          la même feuille de calcul qu'en séance 2.</div>
-        <div class="rappel creme"><b>Les données de la facture (les mêmes qu'en séance 2).</b> Prix de l'eau (Vendée Eau) :
-          1,162 € HT par m³ · Redevances de l'Agence de l'eau : 0,408 € HT par m³ · Abonnement : 43,00 € HT par semestre
-          (6 mois) · TVA : 5,5 %.</div>
-        <h3><span class="num">C1</span>Les données<span class="pts">(2 pts)</span></h3>
-        <p class="consigne">Écris en B2 la consommation sans fuite, en C2 la consommation avec la fuite, et en B5 l'abonnement pour une année. Les cellules grises sont déjà remplies ou se calculent seules.</p>
-        <h3><span class="num">C2</span>Les formules<span class="pts">(6 pts)</span></h3>
-        <p class="consigne">Écris les formules de B7, B9 et B10 (colonne « Sans fuite »). Une formule commence par = et utilise les références des cellules (B2, B3…).</p>
-        <p class="consigne" style="color:var(--navy)">Comme en séance 2, B6 (montant de la TVA) et B8 (total des redevances) sont fournies : elles se calculent seules.</p>
-        <h3><span class="num">C3</span>Le coût de la fuite<span class="pts">(4 pts)</span></h3>
-        <p class="consigne">Complète la colonne « Avec la fuite » : écris les formules de C7, C9 et C10 (tu peux recopier celles de la colonne B). En C11, écris la formule qui calcule le coût de la fuite.</p>
-
-        <div class="tscroll"><table class="ss" id="ss">
-          <thead><tr><th class="rh"></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody></tbody></table></div>
-        <div class="legende"><span style="background:var(--vert)"></span>données à écrire<span style="background:var(--form)"></span>formules à écrire<span style="background:var(--gris)"></span>déjà rempli ou calculé seul</div>
-        <button type="button" class="btn sec" id="btnRecopie" data-nolecture>⇥ Recopier B7:B10 vers C7:C10</button>
-        <p class="legende" style="margin-left:0">Comme la poignée de recopie d'un tableur : les références se décalent d'une colonne (B2 devient C2). La ligne 8, fournie, ne bouge pas.</p>
-        <p class="phrase" style="margin-top:14px">Recopie le résultat de C11 : la fuite coûte
-          <input type="text" id="c3_phrase" inputmode="decimal" style="min-width:130px;width:130px" aria-label="coût de la fuite en euros"> € par an.</p>
-      </section>
-
-      <!-- FIN -->
-      <section class="card" id="fin">
-        <h2>Fin de l'évaluation</h2>
-        <p class="consigne" id="finTxt">Relis tes réponses. Quand tu as terminé, valide ta copie : tu ne pourras plus la modifier.</p>
-        <button type="button" class="btn ok" id="btnValider">Valider ma copie</button>
-        <div class="msg ko cache" id="validMsg"></div>
-      </section>
-    </div>
+  <div class="cache" id="travail">
+    <section class="card">
+      <h2>Partie C — Le coût d'une fuite <span class="comp">CT 5.1 · 12 points</span></h2>
+      <svg class='illus' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 330' width='900' height='330' role='img' aria-label='Fuite sur la canalisation enterrée entre le compteur et la maison'><title>Fuite sur la canalisation enterrée entre le compteur et la maison</title>
+<rect x='0' y='0' width='900' height='330' fill='#EAF4FB'/>
+<rect x='0' y='150' width='900' height='180' fill='#C9A66B'/>
+<circle cx='0' cy='160' r='3' fill='#B08A52'/>
+<circle cx='83' cy='201' r='3' fill='#B08A52'/>
+<circle cx='166' cy='242' r='3' fill='#B08A52'/>
+<circle cx='249' cy='283' r='3' fill='#B08A52'/>
+<circle cx='332' cy='324' r='3' fill='#B08A52'/>
+<circle cx='415' cy='200' r='3' fill='#B08A52'/>
+<circle cx='498' cy='241' r='3' fill='#B08A52'/>
+<circle cx='581' cy='282' r='3' fill='#B08A52'/>
+<circle cx='664' cy='323' r='3' fill='#B08A52'/>
+<circle cx='747' cy='199' r='3' fill='#B08A52'/>
+<circle cx='830' cy='240' r='3' fill='#B08A52'/>
+<circle cx='13' cy='281' r='3' fill='#B08A52'/>
+<circle cx='96' cy='322' r='3' fill='#B08A52'/>
+<circle cx='179' cy='198' r='3' fill='#B08A52'/>
+<circle cx='262' cy='239' r='3' fill='#B08A52'/>
+<circle cx='345' cy='280' r='3' fill='#B08A52'/>
+<circle cx='428' cy='321' r='3' fill='#B08A52'/>
+<circle cx='511' cy='197' r='3' fill='#B08A52'/>
+<circle cx='594' cy='238' r='3' fill='#B08A52'/>
+<circle cx='677' cy='279' r='3' fill='#B08A52'/>
+<circle cx='760' cy='320' r='3' fill='#B08A52'/>
+<circle cx='843' cy='196' r='3' fill='#B08A52'/>
+<circle cx='26' cy='237' r='3' fill='#B08A52'/>
+<circle cx='109' cy='278' r='3' fill='#B08A52'/>
+<circle cx='192' cy='319' r='3' fill='#B08A52'/>
+<circle cx='275' cy='195' r='3' fill='#B08A52'/>
+<circle cx='358' cy='236' r='3' fill='#B08A52'/>
+<circle cx='441' cy='277' r='3' fill='#B08A52'/>
+<circle cx='524' cy='318' r='3' fill='#B08A52'/>
+<circle cx='607' cy='194' r='3' fill='#B08A52'/>
+<circle cx='690' cy='235' r='3' fill='#B08A52'/>
+<circle cx='773' cy='276' r='3' fill='#B08A52'/>
+<circle cx='856' cy='317' r='3' fill='#B08A52'/>
+<circle cx='39' cy='193' r='3' fill='#B08A52'/>
+<circle cx='122' cy='234' r='3' fill='#B08A52'/>
+<circle cx='205' cy='275' r='3' fill='#B08A52'/>
+<circle cx='288' cy='316' r='3' fill='#B08A52'/>
+<circle cx='371' cy='192' r='3' fill='#B08A52'/>
+<circle cx='454' cy='233' r='3' fill='#B08A52'/>
+<circle cx='537' cy='274' r='3' fill='#B08A52'/>
+<circle cx='620' cy='315' r='3' fill='#B08A52'/>
+<circle cx='703' cy='191' r='3' fill='#B08A52'/>
+<circle cx='786' cy='232' r='3' fill='#B08A52'/>
+<circle cx='869' cy='273' r='3' fill='#B08A52'/>
+<circle cx='52' cy='314' r='3' fill='#B08A52'/>
+<rect x='0' y='140' width='900' height='14' fill='#8FBF6A'/>
+<rect x='610' y='50' width='220' height='100' fill='#FFFFFF' stroke='#1F3864' stroke-width='3'/>
+<polygon points='595,52 720,8 845,52' fill='#2E75B6' stroke='#1F3864' stroke-width='3'/>
+<rect x='640' y='80' width='40' height='34' fill='#DEEAF6' stroke='#1F3864' stroke-width='2'/>
+<rect x='740' y='90' width='40' height='60' fill='#DEEAF6' stroke='#1F3864' stroke-width='2'/>
+<rect x='90' y='132' width='90' height='36' fill='#9AA7B5' stroke='#1F3864' stroke-width='2'/>
+<circle cx='135' cy='150' r='13' fill='#FFFFFF' stroke='#1F3864' stroke-width='3'/>
+<line x1='135' y1='150' x2='143' y2='144' stroke='#1F3864' stroke-width='2'/>
+<path d='M135,168 L135,240 L700,240 L700,150' fill='none' stroke='#6E7C8C' stroke-width='18' stroke-linejoin='round'/>
+<path d='M135,168 L135,240 L700,240 L700,150' fill='none' stroke='#EAF1FA' stroke-width='8' stroke-linejoin='round'/>
+<path d='M420,232 l8,-6 l6,8' stroke='#3D4A5C' stroke-width='3' fill='none'/>
+<ellipse cx='430' cy='262' rx='70' ry='18' fill='#4FA3E0' opacity='0.45'/>
+<path d='M404,250 q-6,10 0,14 q6,-4 0,-14z' fill='#4FA3E0'/><path d='M418,264 q-6,10 0,14 q6,-4 0,-14z' fill='#4FA3E0'/><path d='M432,250 q-6,10 0,14 q6,-4 0,-14z' fill='#4FA3E0'/><path d='M446,264 q-6,10 0,14 q6,-4 0,-14z' fill='#4FA3E0'/>
+<g transform='translate(250,238) scale(0.28)'>
+<rect x='10' y='-92' width='240' height='56' rx='12' fill='#2E75B6' stroke='#1F3864' stroke-width='3'/>
+<rect x='24' y='-82' width='96' height='34' rx='6' fill='#DEEAF6' stroke='#1F3864' stroke-width='2'/>
+<text x='72' y='-59' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='17' font-weight='700' fill='#1F3864'>12 V</text>
+<rect x='196' y='-128' width='14' height='40' fill='#1F3864'/>
+<rect x='176' y='-158' width='70' height='36' rx='8' fill='#1F3864'/>
+<circle cx='238' cy='-140' r='13' fill='#0B1733' stroke='#DEEAF6' stroke-width='3'/>
+<circle cx='242' cy='-144' r='4' fill='#9CC3E8'/>
+<rect x='246' y='-90' width='14' height='10' rx='3' fill='#FFF3B0' stroke='#C9A227' stroke-width='2'/>
+<rect x='246' y='-74' width='14' height='10' rx='3' fill='#FFF3B0' stroke='#C9A227' stroke-width='2'/>
+<circle cx='255' cy='-50' r='6' fill='#DEEAF6' stroke='#1F3864' stroke-width='2'/>
+<circle cx='255' cy='-36' r='6' fill='#DEEAF6' stroke='#1F3864' stroke-width='2'/>
+<line x1='30' y1='-92' x2='22' y2='-150' stroke='#1F3864' stroke-width='4' stroke-linecap='round'/>
+<circle cx='22' cy='-153' r='6' fill='#1F3864'/>
+<circle cx='48' cy='-24' r='24' fill='#2B2B2B' stroke='#1F3864' stroke-width='2'/>
+<circle cx='48' cy='-24' r='9' fill='#9AA3B2'/>
+<circle cx='108' cy='-24' r='24' fill='#2B2B2B' stroke='#1F3864' stroke-width='2'/>
+<circle cx='108' cy='-24' r='9' fill='#9AA3B2'/>
+<circle cx='168' cy='-24' r='24' fill='#2B2B2B' stroke='#1F3864' stroke-width='2'/>
+<circle cx='168' cy='-24' r='9' fill='#9AA3B2'/>
+<circle cx='222' cy='-24' r='24' fill='#2B2B2B' stroke='#1F3864' stroke-width='2'/>
+<circle cx='222' cy='-24' r='9' fill='#9AA3B2'/>
+</g>
+<text x='60' y='122' font-family='Arial, Helvetica, sans-serif' font-size='18' font-weight='700' fill='#1F3864'>Compteur</text>
+<text x='230' y='292' font-family='Arial, Helvetica, sans-serif' font-size='17' font-weight='700' fill='#1F3864'>Canalisation enterrée</text>
+<text x='470' y='300' font-family='Arial, Helvetica, sans-serif' font-size='17' font-weight='700' fill='#C0392B'>Fuite : 35 m³ perdus en un an</text>
+<text x='742' y='80' font-family='Arial, Helvetica, sans-serif' font-size='17' font-weight='700' fill='#1F3864'>Maison</text>
+</svg>
+      <div class="rappel"><b>La situation.</b> Chez la famille Martin, la consommation d'eau a bondi. Le robot explorateur a trouvé
+        la cause : une fuite sur la canalisation enterrée, entre le compteur et la maison. Cette fuite a fait perdre 35 m³
+        d'eau en un an. Sans la fuite, la famille consomme 110 m³ par an. Tu vas calculer ce que cette fuite coûte, avec
+        la même feuille de calcul qu'en séance 2.</div>
+      <div class="rappel creme"><b>Les données de la facture (les mêmes qu'en séance 2).</b> Prix de l'eau (Vendée Eau) :
+        1,162 € HT par m³ · Redevances de l'Agence de l'eau : 0,408 € HT par m³ · Abonnement : 43,00 € HT par semestre
+        (6 mois) · TVA : 5,5 %.</div>
+      <h3><span class="num">C1</span>Les données<span class="pts">(2 pts)</span></h3>
+      <p class="consigne">Écris en B2 la consommation sans fuite, en C2 la consommation avec la fuite, et en B5 l'abonnement pour une année. Les cellules grises sont déjà remplies ou se calculent seules.</p>
+      <h3><span class="num">C2</span>Les formules<span class="pts">(6 pts)</span></h3>
+      <p class="consigne">Écris les formules de B7, B9 et B10 (colonne « Sans fuite »). Une formule commence par = et utilise les références des cellules (B2, B3…).</p>
+      <p class="consigne" style="color:var(--navy)">Comme en séance 2, B6 (montant de la TVA) et B8 (total des redevances) sont fournies : elles se calculent seules.</p>
+      <h3><span class="num">C3</span>Le coût de la fuite<span class="pts">(4 pts)</span></h3>
+      <p class="consigne">Complète la colonne « Avec la fuite » : écris les formules de C7, C9 et C10 (tu peux recopier celles de la colonne B). En C11, écris la formule qui calcule le coût de la fuite.</p>
+      <div class="tscroll"><table class="ss" id="ss"><thead><tr><th class="rh"></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody></tbody></table></div>
+      <div class="legende"><span style="background:var(--vert)"></span>données à écrire<span style="background:var(--form)"></span>formules à écrire<span style="background:var(--gris)"></span>déjà rempli ou calculé seul</div>
+      <button type="button" class="btn sec" id="btnRecopie" data-nolecture>⇥ Recopier B7:B10 vers C7:C10</button>
+      <p class="legende" style="margin-left:0">Comme la poignée de recopie d'un tableur : les références se décalent d'une colonne (B2 devient C2). La ligne 8, fournie, ne bouge pas.</p>
+      <p class="phrase">Recopie le résultat de C11 : la fuite coûte <input type="text" id="c3_phrase" inputmode="decimal" aria-label="coût de la fuite en euros"> € par an.</p>
+      <p class="consigne"><b>Recopie aussi ce montant sur ta copie papier.</b></p>
+      <button type="button" class="btn ok" id="btnValider">Valider ma feuille</button>
+      <div class="msg ko cache" id="validMsg"></div>
+    </section>
   </div>
 
-  <!-- 4. résultat -->
   <section class="card narrow cache" id="resultat">
-    <h2>Ta note</h2>
-    <div class="echelles no-print" id="echelles"><button type="button" data-n="20" class="act">sur 20</button><button type="button" data-n="30">sur 30</button><button type="button" data-n="40">sur 40</button></div>
+    <h2>Ta note pour la partie C</h2>
     <p class="note" id="note"></p>
-    <p id="noteBrut" class="legende" style="margin-left:0"></p>
-    <div class="rappel">Les réponses rédigées sont corrigées automatiquement, par mots-clés. <b>Ton professeur relit ta copie et peut
-      ajuster la note.</b></div>
-    <div class="tscroll"><table class="t res" id="resParties"></table></div>
-    <div class="tscroll" style="margin-top:12px"><table class="t res" id="resQuestions"></table></div>
-    <div id="resProf"></div>
+    <div class="tscroll"><table class="res" id="resDetail"></table></div>
     <div class="msg info" id="envoiMsg"></div>
     <button type="button" class="btn sec" id="btnRenvoyer">Renvoyer au professeur</button>
-    <button type="button" class="btn sec" id="btnImprimer">🖨️ Imprimer ma copie</button>
-    <button type="button" class="btn sec" id="btnLiberer">Libérer le poste</button>
-    <p class="privacy">🔒 Ton nom, ta classe, tes réponses et ta note ne sont envoyés qu'au classeur Google Sheets de ton professeur
-      (le même que pour le mini-tableur de la séance 2). Rien d'autre n'est conservé, sauf ton brouillon sur cet ordinateur,
-      jusqu'à ce que tu cliques sur « Libérer le poste ».</p>
+    <button type="button" class="btn" id="btnSuivant">Élève suivant ▶</button>
+    <p class="privacy">🔒 Ton nom, ta classe, tes formules et tes points ne sont envoyés qu'au classeur de notes de ton professeur.
+      Rien d'autre n'est conservé, sauf sur cet ordinateur jusqu'au clic sur « Élève suivant ».</p>
   </section>
 
-  <section class="card cache" id="corrigeComplet"></section>
-
-  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Évaluation n°1 · <span id="build">build 2026-09-24a</span>
-    · <a href="#" id="lienProf" style="color:var(--grey)">accès professeur</a></div>
+  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Évaluation n°1 · Partie C · <span id="build">build 2026-09-24b</span></div>
 </main>
 
-<!-- Aménagements dys : modules partagés du site Technologie (confort de lecture, lecture immersive),
-     intégrés ici pour que la capsule tienne en un seul fichier. -->
 <script>window.CONFORT_LECTURE = { hote:".pbar-in", racine:"main", fonts:"https://blanchardromain-cyber.github.io/technologie-stpierre/pp4g/fonts/" };</script>
 <script>
 /* ════════════════════════════════════════════════════════════════════════
@@ -741,10 +648,8 @@
 
 </script>
 <script>
-window.LECTURE_IMMERSIVE = {
-  racine:"main", hote:".pbar-in", sectionsFermees:"", classeFermeture:"",
-  selecteurs:"h1, h2, h3, .consigne, .rappel, header.band p, ol.dt1 li, .dtnote, th, td, p.lbl, label.lbl, .phrase, .choix label"
-};
+window.LECTURE_IMMERSIVE = { racine:"main", hote:".pbar-in", sectionsFermees:"", classeFermeture:"",
+  selecteurs:"h1, h2, h3, .consigne, .rappel, header.band p, th, td.lbl, .phrase, .legende" };
 </script>
 <script>
 /* ════════════════════════════════════════════════════════════════════════
@@ -1145,190 +1050,46 @@ window.LECTURE_IMMERSIVE = {
 })();
 
 </script>
-
 <script>
-/* ═══════════════════════════════════════════════════════════════════════════
-   P11 — ÉVALUATION N°1 · capsule numérique (version papier : P11_evaluation_1/)
-   Le contenu pédagogique et les réponses attendues sont dans CORRIGE, ci-dessous.
-   ═══════════════════════════════════════════════════════════════════════════ */
 "use strict";
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9e_j_EH8BQR6wE-iMrhk1aMOqs3T-I7pvjFeD8VqkqqQWUsq6l2m5JXMoFVZOerhW/exec"; // même classeur que tableur-facture.html
-var H_ELEVE = 2728894585, H_PROF = 3883392181;   // empreintes des codes d'accès (voir la fiche enseignant)
-var CLE = "p11-eval1:";
-
-var CORRIGE = {
-  dt1: [
-    "La société Robot Scan inspecte les réseaux d'eau souterrains. Ses techniciens doivent localiser les fuites d'eau dans des canalisations enterrées, où un être humain ne peut pas entrer. Des fuites peuvent apparaître à tout moment de l'année.",
-    "Robot Scan veut un robot explorateur qui transporte une caméra sans fil. Il filme avec une résolution de 1080 pixels. Les techniciens regardent les images sur un écran de contrôle.",
-    "Le robot est télécommandé, sans fil, jusqu'à une distance de 20 mètres environ.",
-    "Il doit fonctionner au moins 30 minutes sans être rechargé. Pour la sécurité, il est alimenté en très basse tension.",
-    "Il doit résister à l'humidité, à de faibles écoulements d'eau et à de légers chocs.",
-    "Il doit se déplacer dans l'obscurité (luminosité inférieure à 3 lux), sur des sols plats ou en pente jusqu'à 20 %, lisses ou accidentés.",
-    "Il doit supporter des températures de −10 °C à 80 °C.",
-    "Une assistance automatique l'arrête à 10 cm de la fuite, pour la filmer de près.",
-    "Il doit être solide, fiable et démontable, pour être réparé facilement. Son prix ne doit pas dépasser 2 000 € TTC (sans la caméra)."
-  ],
-  dt2: [["Caméra","sans fil, vidéo en 1080 pixels"],["Éclairage","2 phares à LED : filme dans le noir complet (0 lux)"],
-        ["Télécommande","sans fil (radio), portée 25 m"],["Batterie","12 V (très basse tension), autonomie 45 min"],
-        ["Déplacement","4 roues motrices, pentes jusqu'à 25 %"],["Températures d'utilisation","de −10 °C à 60 °C"],
-        ["Indice de protection","IP64"],["Approche automatique","capteur à ultrasons, arrêt à 10 cm"],
-        ["Prix de vente","1 850 € TTC (sans la caméra)"],["Masse","3,2 kg"]],
-  dt3: [["0","Non protégé","Non protégé"],["1","Solides de plus de 50 mm","Gouttes d'eau qui tombent verticalement"],
-        ["2","Solides de plus de 12,5 mm","Gouttes d'eau jusqu'à 15° de la verticale"],["3","Solides de plus de 2,5 mm","Pluie jusqu'à 60° de la verticale"],
-        ["4","Solides de plus de 1 mm","Projections d'eau de toutes directions"],["5","Protégé contre les poussières","Jets d'eau à la lance"],
-        ["6","Totalement protégé contre les poussières","Paquets de mer (projections puissantes)"],["7","—","Immersion temporaire"],["8","—","Immersion permanente"]],
-  eme: ["techniciens","canalisations","obscurité","températures","énergie","budget","humidité"],
-  q4: [ {f:"Permettre aux techniciens d'observer l'intérieur des canalisations", type:"FP", eme:["techniciens","canalisations"]},
-        {f:"Se déplacer sans lumière (moins de 3 lux)", type:"FC", eme:["obscurité"]},
-        {f:"Fonctionner avec une batterie en très basse tension", type:"FC", eme:["énergie"]},
-        {f:"Coûter moins de 2 000 €", type:"FC", eme:["budget"]} ],
-  /* Q5 : null = case à compléter ; id = identifiant du champ */
-  q5: [ ["FP1","Explorer des lieux difficiles d'accès","Lieux",{id:"q5_fp1"}],
-        ["FC1","Évoluer dans des lieux obscurs","Luminosité",{id:"q5_fc1"}],
-        ["FC2",{id:"q5_fc2"},"Indice de protection","IP64"],
-        ["FC3","Filmer l'intérieur des canalisations","Résolution",{id:"q5_fc3"}],
-        ["FC4","Être piloté à distance",{id:"q5_fc4"},"Sans fil, 20 m"],
-        ["FC5","Fonctionner sans être rechargé","Autonomie",{id:"q5_fc5"}],
-        ["FC6","Supporter des températures extrêmes","Plage de températures",{id:"q5_fc6"}],
-        ["FC7","Respecter le budget","Coût",{id:"q5_fc7"}] ],
-  /* Q6 : exigences du DT1 ; [demandé, prototype] = nombres attendus dans la justification */
-  q6: [ {v:"camera", t:"la résolution de la caméra", ok:true,  n:["1080","1080"]},
-        {v:"eclairage", t:"la luminosité (obscurité)", ok:true, n:["3","0"]},
-        {v:"telecommande", t:"la portée de la télécommande", ok:true, n:["20","25"]},
-        {v:"batterie", t:"l'autonomie de la batterie", ok:true, n:["30","45"]},
-        {v:"pente", t:"la pente", ok:true, n:["20","25"]},
-        {v:"temperatures", t:"les températures", ok:false, n:["80","60"]},
-        {v:"ip", t:"l'indice de protection", ok:true, n:["64","64"]},
-        {v:"approche", t:"l'approche automatique", ok:true, n:["10","10"]},
-        {v:"prix", t:"le prix", ok:true, n:["2000","1850"]},
-        {v:"masse", t:"la masse", ok:null, n:[]} ],
-  attendu: {
-    q1_quoi:"Localiser les fuites d'eau dans les canalisations souterraines.", q1_qui:"Les techniciens de Robot Scan.",
-    q1_ou:"Dans les canalisations enterrées (réseaux d'eau souterrains).", q1_pourquoi:"Les fuites gaspillent l'eau ; un humain ne peut pas entrer dans les canalisations.",
-    q2_aqui:"Aux techniciens de Robot Scan.", q2_surquoi:"Sur les canalisations (souterraines).", q2_but:"Localiser les fuites d'eau.",
-    q2_phrase:"robot explorateur / aux techniciens de Robot Scan / les canalisations souterraines / localiser les fuites d'eau",
-    q3_a:"Totalement protégé contre les poussières.", q3_b:"Protégé contre les projections d'eau de toutes directions.",
-    q3_c:"Oui : il doit résister à l'humidité et à de faibles écoulements d'eau (ligne ⑤).",
-    q5_fp1:"Canalisations souterraines", q5_fc1:"< 3 lux", q5_fc2:"Résister à l'humidité et aux écoulements d'eau",
-    q5_fc3:"1080 pixels", q5_fc4:"Portée (distance)", q5_fc5:"30 min au moins", q5_fc6:"de −10 °C à 80 °C", q5_fc7:"2 000 € TTC maximum",
-    q6a:"une exigence respectée + les deux valeurs (ex. autonomie : 30 min → 45 min)", q6b:"les températures : 80 °C demandés, 60 °C seulement",
-    c1:"B2 = 110 ; C2 = 145 ; B5 = 86", c3_phrase:"57,97 €"
-  },
-  /* partie C : valeurs de l'énoncé et formules attendues */
-  feuille: { B2:110, C2:145, B3:1.162, B4:0.408, B5:86, B6:5.5 },
-  formules: { B7:"=B2*B3", B9:"=B7+B8+B5", B10:"=B9+B6", C7:"=C2*C3", C9:"=C7+C8+C5", C10:"=C9+C6", C11:"=C10-B10" },
-  bareme: { B7:2, B9:2, B10:2 }
-};
-
-/* ─── mots-clés (convention P11 : mot entier = point plein, « * » = radical ;
-       chaque liste contient aussi le mot entier, sinon la tolérance orthographique ne joue pas) ─── */
-var MC = {
-  fuite: ["fuite*","fuite","fuites"],
-  techniciens: ["technicien*","technicien","techniciens","robot scan","societe","entreprise*","entreprise"],
-  canalisations: ["canalisation*","canalisation","canalisations","souterrain*","souterraine","sous terre","reseau*","reseaux",
-                  "tuyau*","tuyaux","egout*","egouts","enterre*","enterree","conduite*","conduites"],
-  pourquoi: ["gaspill*","gaspillage","gaspiller","fuite*","fuite","perte*","pertes","perd*","perdre","econom*","economiser",
-             "inaccessible*","inaccessible","cher","cout*","couter","facture*","facture","peut pas","ne peut","impossible","acces","entrer"],
-  but_verbe: ["localis*","localiser","trouv*","trouver","detect*","detecter","rep*","reperer","identifi*","identifier",
-              "cherch*","chercher","voir","film*","filmer","observ*","observer","inspect*","inspecter"],
-  poussiere: ["poussiere*","poussiere","poussieres"],
-  projection: ["projection*","projection","projections","projete*","eclabouss*","eclaboussure"],
-  humidite: ["humid*","humidite","ecoulement*","ecoulement","ecoulements","eau","mouill*","mouiller","pluie","projection*","projection"],
-  immersion: ["immersion*","immersion","immerge*","plong*","plonger","noye*","noyer","rempli*"],
-  resister: ["resist*","resister","supporter","support*","proteg*","proteger","etanche*","etanche"],
-  critere_portee: ["portee","distance","communication","liaison","rayon","telecommande"]
-};
-
-/* ═══ outils texte (repris du site Technologie : _p11norm / _p11phon / _p11lev / _p11match) ═══ */
-function norm(v){
-  return String(v||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
-    .replace(/[’']/g," ").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
-}
-function phon(v){
-  var t=norm(v); if(!t) return "";
-  return t.replace(/ph/g,"f").replace(/qu/g,"k").replace(/gu([eiy])/g,"g$1")
-    .replace(/eau/g,"o").replace(/au/g,"o").replace(/ou/g,"u").replace(/ai|ei/g,"e").replace(/oi/g,"wa")
-    .replace(/c([eiy])/g,"s$1").replace(/ch/g,"s").replace(/c/g,"k").replace(/x/g,"ks").replace(/y/g,"i").replace(/gn/g,"n")
-    .replace(/([aeiou])s([aeiou])/g,"$1z$2").replace(/h/g,"").replace(/(er|ez|ai)$/g,"e")
-    .replace(/(.)\1+/g,"$1").replace(/[edstxzp]+$/g,"");
-}
-function lev(a,b,max){
-  if(a===b) return 0; if(Math.abs(a.length-b.length)>max) return max+1;
-  var prev=[],cur=[],i,j; for(j=0;j<=b.length;j++) prev[j]=j;
-  for(i=1;i<=a.length;i++){ cur[0]=i; var best=cur[0];
-    for(j=1;j<=b.length;j++){ var c=a.charAt(i-1)===b.charAt(j-1)?0:1; cur[j]=Math.min(cur[j-1]+1,prev[j]+1,prev[j-1]+c); if(cur[j]<best) best=cur[j]; }
-    if(best>max) return max+1; for(j=0;j<=b.length;j++) prev[j]=cur[j]; }
-  return prev[b.length];
-}
-function exact(mots,cle){
-  var rad=/\*$/.test(cle), c=rad?cle.slice(0,-1):cle, n=c.split(" ").length;
-  for(var d=0;d+n<=mots.length;d++){ var b=mots.slice(d,d+n).join(" ");
-    if(rad){ if(b.indexOf(c)===0) return true; } else if(b===c||b===c+"s"||b===c+"x") return true; }
-  return false;
-}
-/* 1 = mot attendu bien écrit · 0,5 = phonétiquement juste mais mal orthographié · 0 = absent */
-function match(v,liste){
-  var t=norm(v); if(!t) return 0; var mots=t.split(" "), i;
-  for(i=0;i<liste.length;i++) if(exact(mots,liste[i])) return 1;
-  for(i=0;i<liste.length;i++){ var cle=liste[i].replace(/\*$/,""); if(cle.length<4) continue;
-    var pc=phon(cle); if(!pc) continue; var n=cle.split(" ").length, tol=pc.length<=5?1:2;
-    for(var d=0;d+n<=mots.length;d++){ var pb=phon(mots.slice(d,d+n).join(" ")); if(!pb) continue;
-      if(pb===pc||lev(pb,pc,tol)<=tol) return 0.5; } }
-  return 0;
-}
-/* nombres présents dans une réponse (« 2 000 » → 2000, « 1,5 » → 1.5, « −10 » → -10) */
-function nombres(v){
-  var s=String(v||"").replace(/[−–]/g,"-").replace(/(\d)[\s  ](?=\d{3}\b)/g,"$1");
-  var m=s.match(/-?\d+(?:[.,]\d+)?/g)||[]; return m.map(function(x){ return parseFloat(x.replace(",",".")); });
-}
-function contientNombre(v,n){ return nombres(v).some(function(x){ return Math.abs(Math.abs(x)-Math.abs(n))<1e-9; }); }
-
-/* ═══ état, sauvegarde ═══ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   P11 — ÉVALUATION N°1 — PARTIE C (mini-tableur autoévalué)
+   La note C1, C2, C3 part vers le classeur « Report des notes » (Apps Script
+   Eval1-Report.gs), sur la ligne de l'élève dans l'onglet de sa classe.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var SCRIPT_URL_REPORT = "";                    // URL /exec du script Eval1-Report.gs (voir apps-script/LISEZ-MOI-EVAL1.md)
+var SECRET = "P11-EVAL1-2026";
+var H_ELEVE = 2728894585;                      // empreinte du code élève (le même que la capsule)
+var DUREE_TOUR = 12 * 60;                      // secondes
+var CLE = "p11-eval1-c:";
 function $(id){ return document.getElementById(id); }
-var ETAT = { id:null, rep:{}, cells:{}, valide:false, res:null, envoye:false, ts:0 };
-var PROF = false;
-function cleCopie(){ return CLE+"copie:"+norm(ETAT.id.classe+" "+ETAT.id.nom+" "+ETAT.id.prenom).replace(/ /g,"_"); }
-function sauver(){
-  if(!ETAT.id) return; ETAT.ts=Date.now();
-  try{ localStorage.setItem(cleCopie(), JSON.stringify(ETAT)); }
-  catch(e){ flash("validMsg","⚠️ Ton travail ne peut pas être enregistré sur cet ordinateur (navigation privée ?). Ne ferme pas la page.","ko"); }
-}
-var minuteur=null; function sauverBientot(){ clearTimeout(minuteur); minuteur=setTimeout(sauver,400); majProgression(); }
-function flash(id,html,type){ var b=$(id); if(!b) return; b.className="msg "+(type||"info"); b.innerHTML=html; }
-function h(s){ var x=5381; s=String(s); for(var i=0;i<s.length;i++) x=((x<<5)+x+s.charCodeAt(i))|0; return x>>>0; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function fr(x,dec){ if(x==null||isNaN(x)) return "?"; return Number(x).toLocaleString("fr-FR",{minimumFractionDigits:dec||0,maximumFractionDigits:dec==null?2:dec}); }
+function h(s){ var x=5381; s=String(s); for(var i=0;i<s.length;i++) x=((x<<5)+x+s.charCodeAt(i))|0; return x>>>0; }
+function flash(id,html,type){ var b=$(id); if(!b) return; b.className="msg "+(type||"info"); b.innerHTML=html; }
+function slug(s){ return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"_"); }
 
-/* ═══ construction de la page ═══ */
-var PU=["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];
-function construire(){
-  $("dt1").innerHTML=CORRIGE.dt1.map(function(t,i){ return "<li><b class=\"pu\">"+PU[i]+"</b><span>"+esc(t)+"</span></li>"; }).join("");
-  var moitie=Math.ceil(CORRIGE.dt2.length/2), r="";
-  for(var i=0;i<moitie;i++){ var a=CORRIGE.dt2[i], b=CORRIGE.dt2[i+moitie]||["",""];
-    r+="<tr><td class=\"k\">"+esc(a[0])+"</td><td>"+esc(a[1])+"</td><td class=\"k\">"+esc(b[0])+"</td><td>"+esc(b[1])+"</td></tr>"; }
-  $("dt2").innerHTML=r;
-  $("dt3").querySelector("tbody").innerHTML=CORRIGE.dt3.map(function(l){ return "<tr><td class=\"q\">"+l[0]+"</td><td>"+esc(l[1])+"</td><td>"+esc(l[2])+"</td></tr>"; }).join("");
-  // Q4
-  var opts=function(){ return "<option value=\"\">…</option>"+CORRIGE.eme.map(function(e){ return "<option>"+e+"</option>"; }).join(""); };
-  $("q4tab").querySelector("tbody").innerHTML=CORRIGE.q4.map(function(l,i){
-    return "<tr><td>"+esc(l.f)+"</td><td style=\"width:120px\"><select id=\"q4_t"+i+"\" aria-label=\"FP ou FC\"><option value=\"\">…</option><option>FP</option><option>FC</option></select></td>"+
-      "<td style=\"width:"+(i===0?"330":"190")+"px\"><div class=\"row\" style=\"gap:6px\"><div style=\"min-width:120px\"><select id=\"q4_e"+i+"a\" aria-label=\"EME\">"+opts()+"</select></div>"+
-      (i===0?"<div style=\"min-width:120px\"><select id=\"q4_e"+i+"b\" aria-label=\"deuxième EME\">"+opts()+"</select></div>":"")+"</div></td></tr>";
-  }).join("");
-  // Q5
-  $("q5tab").querySelector("tbody").innerHTML=CORRIGE.q5.map(function(l){
-    return "<tr><td class=\"q\">"+l[0]+"</td>"+l.slice(1).map(function(c){
-      return typeof c==="string" ? "<td>"+esc(c)+"</td>" : "<td><div class=\"champ\"><input type=\"text\" id=\""+c.id+"\"></div></td>"; }).join("")+"</tr>";
-  }).join("");
-  // Q6
-  var o="<option value=\"\">Choisir une exigence…</option>"+CORRIGE.q6.map(function(x){ return "<option value=\""+x.v+"\">"+esc(x.t.charAt(0).toUpperCase()+x.t.slice(1))+"</option>"; }).join("");
-  $("q6a_ex").innerHTML=o; $("q6b_ex").innerHTML=o;
-  // tableur
+var ETAT = { id:null, cells:{}, phrase:"", debut:0, valide:false, res:null, envoi:"" };
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTEUR DU MINI-TABLEUR — partagé par la capsule (Site Techno) et par la page
+   evaluation-1-tableur.html (techno-p11-eau). Ne pas modifier les pages générées :
+   modifier ce fichier, puis relancer build_capsule.py.
+   Besoins côté page : ETAT.cells, $(id), fr(x,dec), esc(s), et les cellules #ss.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var TABLEUR_FORMULES = { B7:"=B2*B3", B9:"=B7+B8+B5", B10:"=B9+B6", C7:"=C2*C3", C9:"=C7+C8+C5", C10:"=C9+C6", C11:"=C10-B10" };
+var TABLEUR_BAREME = { B7:2, B9:2, B10:2 };
+/* nombres présents dans un texte (« 57,97 € » → 57.97) */
+function nombresTexte(v){
+  var s=String(v||"").replace(/[\u2212\u2013]/g,"-").replace(/(\d)[\s\u00a0\u202f](?=\d{3}\b)/g,"$1");
+  var m=s.match(/-?\d+(?:[.,]\d+)?/g)||[]; return m.map(function(x){ return parseFloat(x.replace(",",".")); });
+}
+function construireTableur(tbody){
   var lignes=[[1,"Libellé","Sans fuite","Avec la fuite"],[2,"Consommation sur l'année (m³)","",""],
     [3,"Consommation Vendée Eau — prix unitaire HT (€/m³)","1,162","=B3"],[4,"Redevances Agence de l'eau (€/m³)","0,408","=B4"],
     [5,"Abonnement pour l'année (€)","","=B5"],[6,"Montant de la TVA (€) — 5,5 % du sous-total HT","FOURNI","FOURNI"],[7,"Total eau (€)","",""],
     [8,"Total des redevances (€)","FOURNI","FOURNI"],[9,"Sous-total HT (€)","",""],[10,"TOTAL TTC (€)","",""],[11,"Coût de la fuite sur un an (€)",null,""]];
-  $("ss").querySelector("tbody").innerHTML=lignes.map(function(l){
+  tbody.innerHTML=lignes.map(function(l){
     var n=l[0]; if(n===1) return "<tr><td class=\"rh\">1</td><td class=\"lbl\"><b>Libellé</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Sans fuite</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Avec la fuite</b></td></tr>";
     var t="<tr><td class=\"rh\">"+n+"</td><td class=\"lbl\"><b>"+esc(l[1])+"</b></td>";
     [["B",l[2]],["C",l[3]]].forEach(function(p){ var ref=p[0]+n, v=p[1];
@@ -1341,23 +1102,7 @@ function construire(){
     });
     return t+"</tr>";
   }).join("");
-  // dictée sur chaque champ texte
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(SR) document.querySelectorAll("#copie .champ").forEach(function(ch){
-    var champ=ch.querySelector("input,textarea"); if(!champ) return;
-    var b=document.createElement("button"); b.type="button"; b.className="mic"; b.title="Dicter ma réponse"; b.setAttribute("data-nolecture","");
-    b.textContent="🎤"; b.addEventListener("click",function(){ dicter(b,champ,SR); }); ch.appendChild(b);
-  });
 }
-var reco=null;
-function dicter(btn,champ,SR){
-  if(reco){ reco.stop(); return; }
-  reco=new SR(); reco.lang="fr-FR"; reco.interimResults=false; btn.classList.add("on");
-  reco.onresult=function(e){ var t=e.results[0][0].transcript; champ.value=(champ.value?champ.value.replace(/\s+$/,"")+" ":"")+t; champ.dispatchEvent(new Event("input",{bubbles:true})); };
-  reco.onend=function(){ btn.classList.remove("on"); reco=null; };
-  reco.onerror=reco.onend; try{ reco.start(); }catch(e){ reco.onend(); }
-}
-
 /* ═══ mini-tableur : analyse et calcul des formules (+ − × ÷, %, parenthèses, SOMME) ═══ */
 function contenu(ref,cells){
   if(ref==="B3") return "1.162"; if(ref==="B4") return "0.408"; if(ref==="B6") return "5.5";
@@ -1444,7 +1189,7 @@ function decaler(f){ return String(f).replace(/(\$?)([A-Z])(\$?)(\d+)/gi,functio
 function noterFormule(ref,cells){
   /* La formule est jugée dans une feuille « idéale » : données justes et autres cellules à leur valeur attendue.
      Une formule juste reste donc juste si une donnée ou une autre formule est fausse (pas de double peine). */
-  var c=String(cells[ref]||"").trim(), max=CORRIGE.bareme[ref]||1;
+  var c=String(cells[ref]||"").trim(), max=TABLEUR_BAREME[ref]||1;
   if(!c) return {p:0,max:max,why:"vide"};
   if(c.charAt(0)!=="=") return {p:0,max:max,why:"pas de signe ="};
   var arbre; try{ arbre=analyser(c.slice(1)); }catch(e){ return {p:0,max:max,why:"formule illisible"}; }
@@ -1459,70 +1204,23 @@ function noterFormule(ref,cells){
 var IDEAL=null;
 function idealValeurs(){
   if(IDEAL) return IDEAL;
-  var cells={B2:"110",C2:"145",B5:"86"}; Object.keys(CORRIGE.formules).forEach(function(k){ cells[k]=CORRIGE.formules[k]; });
+  var cells={B2:"110",C2:"145",B5:"86"}; Object.keys(TABLEUR_FORMULES).forEach(function(k){ cells[k]=TABLEUR_FORMULES[k]; });
   var val=feuille(cells), o={}; "B2 B3 B4 B5 B6 C2 C3 C4 C5 C6 B7 B8 B9 B10 C7 C8 C9 C10 C11".split(" ").forEach(function(r){ o[r]=val(r); });
   return (IDEAL=o);
 }
-function corriger(){
-  var R=ETAT.rep, C=ETAT.cells, d=[];      // d : détail [question, item, points, max, réponse, attendu]
-  function item(q,it,p,max,rep,att){ d.push({q:q,it:it,p:Math.min(p,max),max:max,rep:rep,att:att}); }
-  var m;
-  // Q1
-  m=match(R.q1_quoi,MC.fuite); item("Q1","Quoi ?",m||( (match(R.q1_quoi,MC.but_verbe)||match(R.q1_quoi,MC.canalisations))?0.5:0 ),1,R.q1_quoi,CORRIGE.attendu.q1_quoi);
-  item("Q1","Qui ?",match(R.q1_qui,MC.techniciens),1,R.q1_qui,CORRIGE.attendu.q1_qui);
-  item("Q1","Où ?",match(R.q1_ou,MC.canalisations),1,R.q1_ou,CORRIGE.attendu.q1_ou);
-  item("Q1","Pourquoi ?",match(R.q1_pourquoi,MC.pourquoi),1,R.q1_pourquoi,CORRIGE.attendu.q1_pourquoi);
-  // Q2
-  item("Q2","À qui ?",match(R.q2_aqui,MC.techniciens),1,R.q2_aqui,CORRIGE.attendu.q2_aqui);
-  m=match(R.q2_surquoi,MC.canalisations); item("Q2","Sur quoi ?",m||(match(R.q2_surquoi,["eau","fuite*","fuite"])?0.5:0),1,R.q2_surquoi,CORRIGE.attendu.q2_surquoi);
-  m=match(R.q2_but,MC.fuite); item("Q2","Dans quel but ?",m?m:(match(R.q2_but,["gaspill*","gaspillage","econom*","economiser"])?0.5:0),1,R.q2_but,CORRIGE.attendu.q2_but);
-  var ph=[match(R.q2_p_nom,["robot*","robot"])>0, match(R.q2_p_aqui,MC.techniciens)>0, match(R.q2_p_surquoi,MC.canalisations.concat(["eau"]))>0,
-          match(R.q2_p_but,MC.fuite.concat(["gaspill*","gaspillage","econom*","economiser"]))>0].filter(Boolean).length;
-  item("Q2","Phrase du besoin",ph===4?1:(ph===3?0.5:0),1,[R.q2_p_nom,R.q2_p_aqui,R.q2_p_surquoi,R.q2_p_but].join(" / "),CORRIGE.attendu.q2_phrase);
-  // Q3
-  item("Q3","a) 1ᵉʳ chiffre",match(R.q3_a,MC.poussiere)||(match(R.q3_a,["solide*","solides"])?0.5:0),1,R.q3_a,CORRIGE.attendu.q3_a);
-  m=match(R.q3_b,MC.projection); item("Q3","b) 2ᵉ chiffre",m||(match(R.q3_b,["eau"])?0.5:0),1,R.q3_b,CORRIGE.attendu.q3_b);
-  item("Q3","c) oui / non",R.q3_c==="oui"?1:0,1,R.q3_c||"",CORRIGE.attendu.q3_c);
-  item("Q3","c) justification",Math.max(match(R.q3_just,MC.humidite),match(R.q3_just,MC.immersion)),1,R.q3_just,"ligne ⑤ : humidité, écoulements");
-  // Q4
-  CORRIGE.q4.forEach(function(l,i){
-    var t=R["q4_t"+i]===l.type?0.5:0, e=[R["q4_e"+i+"a"],R["q4_e"+i+"b"]].filter(Boolean);
-    var eOk=l.eme.length===2 ? (e.length===2 && e.indexOf(l.eme[0])>=0 && e.indexOf(l.eme[1])>=0) : (e[0]===l.eme[0]);
-    item("Q4","Ligne "+(i+1),t+(eOk?0.5:0),1,(R["q4_t"+i]||"…")+" — "+(e.join(" + ")||"…"),l.type+" — "+l.eme.join(" + "));
-  });
-  // Q5
-  var n1080=/1080\s*(p\b|px|pix)/i.test(R.q5_fc3||"")||/1080p/i.test(norm(R.q5_fc3));
-  var q5={
-    q5_fp1: match(R.q5_fp1,MC.canalisations),
-    q5_fc1: contientNombre(R.q5_fc1,3) ? (/lux/i.test(R.q5_fc1)?1:0.5) : 0,
-    q5_fc2: match(R.q5_fc2,MC.humidite) ? (match(R.q5_fc2,MC.resister)?1:0.5) : 0,
-    q5_fc3: contientNombre(R.q5_fc3,1080)||/1080/.test(R.q5_fc3||"") ? (n1080||/pixel/i.test(R.q5_fc3)?1:0.5) : 0,
-    q5_fc4: match(R.q5_fc4,MC.critere_portee),
-    q5_fc5: (contientNombre(R.q5_fc5,30) ? (/min/i.test(R.q5_fc5)?1:0.5) : 0) || (/demi.?heure|1\/2\s*h/i.test(R.q5_fc5||"")?1:0),
-    q5_fc6: (contientNombre(R.q5_fc6,10)&&contientNombre(R.q5_fc6,80)) ? (/°|degr|\bc\b/i.test(R.q5_fc6)?1:0.5) : ((contientNombre(R.q5_fc6,80)||contientNombre(R.q5_fc6,10))?0.5:0),
-    q5_fc7: contientNombre(R.q5_fc7,2000) ? (/€|euro/i.test(R.q5_fc7)?1:0.5) : 0
-  };
-  CORRIGE.q5.forEach(function(l){ l.forEach(function(c){ if(c&&c.id) item("Q5",l[0],q5[c.id],1,R[c.id],CORRIGE.attendu[c.id]); }); });
-  // Q6
-  function q6(ex,dem,pro,attenduOk){
-    var e=CORRIGE.q6.filter(function(x){ return x.v===ex; })[0];
-    var pe = e && e.ok===attenduOk ? 1 : 0, pv=0;
-    if(pe){ var a=contientNombre(dem,e.n[0])||(e.v==="eclairage"&&/noir|obscur/i.test(dem)), b=contientNombre(pro,e.n[1])||(e.v==="eclairage"&&/noir/i.test(pro));
-      pv=(a&&b)?1:((a||b)?0.5:0); }
-    return [pe,pv,e?e.t:""];
-  }
-  var a=q6(R.q6a_ex,R.q6a_dem,R.q6a_pro,true), b=q6(R.q6b_ex,R.q6b_dem,R.q6b_pro,false);
-  item("Q6","a) exigence respectée",a[0],1,a[2],"toute exigence respectée (sauf températures)");
-  item("Q6","a) comparaison des valeurs",a[1],1,(R.q6a_dem||"…")+" / "+(R.q6a_pro||"…"),CORRIGE.attendu.q6a);
-  item("Q6","b) exigence non respectée",b[0],1,b[2],"les températures");
-  item("Q6","b) comparaison des valeurs",b[1],1,(R.q6b_dem||"…")+" / "+(R.q6b_pro||"…"),"80 °C demandés / 60 °C");
+/* Bouton « Recopier » : lignes 7, 9 et 10 (la ligne 8 est fournie), références décalées d'une colonne. */
+function recopierColonne(cells){
+  ["7","9","10"].forEach(function(l){ var b=String(cells["B"+l]||"").trim(); cells["C"+l]= b.charAt(0)==="=" ? decaler(b) : b; });
+}
+/* Partie C : C1 (données), C2 (formules B7, B9, B10), C3 (colonne C, C11, phrase). item(q, intitulé, points, max, réponse, attendu). */
+function corrigerPartieC(C, phrase, item){
   // C1
   var num=function(r){ var v=feuille(C)(r); return v; };
   item("C1","B2 (sans fuite)",Math.abs(num("B2")-110)<1e-9?0.5:0,0.5,C.B2,"110");
   item("C1","C2 (avec la fuite)",Math.abs(num("C2")-145)<1e-9?0.5:0,0.5,C.C2,"145 (ou =B2+35)");
   item("C1","B5 (abonnement annuel)",Math.abs(num("B5")-86)<1e-9?1:0,1,C.B5,"86 (43 × 2)");
   // C2
-  ["B7","B9","B10"].forEach(function(r){ var x=noterFormule(r,C); item("C2",r,x.p,x.max,C[r],CORRIGE.formules[r]+(x.why!=="juste"?"  ("+x.why+")":"")); });
+  ["B7","B9","B10"].forEach(function(r){ var x=noterFormule(r,C); item("C2",r,x.p,x.max,C[r],TABLEUR_FORMULES[r]+(x.why!=="juste"?"  ("+x.why+")":"")); });
   // C3 : C7, C9, C10 justes, ou recopie fidèle de la formule de B (pas de double peine)
   var justesC=0;
   ["C7","C9","C10"].forEach(function(r){
@@ -1532,171 +1230,124 @@ function corriger(){
   });
   item("C3","C7, C9, C10 ("+justesC+"/3 justes)",justesC===3?2:(justesC===2?1:0),2,["C7","C9","C10"].map(function(r){ return C[r]||"…"; }).join(" ; "),"=C2*C3 ; =C7+C8+C5 ; =C9+C6");
   var x11=noterFormule("C11",C); item("C3","C11",x11.p,1,C.C11,"=C10-B10"+(x11.why!=="juste"?"  ("+x11.why+")":""));
-  var v11=feuille(C)("C11"), saisi=nombres(R.c3_phrase)[0];
+  var v11=feuille(C)("C11"), saisi=nombresTexte(phrase)[0];
   var okPh = saisi!=null && ((!isNaN(v11)&&Math.abs(saisi-v11)<0.011)||Math.abs(saisi-57.97)<0.011);
-  item("C3","Phrase (coût de la fuite)",okPh?1:0,1,R.c3_phrase,CORRIGE.attendu.c3_phrase);
+  item("C3","Phrase (coût de la fuite)",okPh?1:0,1,phrase,"57,97 €");
 
-  var tot={}; d.forEach(function(x){ tot[x.q]=(tot[x.q]||0)+x.p; });
-  var brut=d.reduce(function(s,x){ return s+x.p; },0);
-  return {detail:d, parQ:tot, brut:Math.round(brut*100)/100};
-}
-var BAREME_Q=[["Q1","CT 2.5",4,"QQOQCP"],["Q2","CT 2.5",4,"Bête à cornes et besoin"],["Q3","CT 2.5",4,"Indice de protection IP"],
-  ["Q4","CT 2.1",4,"Pieuvre : FP ou FC"],["Q5","CT 2.1",8,"Cahier des charges fonctionnel"],["Q6","CT 2.1",4,"Conformité du prototype"],
-  ["C1","CT 5.1",2,"Tableur : les données"],["C2","CT 5.1",6,"Tableur : les formules"],["C3","CT 5.1",4,"Tableur : le coût de la fuite"]];
-var COMPS=[["CT 2.5","Partie A — Le besoin",12],["CT 2.1","Partie B — Le cahier des charges",16],["CT 5.1","Partie C — Le coût d'une fuite",12]];
-function surN(brut,n){ return Math.ceil(brut*n/40*2-1e-9)/2; }   // arrondi au demi-point supérieur
-function niveau(p){ return p<0.4?["MI","Maîtrise insuffisante","#C0392B"]:p<0.6?["MF","Maîtrise fragile","#B7791F"]:p<0.8?["MS","Maîtrise satisfaisante","#2E75B6"]:["TBM","Très bonne maîtrise","#1E8E5A"]; }
-
-/* ═══ affichage du résultat ═══ */
-var ECHELLE=20;
-function afficherResultat(){
-  var r=ETAT.res; if(!r) return;
-  $("note").textContent=fr(surN(r.brut,ECHELLE))+" / "+ECHELLE;
-  $("noteBrut").textContent="Points bruts : "+fr(r.brut)+" / 40 — note arrondie au demi-point supérieur.";
-  $("resParties").innerHTML="<thead><tr><th>Partie</th><th>Compétence</th><th>Points</th><th>Niveau</th></tr></thead><tbody>"+
-    COMPS.map(function(c){ var p=BAREME_Q.filter(function(q){ return q[1]===c[0]; }).reduce(function(s,q){ return s+(r.parQ[q[0]]||0); },0), nv=niveau(p/c[2]);
-      return "<tr><td>"+c[1]+"</td><td class=\"n\">"+c[0]+"</td><td class=\"n\">"+fr(p)+" / "+c[2]+"</td><td class=\"n\"><span class=\"niv\" style=\"background:"+nv[2]+"\" title=\""+nv[1]+"\">"+nv[0]+"</span></td></tr>"; }).join("")+"</tbody>";
-  $("resQuestions").innerHTML="<thead><tr><th>Question</th><th>Intitulé</th><th>Points</th></tr></thead><tbody>"+
-    BAREME_Q.map(function(q){ return "<tr><td class=\"n\"><b>"+q[0]+"</b></td><td>"+q[3]+"</td><td class=\"n\">"+fr(r.parQ[q[0]]||0)+" / "+q[2]+"</td></tr>"; }).join("")+"</tbody>";
-  $("resProf").innerHTML = PROF ? "<h3>Détail de la correction (professeur)</h3><div class=\"tscroll\"><table class=\"t res\"><thead><tr><th>Q.</th><th>Item</th><th>Réponse de l'élève</th><th>Attendu</th><th>Points</th></tr></thead><tbody>"+
-    r.detail.map(function(x){ return "<tr><td class=\"n\">"+x.q+"</td><td>"+esc(x.it)+"</td><td>"+esc(x.rep||"—")+"</td><td>"+esc(x.att)+"</td><td class=\"n\" style=\"color:"+(x.p>=x.max?"#1E8E5A":(x.p>0?"#B7791F":"#C0392B"))+"\"><b>"+fr(x.p)+"</b> / "+fr(x.max)+"</td></tr>"; }).join("")+"</tbody></table></div>" : "";
-  document.querySelectorAll("#echelles button").forEach(function(b){ b.classList.toggle("act",+b.getAttribute("data-n")===ECHELLE); });
 }
 
-/* ═══ envoi au professeur (même mécanisme que tableur-facture.html) ═══ */
-function ecritureAutorisee(){
-  /* Une page ouverte en local ou servie par localhost n'écrit pas dans le classeur des élèves (règle du site Technologie). */
-  return location.protocol!=="file:" && !/^(localhost|127\.|\[?::1\]?$)/.test(location.hostname);
-}
-function pourSheet(s){ s=String(s==null?"":s); return /^[=+\-@]/.test(s)?" "+s:s; }
-function resumeReponses(){
-  var r=ETAT.res; return r.detail.map(function(x){ return x.q+" "+x.it+" : "+String(x.rep==null?"":x.rep).replace(/\s+/g," ").slice(0,160)+" ["+fr(x.p)+"/"+fr(x.max)+"]"; }).join(" | ");
-}
-function envoyer(){
-  if(!ETAT.res) return;
-  if(!ecritureAutorisee()){ flash("envoiMsg","ℹ️ Page ouverte en local : l'envoi au classeur du professeur est désactivé. Imprime ta copie.","info"); return; }
-  var r=ETAT.res, id=ETAT.id;
-  var payload={ outil:"Évaluation n°1", classe:pourSheet(id.classe), eleve1:pourSheet(id.prenom+" "+id.nom), eleve2:"",
-    detail:pourSheet(resumeReponses()), score:fr(surN(r.brut,20))+"/20", total:"brut "+fr(r.brut)+"/40 · "+fr(surN(r.brut,30))+"/30",
-    horodatage:new Date().toLocaleString("fr-FR") };
-  flash("envoiMsg","Envoi en cours…","info");
-  fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)})
-    .then(function(){ ETAT.envoye=true; sauver(); flash("envoiMsg","✅ Copie envoyée au professeur. Tu peux maintenant cliquer sur « Libérer le poste ».","ok"); })
-    .catch(function(){ flash("envoiMsg","⚠️ Envoi impossible (connexion ?). Clique sur « Renvoyer au professeur », ou imprime ta copie.","ko"); });
-}
 
-/* ═══ déroulement ═══ */
-function champs(){ return document.querySelectorAll("#copie input[id], #copie select[id], #copie textarea[id], #copie input[type=radio]"); }
+/* ─── sauvegarde (un rechargement de page ne perd rien) ─── */
+function cleCopie(){ return CLE+slug(ETAT.id.classe+" "+ETAT.id.nom+" "+ETAT.id.prenom); }
+function sauver(){ if(!ETAT.id) return; try{ localStorage.setItem(cleCopie(),JSON.stringify(ETAT)); sessionStorage.setItem(CLE+"session",cleCopie()); }catch(e){} }
 function lireChamps(){
-  champs().forEach(function(el){
-    if(el.type==="radio"){ if(el.checked) ETAT.rep[el.name]=el.value; return; }
-    if(el.hasAttribute("data-ref")) ETAT.cells[el.getAttribute("data-ref")]=el.value; else ETAT.rep[el.id]=el.value;
-  });
+  document.querySelectorAll("#ss input[data-ref]").forEach(function(el){ ETAT.cells[el.getAttribute("data-ref")]=el.value; });
+  ETAT.phrase=$("c3_phrase").value;
 }
 function ecrireChamps(){
-  champs().forEach(function(el){
-    if(el.type==="radio"){ el.checked=ETAT.rep[el.name]===el.value; return; }
-    var v=el.hasAttribute("data-ref")?ETAT.cells[el.getAttribute("data-ref")]:ETAT.rep[el.id]; if(v!=null) el.value=v;
+  document.querySelectorAll("#ss input[data-ref]").forEach(function(el){ var v=ETAT.cells[el.getAttribute("data-ref")]; if(v!=null) el.value=v; });
+  $("c3_phrase").value=ETAT.phrase||""; recalculer();
+}
+
+/* ─── chronomètre du tour (indicatif : il ne bloque rien) ─── */
+var tic=null;
+function chrono(){
+  var reste=Math.max(0,DUREE_TOUR-Math.floor((Date.now()-ETAT.debut)/1000)), c=$("chrono");
+  c.textContent=Math.floor(reste/60)+":"+("0"+reste%60).slice(-2);
+  c.classList.toggle("fin",reste<=60);
+  if(reste===0){ c.textContent="Temps écoulé : valide ta feuille"; clearInterval(tic); }
+}
+
+/* ─── correction ─── */
+function corrigerFeuille(){
+  var d=[]; function item(q,it,p,max,rep,att){ d.push({q:q,it:it,p:Math.min(p,max),max:max,rep:rep,att:att}); }
+  corrigerPartieC(ETAT.cells, ETAT.phrase, item);
+  var par={C1:0,C2:0,C3:0}; d.forEach(function(x){ par[x.q]+=x.p; });
+  return { detail:d, par:par, total:par.C1+par.C2+par.C3 };
+}
+function detailTexte(r){
+  return r.detail.map(function(x){ return x.q+" "+x.it+" : "+String(x.rep==null?"":x.rep).replace(/\s+/g," ").slice(0,80)+" ["+fr(x.p)+"/"+fr(x.max)+"]"; }).join(" | ");
+}
+function afficherResultat(){
+  var r=ETAT.res; $("resultat").classList.remove("cache");
+  $("note").textContent=fr(r.total)+" / 12";
+  var lib={C1:"Les données (2 pts)",C2:"Les formules (6 pts)",C3:"Le coût de la fuite (4 pts)"};
+  $("resDetail").innerHTML="<thead><tr><th>Question</th><th>Points</th></tr></thead><tbody>"+
+    ["C1","C2","C3"].map(function(q){ return "<tr><td><b>"+q+"</b> — "+lib[q]+"</td><td class=\"n\">"+fr(r.par[q])+"</td></tr>"; }).join("")+"</tbody>";
+  if(ETAT.envoi) flash("envoiMsg",ETAT.envoi,"ok");
+}
+
+/* ─── envoi au classeur de notes ─── */
+function ecritureAutorisee(){ return location.protocol!=="file:" && !/^(localhost|127\.|\[?::1\]?$)/.test(location.hostname); }
+function envoyer(){
+  if(!ETAT.res) return;
+  if(!SCRIPT_URL_REPORT){ flash("envoiMsg","ℹ️ L'envoi automatique n'est pas encore installé : <b>montre cet écran à ton professeur</b> avant de laisser la place.","info"); return; }
+  if(!ecritureAutorisee()){ flash("envoiMsg","ℹ️ Page ouverte en local : l'envoi au classeur est désactivé.","info"); return; }
+  var r=ETAT.res, corps=JSON.stringify({ secret:SECRET, classe:ETAT.id.classe, nom:ETAT.id.nom, prenom:ETAT.id.prenom,
+    c1:r.par.C1, c2:r.par.C2, c3:r.par.C3, detail:detailTexte(r) });
+  flash("envoiMsg","Envoi en cours…","info");
+  function fini(msg,type){ ETAT.envoi=type==="ok"?msg:""; sauver(); flash("envoiMsg",msg,type); }
+  /* Une requête « simple » (texte brut) : la réponse du script est lisible, sans pré-vol CORS. */
+  fetch(SCRIPT_URL_REPORT,{method:"POST",body:corps}).then(function(rep){ return rep.json(); }).then(function(o){
+    if(o && o.ok && o.statut==="deja") fini("✅ Ta note était déjà enregistrée : c'est la première validation qui compte. Tu peux laisser la place.","ok");
+    else if(o && o.ok) fini("✅ Note envoyée au professeur"+(o.statut==="ajoute"?" (ton nom sera vérifié)":"")+". Tu peux laisser la place.","ok");
+    else fini("⚠️ Le classeur a refusé l'envoi ("+esc(o&&o.erreur||"?")+"). Montre cet écran à ton professeur.","ko");
+  }).catch(function(){
+    /* Réponse illisible (réseau filtré…) : on renvoie sans attendre de réponse. */
+    fetch(SCRIPT_URL_REPORT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:corps})
+      .then(function(){ fini("✅ Note envoyée au professeur (sans accusé de réception). Tu peux laisser la place.","ok"); })
+      .catch(function(){ fini("⚠️ Envoi impossible (connexion ?). Clique sur « Renvoyer », ou montre cet écran à ton professeur.","ko"); });
   });
-  recalculer();
 }
-function verrouiller(){ champs().forEach(function(el){ el.disabled=true; }); $("btnRecopie").disabled=true; $("btnValider").disabled=true;
-  document.querySelectorAll(".mic").forEach(function(b){ b.disabled=true; }); $("finTxt").textContent="Ta copie est validée : elle ne peut plus être modifiée."; }
-function majProgression(){
-  var tot=0, faits=0;
-  champs().forEach(function(el){ if(el.type==="radio") return; tot++; if(String(el.value||"").trim()) faits++; });
-  tot++; if(ETAT.rep.q3_c) faits++;
-  $("prog").textContent=ETAT.id ? (ETAT.id.prenom+" "+ETAT.id.nom+" · "+ETAT.id.classe+" · "+faits+"/"+tot+" réponses") : "";
-  return {tot:tot,faits:faits};
+
+/* ─── déroulement ─── */
+function ouvrir(){
+  $("gate").classList.add("cache"); $("ident").classList.add("cache"); $("travail").classList.remove("cache");
+  $("chrono").classList.remove("cache"); ecrireChamps();
+  if(ETAT.valide){ verrouiller(); afficherResultat(); return; }
+  clearInterval(tic); tic=setInterval(chrono,1000); chrono();
 }
-function ouvrirCopie(){
-  $("gate").classList.add("cache"); $("ident").classList.add("cache");
-  $("layout").classList.remove("cache"); $("btnDT").classList.remove("cache");
-  DT_OUVERT = window.innerWidth>1050; majDT();
-  ecrireChamps(); majProgression();
-  if(ETAT.valide){ verrouiller(); montrerResultat(false); }
-}
-/* Document technique : colonne fixe à gauche sur grand écran, panneau par-dessus la copie sur petit écran. */
-var DT_OUVERT=true;
-function majDT(){
-  var l=$("layout"), large=window.innerWidth>1050;
-  l.classList.toggle("dt-ferme", large && !DT_OUVERT);
-  l.classList.toggle("dt-ouvert", !large && DT_OUVERT);
-  $("btnDT").textContent = DT_OUVERT ? "📄 Masquer le document technique" : "📄 Document technique";
-}
-function montrerResultat(defiler){
-  $("resultat").classList.remove("cache"); afficherResultat();
-  if(ETAT.envoye) flash("envoiMsg","✅ Copie déjà envoyée au professeur.","ok");
-  if(defiler!==false) $("resultat").scrollIntoView({behavior:"smooth"});
-}
+function verrouiller(){ document.querySelectorAll("#travail input, #travail button").forEach(function(e){ e.disabled=true; }); clearInterval(tic); $("chrono").classList.add("cache"); }
 function demarrer(){
   var nom=$("nom").value.trim().toUpperCase(), prenom=$("prenom").value.trim(), classe=$("classe").value;
   if(!nom||!prenom||!classe){ flash("identMsg","Écris ton nom, ton prénom et choisis ta classe.","ko"); return; }
-  prenom=prenom.charAt(0).toUpperCase()+prenom.slice(1);
-  ETAT.id={nom:nom,prenom:prenom,classe:classe};
+  ETAT={ id:{nom:nom,prenom:prenom.charAt(0).toUpperCase()+prenom.slice(1),classe:classe}, cells:{}, phrase:"", debut:Date.now(), valide:false, res:null, envoi:"" };
   try{ var ancien=JSON.parse(localStorage.getItem(cleCopie())||"null"); if(ancien&&ancien.id) ETAT=ancien; }catch(e){}
-  sessionStorage.setItem(CLE+"session",cleCopie());
-  sauver(); ouvrirCopie();
+  sauver(); ouvrir();
 }
 function valider(){
-  lireChamps(); var pr=majProgression(), vides=pr.tot-pr.faits;
-  var msg="Valider ta copie ? Tu ne pourras plus la modifier."+(vides?"\n\nAttention : "+vides+" réponse(s) sont encore vides.":"");
-  if(!window.confirm(msg)) return;
-  ETAT.res=corriger(); ETAT.valide=true; sauver(); verrouiller(); montrerResultat(true); envoyer();
+  lireChamps();
+  if(!window.confirm("Valider ta feuille ? Tu ne pourras plus la modifier, et ta note partira au professeur.")) return;
+  ETAT.res=corrigerFeuille(); ETAT.valide=true; sauver(); verrouiller(); afficherResultat();
+  $("resultat").scrollIntoView({behavior:"smooth"}); envoyer();
 }
-function liberer(){
-  if(!ETAT.envoye && ecritureAutorisee() && !window.confirm("Ta copie n'a pas été envoyée au professeur. Libérer quand même le poste ?")) return;
-  /* le mode professeur ne doit jamais rester ouvert pour l'élève suivant */
-  try{ localStorage.removeItem(cleCopie()); sessionStorage.removeItem(CLE+"session"); sessionStorage.removeItem(CLE+"prof"); }catch(e){}
+function suivant(){
+  if(!ETAT.envoi && SCRIPT_URL_REPORT && !window.confirm("Ta note n'a pas été confirmée comme envoyée. Laisser quand même la place ?")) return;
+  try{ localStorage.removeItem(cleCopie()); sessionStorage.removeItem(CLE+"session"); }catch(e){}
   location.reload();
 }
-function afficherCorrigeComplet(){
-  var z=$("corrigeComplet"); z.classList.toggle("cache");
-  var a=CORRIGE.attendu;
-  z.innerHTML="<h2>Corrigé complet (professeur)</h2><div class=\"tscroll\"><table class=\"t res\"><tbody>"+
-    Object.keys(a).map(function(k){ return "<tr><td class=\"n\"><b>"+k+"</b></td><td>"+esc(a[k])+"</td></tr>"; }).join("")+
-    Object.keys(CORRIGE.formules).map(function(k){ return "<tr><td class=\"n\"><b>"+k+"</b></td><td>"+CORRIGE.formules[k]+"</td></tr>"; }).join("")+
-    "</tbody></table></div><p class=\"legende\" style=\"margin-left:0\">Variantes acceptées et barème détaillé : voir le corrigé papier.</p>";
-}
 function entrerCode(){
-  var c=$("code").value.trim().toUpperCase().replace(/\s+/g,"");
-  if(h(c)===H_PROF){ PROF=true; sessionStorage.setItem(CLE+"prof","1"); $("profBandeau").classList.remove("cache"); }
-  else if(h(c)!==H_ELEVE){ flash("codeMsg","Ce code n'est pas le bon. Vérifie auprès de ton professeur.","ko"); return; }
-  sessionStorage.setItem(CLE+"ok","1");
-  $("gate").classList.add("cache");
-  if(ETAT.id){ if(ETAT.valide) afficherResultat(); return; }      // copie déjà ouverte : on reste dessus
-  $("ident").classList.remove("cache"); $("nom").focus();
+  if(h($("code").value.trim().toUpperCase().replace(/\s+/g,""))!==H_ELEVE){ flash("codeMsg","Ce code n'est pas le bon. Vérifie auprès de ton professeur.","ko"); return; }
+  sessionStorage.setItem(CLE+"ok","1"); $("gate").classList.add("cache"); $("ident").classList.remove("cache"); $("nom").focus();
 }
-
 document.addEventListener("DOMContentLoaded",function(){
-  construire();
+  construireTableur($("ss").querySelector("tbody"));
   $("btnCode").addEventListener("click",entrerCode);
   $("code").addEventListener("keydown",function(e){ if(e.key==="Enter") entrerCode(); });
   $("btnStart").addEventListener("click",demarrer);
   $("btnValider").addEventListener("click",valider);
   $("btnRenvoyer").addEventListener("click",envoyer);
-  $("btnImprimer").addEventListener("click",function(){ window.print(); });
-  $("btnLiberer").addEventListener("click",liberer);
-  $("btnCorrige").addEventListener("click",afficherCorrigeComplet);
-  $("lienProf").addEventListener("click",function(e){ e.preventDefault(); $("gate").classList.remove("cache"); $("code").value=""; $("code").focus(); $("gate").scrollIntoView(); });
-  $("btnDT").addEventListener("click",function(){ DT_OUVERT=!DT_OUVERT; majDT(); });
-  $("btnDTfermer").addEventListener("click",function(){ DT_OUVERT=false; majDT(); });
-  window.addEventListener("resize",majDT);
-  document.querySelectorAll("#echelles button").forEach(function(b){ b.addEventListener("click",function(){ ECHELLE=+b.getAttribute("data-n"); afficherResultat(); }); });
-  $("copie").addEventListener("input",function(e){ if(ETAT.valide) return; lireChamps(); if(e.target.hasAttribute("data-ref")) recalculer(); sauverBientot(); });
-  $("copie").addEventListener("change",function(){ if(ETAT.valide) return; lireChamps(); sauverBientot(); });
+  $("btnSuivant").addEventListener("click",suivant);
+  $("travail").addEventListener("input",function(e){ if(ETAT.valide) return; lireChamps(); if(e.target.hasAttribute("data-ref")) recalculer(); sauver(); });
   $("btnRecopie").addEventListener("click",function(){
     lireChamps();
-    var dejaC=["C7","C9","C10"].some(function(r){ return String(ETAT.cells[r]||"").trim(); });
-    if(dejaC && !window.confirm("La colonne C contient déjà quelque chose. La remplacer par la recopie de la colonne B ?")) return;
-    ["7","9","10"].forEach(function(l){ var b=String(ETAT.cells["B"+l]||"").trim(); ETAT.cells["C"+l]= b.charAt(0)==="=" ? decaler(b) : b; });
-    ecrireChamps(); sauverBientot();
+    var deja=["C7","C9","C10"].some(function(r){ return String(ETAT.cells[r]||"").trim(); });
+    if(deja && !window.confirm("La colonne C contient déjà quelque chose. La remplacer par la recopie de la colonne B ?")) return;
+    recopierColonne(ETAT.cells); ecrireChamps(); sauver();
   });
-  // reprise après un simple rechargement de la page (même session de navigateur)
-  if(sessionStorage.getItem(CLE+"prof")){ PROF=true; $("profBandeau").classList.remove("cache"); }
   var enCours=sessionStorage.getItem(CLE+"session");
   if(sessionStorage.getItem(CLE+"ok") && enCours){
-    try{ var e=JSON.parse(localStorage.getItem(enCours)||"null"); if(e&&e.id){ ETAT=e; ouvrirCopie(); return; } }catch(err){}
+    try{ var e=JSON.parse(localStorage.getItem(enCours)||"null"); if(e&&e.id){ ETAT=e; ouvrir(); return; } }catch(err){}
   }
   if(sessionStorage.getItem(CLE+"ok")){ $("gate").classList.add("cache"); $("ident").classList.remove("cache"); }
 });
