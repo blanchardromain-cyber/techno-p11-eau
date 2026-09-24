@@ -113,7 +113,7 @@ function installer() {
     ["La première validation fait foi : un second envoi n'écrase pas la note ; il est seulement noté dans l'onglet Journal."],
     ["Pour autoriser un nouvel envoi : effacer les cellules C1, C2, C3 et la date de l'élève."],
     ["K à M : totaux par compétence ; N : total sur 40 ; O : note sur 20 ; P : note sur 30 (arrondi au demi-point supérieur)."],
-    ["Couleurs : bleu ≥ 80 % · vert ≥ 60 % · jaune ≥ 40 % · rouge < 40 % (niveaux TBM, MS, MF, MI)."],
+    ["Couleurs (seuils de l'an dernier) : bleu > 88 % · vert > 64 % · jaune > 30 % · rouge ≤ 30 %."],
     ["Les élèves qui passent toute l'évaluation dans la capsule du site Technologie sont notés dans le tableau de bord du site."],
     ["Aide : techno-p11-eau/apps-script/LISEZ-MOI-EVAL1.md"]]);
   mode.getRange(1, 1).setFontWeight("bold").setFontSize(14).setFontColor("#1F3864");
@@ -151,11 +151,12 @@ function installer() {
     var regles = [];
     ["K", "L", "M", "N", "O", "P"].forEach(function (col) {
       var plage = f.getRange(col + "4:" + col + (3 + LIGNES));
-      [[0.8, "#92CDDC"], [0.6, "#C2D69B"], [0.4, "#FFFF00"]].forEach(function (s) {
-        regles.push(SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND(' + col + '4<>"";' + col + '4>=' + col + '$3*' + String(s[0]).replace(".", ",") + ')')
+      /* seuils de la feuille de report de l'an dernier : > 88 %, > 64 %, > 30 %, sinon rouge */
+      [[0.88, "#92CDDC"], [0.64, "#C2D69B"], [0.3, "#FFFF00"]].forEach(function (s) {
+        regles.push(SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND(' + col + '4<>"";' + col + '4>' + col + '$3*' + String(s[0]).replace(".", ",") + ')')
           .setBackground(s[1]).setRanges([plage]).build());
       });
-      regles.push(SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND(' + col + '4<>"";' + col + '4<' + col + '$3*0,4)')
+      regles.push(SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND(' + col + '4<>"";' + col + '4<=' + col + '$3*0,3)')
         .setBackground("#D99594").setRanges([plage]).build());
     });
     if (!/^fr/.test(ss.getSpreadsheetLocale())) regles = regles.map(function (r) {
