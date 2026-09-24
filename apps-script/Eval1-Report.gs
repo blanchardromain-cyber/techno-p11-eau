@@ -176,7 +176,10 @@ function installer() {
   }
   var vide = ss.getSheetByName("Feuille 1") || ss.getSheetByName("Sheet1");
   if (vide && ss.getSheets().length > 1) ss.deleteSheet(vide);
-  SpreadsheetApp.getUi().alert("Classeur prêt : 7 onglets de classe, un Journal et le mode d'emploi. Il reste à déployer le script en application web.");
+  /* Message discret : une fenêtre alert() bloquerait l'exécution lancée depuis l'éditeur
+     tant que personne ne clique sur OK dans l'onglet du classeur. */
+  ss.toast("7 onglets de classe, un Journal et le mode d'emploi. Il reste à déployer le script en application web.", "Classeur prêt", 10);
+  Logger.log("Installation terminée.");
 }
 
 function onOpen() {
