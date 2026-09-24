@@ -59,5 +59,11 @@ puis mettre en ligne (ou transmettre l'URL à Claude, qui le fera). Vérifier : 
   possibles (homonymes) : l'élève est ajouté en bas, pour que vous tranchiez.
 - Après toute modification du script : **Déployer → Gérer les déploiements → Modifier →
   Nouvelle version**, sinon l'ancienne version reste active.
+- **Capsule du site Technologie.** Quand vous validez une copie « Évaluation n°1 » dans le
+  modal professeur du site, ses points (Q1 à C3, remis sur 40) sont reportés sur la ligne de
+  l'élève (identité de son compte du site), avec la remarque « Capsule du site — validée le… ».
+  Revalider met la ligne à jour. **Protection :** une ligne qui contient déjà des points du
+  parcours papier (Q1-Q6 saisis ou C1-C3 envoyés par la page du tableur) n'est jamais écrasée :
+  le site affiche « report refusé » et le Journal garde la trace.
 - Menu **P11 Évaluation 1** du classeur : réinstaller les onglets, ou tester un envoi
   (ligne « TEST Essai » en 4A, à effacer ensuite).
