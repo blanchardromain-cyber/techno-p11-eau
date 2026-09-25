@@ -14,6 +14,7 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 | `bete-a-cornes.html` | 3 | CT 2.5 | Exprime le besoin auquel répond le robinet automatique |
 | `quiz-ip.html` | 4 | CT 2.5 | Vérifie ses connaissances sur l'indice de protection |
 | `s5-pieuvre-cdcf/` | 5 | CT 2.1 | Pieuvre, cahier des charges et défi créatif (3 missions) |
+| `entrainement-tableur.html` | Avant l'éval. 1 | CT 5.1 | Entraînement non noté : lire une feuille, écrire et corriger des formules, recopier (club photo) |
 | `evaluation-1-tableur.html` | Éval. 1 | CT 5.1 | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
 
 La séance 5 prolonge la fiche papier *P11 — S5 : Pieuvre et cahier des charges*.
