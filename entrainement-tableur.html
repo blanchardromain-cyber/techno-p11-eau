@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Entraînement tableur : la facture du club photo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--ok:#1E8E5A;--ko:#C0392B;--grey:#6b7280;
+        --creme:#FFF8E7;--vert:#EEF7F1;--form:#FFFDF5;--gris:#E7E9EE;--line:#cbd6e4;--rose:#FBEAE8}
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.6;font-size:16px;font-variant-numeric:tabular-nums}
+  .pbar{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #e4ebf3;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  .pbar-in{max-width:980px;margin:0 auto;padding:8px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pbar-in .ttl{font-weight:800;color:var(--navy);font-size:14px;margin-right:auto}
+  .score{font-weight:800;color:var(--navy);background:var(--lighter);border-radius:8px;padding:4px 10px;font-size:15px}
+  main{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+  header.band{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
+  header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
+  header.band h1{margin:6px 0 0;font-size:23px;font-weight:800;line-height:1.3}
+  header.band p{margin:6px 0 0;color:#dce8f8;font-size:15px}
+  .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  h2{color:var(--navy);font-size:20px;margin:0 0 8px;border-bottom:3px solid var(--blue);padding-bottom:6px}
+  .consigne{margin:0 0 10px}
+  .rappel{background:var(--lighter);border-left:5px solid var(--blue);padding:10px 14px;border-radius:8px;font-size:15px;color:var(--navy);margin:8px 0 12px}
+  .rappel p{margin:2px 0}
+  .creme{background:var(--creme);border-left-color:#E0B65C}
+  input[type=text],select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:16px 'Inter',Arial,sans-serif;background:#fff;min-width:0}
+  input.f{font-family:ui-monospace,Consolas,monospace;font-weight:700;letter-spacing:.02em}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.18)}
+  input.juste,select.juste{border-color:var(--ok);background:#e7f6ee}
+  input.faux,select.faux{border-color:var(--ko);background:var(--rose)}
+  .tscroll{overflow-x:auto}
+  table.ss{border-collapse:collapse;width:100%;font-size:15px;min-width:600px}
+  table.ss th,table.ss td{border:1px solid #c4d0e0;padding:7px 10px}
+  table.ss thead th{background:var(--navy);color:#fff;text-align:center;font-weight:700}
+  table.ss .rh{background:var(--lighter);color:var(--navy);text-align:center;font-weight:700;width:34px;padding:7px 4px}
+  table.ss td.lbl{background:#f3f7fc;color:var(--navy);font-weight:600}
+  table.ss td.don{background:var(--vert);color:#13633d;font-weight:700;text-align:right}
+  table.ss td.fixe{background:var(--gris);color:var(--navy);font-weight:700;text-align:right}
+  table.ss td.lien{background:var(--gris);color:var(--grey);font-style:italic;text-align:right}
+  table.ss td.form{background:var(--form);text-align:right;min-width:170px}
+  table.ss td.form code{display:block;font-size:12.5px;color:var(--grey)}
+  table.ss td.form b{color:var(--navy)}
+  table.ss td.vide{background:#d9d9d9}
+  table.ss td.hl{box-shadow:inset 0 0 0 3px #E0B65C}
+  .legende{font-size:13.5px;color:var(--grey);margin-top:6px}
+  .legende span{display:inline-block;width:14px;height:14px;border:1px solid #c4d0e0;vertical-align:-2px;margin:0 4px 0 10px;border-radius:3px}
+  .item{border:1px solid #e4ebf3;border-radius:12px;padding:12px 14px;margin:10px 0;background:#fbfdff}
+  .item .q{font-weight:600;color:var(--navy);margin-bottom:6px}
+  .item .ligne{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .item .ligne label{font-size:14px;color:var(--grey);font-weight:600}
+  .ref{display:inline-block;background:var(--navy);color:#fff;border-radius:7px;padding:1px 9px;font-weight:800;margin-right:8px}
+  .fausse{font-family:ui-monospace,Consolas,monospace;font-weight:700;background:var(--rose);border-radius:7px;padding:3px 10px}
+  .fb{font-size:14.5px;margin-top:6px;min-height:0}
+  .fb.ok{color:#13633d} .fb.ko{color:#8e2018} .fb .sol{display:block;color:var(--navy);margin-top:3px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 18px;font:700 16px 'Inter',Arial,sans-serif;cursor:pointer;margin:12px 8px 0 0}
+  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .btn:disabled{background:#9bb6d4;border-color:#9bb6d4;color:#fff;cursor:not-allowed}
+  .phrase{line-height:2.4} .phrase input{width:120px}
+  .bilan{font-size:40px;font-weight:800;color:var(--navy);line-height:1.1;margin:4px 0}
+  .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
+  @media (max-width:600px){ .pbar-in .ttl{display:none} main{padding:12px 10px 50px} .card{padding:16px 14px} header.band h1{font-size:20px} .item .ligne input{width:100%} }
+  @media print{ .pbar,.btn,.cl-regle,.cl-masque{display:none!important} body{background:#fff} .card{box-shadow:none} }
+</style>
+</head>
+<body>
+<div class="pbar"><div class="pbar-in">
+  <span class="ttl">P11 · Entraînement tableur</span>
+  <span class="score" id="score" title="Réponses justes">0 / 24</span>
+</div></div>
+
+<main>
+  <header class="band">
+    <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
+    <h1>Entraînement tableur — La facture du club photo</h1>
+    <p>Avant l'évaluation : lire une feuille de calcul et écrire ses formules. Ce n'est pas noté : vérifie autant de fois que tu veux.</p>
+  </header>
+
+  <section class="card">
+    <h2>La situation</h2>
+    <p class="consigne" id="situation"></p>
+    <div class="rappel" id="regle"></div>
+    <div class="tscroll"><table class="ss" id="ss"><thead><tr><th class="rh"></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody></tbody></table></div>
+    <div class="legende"><span style="background:var(--vert)"></span>données<span style="background:var(--form)"></span>formules à écrire (elles s'affichent ici quand tu les tapes plus bas)<span style="background:var(--gris)"></span>déjà rempli ou calculé seul</div>
+    <div class="rappel creme" id="exemple"></div>
+  </section>
+
+  <section class="card">
+    <h2>1. Qui habite où ?</h2>
+    <p class="consigne">Regarde la feuille ci-dessus. Une adresse s'écrit avec la lettre de la colonne puis le numéro de la ligne.</p>
+    <div id="p1"></div>
+    <button type="button" class="btn" data-verif="p1">Vérifier</button>
+  </section>
+
+  <section class="card">
+    <h2>2. De la phrase à la formule</h2>
+    <p class="consigne">Pour chaque cellule : écris d'abord le résultat du calcul <b>avec les nombres</b>, puis la formule <b>avec les adresses</b>. Ta formule apparaît dans la feuille, en haut.</p>
+    <div id="p2"></div>
+    <button type="button" class="btn" data-verif="p2">Vérifier</button>
+  </section>
+
+  <section class="card">
+    <h2>3. Trouve l'erreur</h2>
+    <p class="consigne">Chaque formule est fausse. Choisis l'erreur, puis écris la formule juste.</p>
+    <div id="p3"></div>
+    <button type="button" class="btn" data-verif="p3">Vérifier</button>
+  </section>
+
+  <section class="card">
+    <h2>4. Recopier et comparer</h2>
+    <div class="item" id="pred"></div>
+    <p class="consigne">Écris les formules de la commande 2 (colonne C). Tu peux aussi utiliser le bouton de recopie, comme la poignée d'un tableur.</p>
+    <button type="button" class="btn sec" id="btnRecopie" data-nolecture style="margin-top:0">⇥ Recopier B7, B9, B10 vers la colonne C</button>
+    <div id="p4"></div>
+    <p class="phrase" id="phrase"></p>
+    <div class="fb" id="fb-phrase"></div>
+    <button type="button" class="btn" data-verif="p4">Vérifier</button>
+  </section>
+
+  <section class="card">
+    <h2>Mon bilan</h2>
+    <p class="bilan" id="bilan">0 / 24</p>
+    <p class="consigne" id="bilanTxt"></p>
+    <button type="button" class="btn sec" id="btnReset">Recommencer à zéro</button>
+  </section>
+
+  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Entraînement tableur · <span id="build">build 2026-09-25a</span></div>
+</main>
+
+<script>window.CONFORT_LECTURE = { hote:".pbar-in", racine:"main", fonts:"https://blanchardromain-cyber.github.io/technologie-stpierre/pp4g/fonts/" };</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   CONFORT DE LECTURE — Collège Saint Pierre, Les Essarts
+   Panneau d'aménagements pour les élèves dys (dyslexie, dysorthographie,
+   dyspraxie visuo-spatiale) et, plus largement, pour tous ceux qui lisent
+   mieux avec un texte plus grand, plus aéré ou sur un fond moins éblouissant.
+
+   Réglages proposés : police, taille, interligne, espacement des lettres et
+   des mots, couleur de page, largeur de colonne, règle de lecture et masque
+   de lecture. Les choix sont enregistrés sur l'appareil et se retrouvent
+   d'une capsule à l'autre : l'élève ne les refait qu'une fois.
+
+   Utilisation dans une capsule : une seule ligne, avant </body>
+       <script src="../../assets/js/confort-lecture.js" defer><\/script>
+
+   Réglages facultatifs, à déclarer AVANT le script :
+       <script>window.CONFORT_LECTURE = {
+         hote: ".pbar-in",              // où placer le bouton
+         racine: "main",                // zone dont la taille est ajustée
+         fonts: "../../pp4g/fonts/"     // dossier des polices B612
+       };<\/script>
+
+   API : ConfortLecture.ouvrir() · .fermer() · .reglages() · .appliquer(obj)
+   ════════════════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  var cfg    = window.CONFORT_LECTURE || {};
+  var HOTE   = cfg.hote   || ".pbar-in";
+  var RACINE = cfg.racine || "main";
+  var FONTS  = cfg.fonts  || "../../pp4g/fonts/";
+  var CLE    = "confort_lecture";
+
+  /* Valeurs par défaut = page telle qu'elle est écrite par le professeur. */
+  var DEFAUT = {
+    police: "systeme",   /* systeme | b612 | large */
+    taille: 0,           /* 0 → 4 */
+    interligne: 0,       /* 0 → 2 */
+    espacement: 0,       /* 0 → 2 */
+    fond: "blanc",       /* blanc | creme | bleu | gris | vert */
+    colonne: false,      /* limite la longueur des lignes */
+    regle: false,        /* règle de lecture qui suit le curseur */
+    masque: false        /* masque le reste de la page */
+  };
+  var TAILLES     = [1, 1.1, 1.2, 1.35, 1.5];
+  var INTERLIGNES = ["", "1.9", "2.3"];
+  var ESPACEMENTS = ["", ".055em/.16em", ".11em/.3em"];
+  /* Teintes de page : [fond de la page, fond des cartes]. Des fonds pastel,
+     jamais un blanc pur, réduisent l'éblouissement et l'effet de « rivières ». */
+  var TEINTES = {
+    creme: ["#F3E7CF", "#FBF3E4"],
+    bleu:  ["#D6E6F4", "#E9F2FA"],
+    gris:  ["#DDE1E6", "#EFF1F4"],
+    vert:  ["#DBE9D6", "#EEF6EC"]
+  };
+
+  var etat = lire();
+  var panneau = null, bouton = null, regleEl = null, masqueEl = null;
+
+  /* ── Mémoire ────────────────────────────────────────────────────────── */
+  function lire() {
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(CLE)) || {}; } catch (e) {}
+    var r = {};
+    for (var k in DEFAUT) if (DEFAUT.hasOwnProperty(k)) {
+      r[k] = (o[k] === undefined) ? DEFAUT[k] : o[k];
+    }
+    return r;
+  }
+  function ecrire() {
+    try { localStorage.setItem(CLE, JSON.stringify(etat)); } catch (e) {}
+  }
+  function actif() {
+    for (var k in DEFAUT) if (DEFAUT.hasOwnProperty(k) && etat[k] !== DEFAUT[k]) return true;
+    return false;
+  }
+
+  /* ── Styles ─────────────────────────────────────────────────────────── */
+  function injecterStyles() {
+    var css = document.createElement("style");
+    css.textContent =
+      /* Police B612 (Airbus / ANSSI) : dessinée pour être lue vite et sans
+         confondre les lettres proches. Chargée seulement si elle est choisie. */
+      "@font-face{font-family:'B612CL';src:url('" + FONTS + "B612-Regular.ttf') format('truetype');font-weight:400;font-display:swap}" +
+      "@font-face{font-family:'B612CL';src:url('" + FONTS + "B612-Bold.ttf') format('truetype');font-weight:700;font-display:swap}" +
+
+      ".cl-btn{background:#F4F6F8;border:1px solid #E2E8F0;border-radius:8px;padding:6px 12px;" +
+        "font-family:inherit;font-size:12px;font-weight:600;color:#4A5568;cursor:pointer;transition:.15s}" +
+      ".cl-btn:hover{background:#DEEAF1;border-color:#2E75B6;color:#1F4E79}" +
+      ".cl-btn.cl-on{background:#E2EFDA;border-color:#1E6B3B;color:#1E6B3B}" +
+
+      /* ─ Panneau ─ */
+      ".cl-fond{position:fixed;inset:0;background:rgba(15,23,42,.34);z-index:190;display:none}" +
+      ".cl-fond.cl-ouvert{display:block}" +
+      ".cl-panneau{position:fixed;z-index:200;right:16px;top:16px;width:min(360px,calc(100vw - 32px));" +
+        "max-height:calc(100vh - 32px);overflow:auto;background:#fff;border-radius:14px;" +
+        "box-shadow:0 18px 48px rgba(15,23,42,.28);padding:16px 18px 18px;display:none;" +
+        "font-family:'DM Sans',system-ui,sans-serif;color:#1A202C}" +
+      ".cl-panneau.cl-ouvert{display:block}" +
+      ".cl-tete{display:flex;align-items:center;gap:10px;margin-bottom:4px}" +
+      ".cl-tete h2{font-size:16px;font-weight:700;color:#1F4E79;flex:1;margin:0}" +
+      ".cl-x{background:none;border:none;font-size:20px;line-height:1;color:#4A5568;cursor:pointer;padding:2px 6px;border-radius:6px}" +
+      ".cl-x:hover{background:#F4F6F8}" +
+      ".cl-intro{font-size:12px;color:#4A5568;margin:0 0 12px;line-height:1.5}" +
+      ".cl-grp{margin-bottom:13px}" +
+      ".cl-grp>span.cl-lb{display:block;font-size:11px;font-weight:700;text-transform:uppercase;" +
+        "letter-spacing:.8px;color:#1F4E79;margin-bottom:5px}" +
+      ".cl-choix{display:flex;flex-wrap:wrap;gap:6px}" +
+      ".cl-opt{border:2px solid #E2E8F0;background:#fff;border-radius:8px;padding:6px 11px;" +
+        "font-family:inherit;font-size:12.5px;font-weight:600;color:#4A5568;cursor:pointer;transition:.12s}" +
+      ".cl-opt:hover{border-color:#2E75B6}" +
+      ".cl-opt[aria-pressed=true]{background:#1F4E79;border-color:#1F4E79;color:#fff}" +
+      ".cl-opt.cl-pastille{width:34px;height:30px;padding:0}" +
+      ".cl-pied{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #E2E8F0}" +
+      ".cl-apercu{border:1px dashed #CBD5E0;border-radius:9px;padding:9px 11px;font-size:13px;color:#1A202C;margin-bottom:12px}" +
+
+      /* ─ Réglages appliqués à la page ─ */
+      "html.cl-police-b612 body,html.cl-police-b612 body *{font-family:'B612CL','DM Sans',system-ui,sans-serif!important}" +
+      "html.cl-police-large body,html.cl-police-large body *{font-family:Verdana,Tahoma,'DM Sans',system-ui,sans-serif!important}" +
+      "html.cl-espacement body{letter-spacing:var(--cl-lettre)!important;word-spacing:var(--cl-mot)!important}" +
+      "html.cl-interligne body,html.cl-interligne body p,html.cl-interligne body li,html.cl-interligne body td," +
+        "html.cl-interligne body label,html.cl-interligne body .qlabel{line-height:var(--cl-interligne)!important}" +
+      "html.cl-colonne body p,html.cl-colonne body li,html.cl-colonne body .lesson,html.cl-colonne body .qlabel," +
+        "html.cl-colonne body .hint{max-width:62ch}" +
+      /* La teinte porte sur le fond de page ET sur les cartes : c'est derrière le
+         texte qu'un fond moins éblouissant aide vraiment à lire. */
+      "html.cl-teinte body{background:var(--cl-page)!important}" +
+      "html.cl-teinte section.step,html.cl-teinte .stbody,html.cl-teinte .card," +
+        "html.cl-teinte .lesson,html.cl-teinte figure.illus,html.cl-teinte figure.illus figcaption," +
+        "html.cl-teinte table.grid td{background:var(--cl-carte)!important}" +
+
+      /* ─ Règle et masque de lecture ─ */
+      ".cl-regle{position:fixed;left:0;right:0;height:2.4em;z-index:150;pointer-events:none;display:none;" +
+        "background:rgba(255,214,102,.30);border-top:2px solid #E8A317;border-bottom:2px solid #E8A317}" +
+      ".cl-regle.cl-ouvert{display:block}" +
+      ".cl-masque{position:fixed;inset:0;z-index:149;pointer-events:none;display:none}" +
+      ".cl-masque.cl-ouvert{display:block}" +
+      ".cl-masque div{position:absolute;left:0;right:0;background:rgba(15,23,42,.55)}" +
+
+      "@media print{.cl-btn,.cl-panneau,.cl-fond,.cl-regle,.cl-masque{display:none!important}" +
+        "html.cl-teinte body,html.cl-teinte section.step,html.cl-teinte .stbody,html.cl-teinte .card," +
+        "html.cl-teinte .lesson,html.cl-teinte table.grid td{background:#fff!important}}";
+    document.head.appendChild(css);
+  }
+
+  /* ── Application des réglages ────────────────────────────────────────── */
+  function appliquer(nouveau) {
+    if (nouveau) { for (var k in nouveau) if (nouveau.hasOwnProperty(k)) etat[k] = nouveau[k]; }
+    var h = document.documentElement, s = h.style, cl = h.classList;
+
+    cl.remove("cl-police-b612", "cl-police-large");
+    if (etat.police === "b612")  cl.add("cl-police-b612");
+    if (etat.police === "large") cl.add("cl-police-large");
+
+    /* La taille agit par zoom sur la zone de contenu : l'en-tête, la barre
+       d'outils et la barre d'envoi gardent leur place et restent atteignables. */
+    /* Toutes les zones listées, pas seulement la première : chaque page d'une
+       capsule multi-pages doit suivre le réglage. */
+    var racines = document.querySelectorAll(RACINE);
+    for (var ri = 0; ri < racines.length; ri++)
+      racines[ri].style.zoom = TAILLES[etat.taille] === 1 ? "" : TAILLES[etat.taille];
+
+    cl.toggle("cl-interligne", etat.interligne > 0);
+    s.setProperty("--cl-interligne", INTERLIGNES[etat.interligne] || "");
+
+    cl.toggle("cl-espacement", etat.espacement > 0);
+    var esp = (ESPACEMENTS[etat.espacement] || "").split("/");
+    s.setProperty("--cl-lettre", esp[0] || "normal");
+    s.setProperty("--cl-mot", esp[1] || "normal");
+
+    var teinte = TEINTES[etat.fond];
+    cl.toggle("cl-teinte", !!teinte);
+    s.setProperty("--cl-page",  teinte ? teinte[0] : "");
+    s.setProperty("--cl-carte", teinte ? teinte[1] : "");
+
+    cl.toggle("cl-colonne", !!etat.colonne);
+
+    if (regleEl)  regleEl.classList.toggle("cl-ouvert", !!etat.regle);
+    if (masqueEl) masqueEl.classList.toggle("cl-ouvert", !!etat.masque);
+    if (etat.regle || etat.masque) brancherSuivi(); else debrancherSuivi();
+
+    if (bouton) bouton.classList.toggle("cl-on", actif());
+    ecrire();
+    majPanneau();
+
+    /* Une capsule qui dessine elle-même en pixels (plan, schéma, canevas) a besoin
+       de savoir que l'échelle a changé pour se redessiner : elle écoute cet événement
+       et lit ConfortLecture.echelle(). */
+    try {
+      document.dispatchEvent(new CustomEvent("confort-lecture", {
+        detail: { reglages: window.ConfortLecture ? ConfortLecture.reglages() : null, echelle: TAILLES[etat.taille] || 1 }
+      }));
+    } catch (e) {}
+  }
+
+  /* ── Règle / masque : suivent le curseur ou le doigt ─────────────────── */
+  var suivi = false, yCourant = null;
+  function placer(y) {
+    yCourant = y;
+    var hauteur = 44;
+    if (regleEl && etat.regle) {
+      hauteur = regleEl.offsetHeight || 44;
+      regleEl.style.top = Math.max(0, y - hauteur / 2) + "px";
+    }
+    if (masqueEl && etat.masque) {
+      var bande = 92;
+      masqueEl.firstChild.style.top = "0px";
+      masqueEl.firstChild.style.height = Math.max(0, y - bande / 2) + "px";
+      masqueEl.lastChild.style.top = (y + bande / 2) + "px";
+      masqueEl.lastChild.style.bottom = "0px";
+    }
+  }
+  function surDeplacement(e) {
+    var y = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+    if (typeof y === "number") placer(y);
+  }
+  function brancherSuivi() {
+    if (suivi) return;
+    suivi = true;
+    document.addEventListener("mousemove", surDeplacement, { passive: true });
+    document.addEventListener("touchmove", surDeplacement, { passive: true });
+    placer(yCourant === null ? Math.round(window.innerHeight / 2) : yCourant);
+  }
+  function debrancherSuivi() {
+    if (!suivi) return;
+    suivi = false;
+    document.removeEventListener("mousemove", surDeplacement);
+    document.removeEventListener("touchmove", surDeplacement);
+  }
+
+  /* ── Panneau ────────────────────────────────────────────────────────── */
+  function groupe(titre, html) {
+    return '<div class="cl-grp"><span class="cl-lb">' + titre + '</span><div class="cl-choix">' + html + '</div></div>';
+  }
+  function opt(cle, valeur, libelle, extra) {
+    return '<button type="button" class="cl-opt' + (extra || "") + '" data-cle="' + cle +
+           '" data-valeur="' + valeur + '">' + libelle + '</button>';
+  }
+  function construirePanneau() {
+    var fond = document.createElement("div");
+    fond.className = "cl-fond";
+    fond.addEventListener("click", fermer);
+
+    panneau = document.createElement("div");
+    panneau.className = "cl-panneau";
+    panneau.setAttribute("role", "dialog");
+    panneau.setAttribute("aria-label", "Confort de lecture");
+    panneau.setAttribute("data-nolecture", "");
+
+    panneau.innerHTML =
+      '<div class="cl-tete"><h2>&#x1F441;&#xFE0F; Confort de lecture</h2>' +
+      '<button type="button" class="cl-x" aria-label="Fermer">&times;</button></div>' +
+      '<p class="cl-intro">Règle la page comme tu la lis le mieux. Tes choix sont gardés sur cet appareil et ' +
+      'te suivent dans les autres activités.</p>' +
+      '<div class="cl-apercu" id="cl-apercu">L’eau potable est une ressource limitée : il faut éviter de la gaspiller.</div>' +
+
+      groupe("Police",
+        opt("police", "systeme", "Standard") + opt("police", "b612", "B612 (dys)") + opt("police", "large", "Verdana")) +
+
+      groupe("Taille du texte",
+        opt("taille", "0", "A") + opt("taille", "1", "A+") + opt("taille", "2", "A++") +
+        opt("taille", "3", "A+++") + opt("taille", "4", "A++++")) +
+
+      groupe("Interligne",
+        opt("interligne", "0", "Normal") + opt("interligne", "1", "Aéré") + opt("interligne", "2", "Très aéré")) +
+
+      groupe("Espacement des lettres et des mots",
+        opt("espacement", "0", "Normal") + opt("espacement", "1", "Espacé") + opt("espacement", "2", "Très espacé")) +
+
+      groupe("Couleur de la page",
+        opt("fond", "blanc", "&nbsp;", ' cl-pastille" title="Blanc" style="background:#fff') +
+        opt("fond", "creme", "&nbsp;", ' cl-pastille" title="Crème" style="background:#FBF3E4') +
+        opt("fond", "bleu",  "&nbsp;", ' cl-pastille" title="Bleu pâle" style="background:#E9F2FA') +
+        opt("fond", "gris",  "&nbsp;", ' cl-pastille" title="Gris" style="background:#EFF1F4') +
+        opt("fond", "vert",  "&nbsp;", ' cl-pastille" title="Vert pâle" style="background:#EEF6EC')) +
+
+      groupe("Aides au repérage",
+        opt("colonne", "toggle", "&#x1F4D0; Lignes courtes") +
+        opt("regle",   "toggle", "&#x1F4CF; Règle de lecture") +
+        opt("masque",  "toggle", "&#x1F311; Masque de lecture")) +
+
+      '<div class="cl-pied">' +
+      '<button type="button" class="cl-btn" id="cl-reset">&#x21BA; Tout remettre à zéro</button>' +
+      '<button type="button" class="cl-btn" id="cl-ok" style="margin-left:auto">Terminé</button>' +
+      '</div>';
+
+    document.body.appendChild(fond);
+    document.body.appendChild(panneau);
+
+    panneau.querySelector(".cl-x").addEventListener("click", fermer);
+    panneau.querySelector("#cl-ok").addEventListener("click", fermer);
+    panneau.querySelector("#cl-reset").addEventListener("click", function () {
+      etat = {};
+      for (var k in DEFAUT) if (DEFAUT.hasOwnProperty(k)) etat[k] = DEFAUT[k];
+      appliquer();
+    });
+    panneau.addEventListener("click", function (ev) {
+      var b = ev.target.closest(".cl-opt");
+      if (!b) return;
+      var cle = b.getAttribute("data-cle"), v = b.getAttribute("data-valeur");
+      var o = {};
+      if (v === "toggle") o[cle] = !etat[cle];
+      else o[cle] = /^\d+$/.test(v) ? parseInt(v, 10) : v;
+      appliquer(o);
+    });
+    panneau._fond = fond;
+  }
+  function majPanneau() {
+    if (!panneau) return;
+    var opts = panneau.querySelectorAll(".cl-opt");
+    for (var i = 0; i < opts.length; i++) {
+      var cle = opts[i].getAttribute("data-cle"), v = opts[i].getAttribute("data-valeur");
+      var choisi = (v === "toggle") ? !!etat[cle] : String(etat[cle]) === v;
+      opts[i].setAttribute("aria-pressed", choisi ? "true" : "false");
+    }
+  }
+  function ouvrir() {
+    if (!panneau) construirePanneau();
+    majPanneau();
+    panneau._fond.classList.add("cl-ouvert");
+    panneau.classList.add("cl-ouvert");
+  }
+  function fermer() {
+    if (!panneau) return;
+    panneau._fond.classList.remove("cl-ouvert");
+    panneau.classList.remove("cl-ouvert");
+  }
+
+  /* ── Bouton dans la barre d'outils ──────────────────────────────────── */
+  /* hote peut lister plusieurs sélecteurs (capsule multi-pages) : on retient
+     l'élément affiché, et placerBouton() suit les changements de page. */
+  var enveloppe = null;
+  function estVisible(el) { return !!(el.offsetParent || el.getClientRects().length); }
+  function premierVisible(sel) {
+    var t = document.querySelectorAll(sel);
+    for (var i = 0; i < t.length; i++) if (estVisible(t[i])) return t[i];
+    return t[0] || null;
+  }
+  /* Nommée placerBouton : `placer(y)` existe déjà plus haut (position de la règle et
+     du masque de lecture) et les déclarations de fonction se remplacent entre elles. */
+  function placerBouton() {
+    if (!enveloppe) return;
+    var hote = premierVisible(HOTE);
+    if (hote && enveloppe.parentNode !== hote) hote.appendChild(enveloppe);
+  }
+
+  function construireBouton() {
+    bouton = document.createElement("button");
+    bouton.type = "button";
+    bouton.className = "cl-btn";
+    bouton.title = "Police, taille, interligne, couleur de page, règle de lecture…";
+    bouton.innerHTML = "&#x1F441;&#xFE0F; Confort de lecture";
+    bouton.addEventListener("click", ouvrir);
+
+    enveloppe = document.createElement("span");
+    enveloppe.setAttribute("data-nolecture", "");
+    enveloppe.appendChild(bouton);
+
+    var hote = premierVisible(HOTE);
+    if (hote) hote.appendChild(enveloppe);
+    else {
+      enveloppe.style.cssText = "position:fixed;left:14px;bottom:112px;z-index:70;background:#fff;" +
+        "border:1px solid #E2E8F0;border-radius:10px;padding:7px 10px;box-shadow:0 4px 16px rgba(0,0,0,.14)";
+      document.body.appendChild(enveloppe);
+    }
+  }
+
+  /* ── Départ ─────────────────────────────────────────────────────────── */
+  function init() {
+    injecterStyles();
+
+    regleEl = document.createElement("div");
+    regleEl.className = "cl-regle";
+    regleEl.setAttribute("data-nolecture", "");
+    masqueEl = document.createElement("div");
+    masqueEl.className = "cl-masque";
+    masqueEl.setAttribute("data-nolecture", "");
+    masqueEl.innerHTML = "<div></div><div></div>";
+    document.body.appendChild(masqueEl);
+    document.body.appendChild(regleEl);
+
+    construireBouton();
+    appliquer();
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") fermer();
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+
+  window.ConfortLecture = {
+    placer: placerBouton,
+    ouvrir: ouvrir,
+    fermer: fermer,
+    reglages: function () { var c = {}; for (var k in etat) if (etat.hasOwnProperty(k)) c[k] = etat[k]; return c; },
+    /* Facteur d'agrandissement appliqué à la zone de contenu (1 = taille normale).
+       À utiliser pour convertir un déplacement de souris en pixels de la page. */
+    echelle: function () { return TAILLES[etat.taille] || 1; },
+    appliquer: appliquer
+  };
+})();
+
+</script>
+<script>
+window.LECTURE_IMMERSIVE = { racine:"main", hote:".pbar-in", sectionsFermees:"", classeFermeture:"",
+  selecteurs:"h1, h2, .consigne, .rappel p, header.band p, td.lbl, .item .q, .phrase" };
+</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   LECTURE IMMERSIVE — Collège Saint Pierre, Les Essarts
+   Lit la page à voix haute (haut-parleurs ou écouteurs) en surlignant le
+   texte au fur et à mesure : le paragraphe en cours, et le mot prononcé
+   quand le navigateur le signale.
+
+   Utilisation dans une capsule : une seule ligne, avant </body>
+       <script src="../../assets/js/lecture-immersive.js" defer><\/script>
+
+   Réglages facultatifs, à déclarer AVANT le script :
+       <script>window.LECTURE_IMMERSIVE = {
+         racine: "main",                        // zone à lire
+         hote: ".pbar-in",                      // où placer le bouton
+         sectionsFermees: "section.step.closed",// dépliées avant la lecture
+         classeFermeture: "closed",
+         vitesse: 1
+       };<\/script>
+
+   Pour exclure un élément de la lecture : attribut data-nolecture.
+   API : LectureImmersive.demarrer(depuis) · .pause() · .stop() · .actif()
+   ════════════════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  var cfg = window.LECTURE_IMMERSIVE || {};
+  var RACINE     = cfg.racine  || "main";
+  var HOTE       = cfg.hote    || ".pbar-in";
+  var FERMEES    = cfg.sectionsFermees !== undefined ? cfg.sectionsFermees : "section.step.closed";
+  var CL_FERMEE  = cfg.classeFermeture || "closed";
+  var SELECTEURS = cfg.selecteurs ||
+    "h1, h2, h3, h4, .qlabel, .lesson, .hint, .legend, p, li, figcaption, td, th, .chip, .cbline label, summary";
+  var CLE_VITESSE = "lecture_immersive_vitesse";
+
+  /* hote et racine peuvent lister plusieurs sélecteurs (une capsule réunissant
+     plusieurs pages). On ne retient alors que l'élément actuellement affiché :
+     querySelector renvoyait le premier du document, même masqué. */
+  function estVisible(el) { return !!(el.offsetParent || el.getClientRects().length); }
+  function premierVisible(sel) {
+    var t = document.querySelectorAll(sel);
+    for (var i = 0; i < t.length; i++) if (estVisible(t[i])) return t[i];
+    return t[0] || null;
+  }
+
+  var synth = window.speechSynthesis;
+  var blocs = [], index = -1, motsCourants = [], bornes = [], enPause = false, enLecture = false;
+  var voixFr = null, tickReprise = null, boundaryVu = false, motActif = null;
+  var minuterie = null, plan = [], tDebut = 0, pauseCumul = 0, pauseDebut = 0;
+
+  /* ── Styles ─────────────────────────────────────────────────────────── */
+  function injecterStyles() {
+    var css = document.createElement("style");
+    css.textContent =
+      ".li-barre{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}" +
+      ".li-btn{background:#F4F6F8;border:1px solid #E2E8F0;border-radius:8px;padding:6px 12px;" +
+        "font-family:inherit;font-size:12px;font-weight:600;color:#4A5568;cursor:pointer;transition:.15s}" +
+      ".li-btn:hover{background:#DEEAF1;border-color:#2E75B6;color:#1F4E79}" +
+      ".li-btn.li-on{background:#E2EFDA;border-color:#1E6B3B;color:#1E6B3B}" +
+      ".li-sel{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:5px 6px;" +
+        "font-family:inherit;font-size:12px;color:#4A5568;cursor:pointer}" +
+      /* !important et couleur forcée : le surlignage doit rester lisible même sur
+         un bandeau coloré ou un en-tête de tableau en texte blanc. */
+      ".li-bloc{background:#FFF6C2!important;color:#1A202C!important;border-radius:5px;" +
+        "box-shadow:0 0 0 4px #FFF6C2;transition:background .15s}" +
+      ".li-bloc *{color:inherit!important}" +
+      ".li-mot-actif{background:#FFC93C!important;border-radius:3px;box-shadow:0 0 0 2px #FFC93C}" +
+      "body.li-en-cours .li-cliquable{cursor:pointer}" +
+      "body.li-en-cours .li-cliquable:hover{outline:2px dashed #E8B84B;outline-offset:3px}" +
+      "@media print{.li-barre{display:none!important}.li-bloc,.li-mot-actif{background:none!important;box-shadow:none!important}}";
+    document.head.appendChild(css);
+  }
+
+  /* ── Voix française ─────────────────────────────────────────────────── */
+  function choisirVoix() {
+    if (!synth) return;
+    var v = synth.getVoices() || [], fr = [], i;
+    for (i = 0; i < v.length; i++) if (/^fr(-|_|$)/i.test(v[i].lang)) fr.push(v[i]);
+    /* Les voix « réseau » (Google) ne signalent pas les mots prononcés dans
+       Chrome : à défaut, le surlignage mot à mot ne pourrait pas suivre. On
+       préfère donc une voix installée sur l'appareil quand il y en a une. */
+    var locales = fr.filter(function (x) { return x.localService; });
+    var choix = locales.length ? locales : fr;
+    voixFr = null;
+    for (i = 0; i < choix.length; i++) {
+      if (!voixFr || /Amelie|Amélie|Thomas|Audrey|Hortense|Denise|Claude|Paul/i.test(choix[i].name)) {
+        voixFr = choix[i];
+      }
+    }
+  }
+
+  /* ── Repérage des blocs à lire ──────────────────────────────────────── */
+  function texteDe(bloc) {
+    var t = "", n, w = parcours(bloc);
+    while ((n = w.nextNode())) t += n.nodeValue + " ";
+    return t.replace(/\s+/g, " ").trim();
+  }
+  function parcours(bloc) {
+    return document.createTreeWalker(bloc, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        while (p && p !== bloc.parentNode) {
+          var tag = (p.tagName || "").toLowerCase();
+          if (tag === "script" || tag === "style" || tag === "button" ||
+              tag === "input" || tag === "textarea" || tag === "select") return NodeFilter.FILTER_REJECT;
+          if (p.nodeType === 1 && p.hasAttribute("data-nolecture")) return NodeFilter.FILTER_REJECT;
+          p = p.parentNode;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+  }
+  function construireBlocs() {
+    var racine = premierVisible(RACINE) || document.body;
+    var trouves = [].slice.call(racine.querySelectorAll(SELECTEURS));
+    blocs = trouves.filter(function (el) {
+      if (el.closest("[data-nolecture]")) return false;
+      if (!el.offsetParent && el.offsetHeight === 0) return false;      /* masqué */
+      for (var i = 0; i < trouves.length; i++) {                        /* garder le plus fin */
+        if (trouves[i] !== el && el.contains(trouves[i])) return false;
+      }
+      return texteDe(el).length > 1;
+    });
+    for (var i = 0; i < blocs.length; i++) blocs[i].classList.add("li-cliquable");
+  }
+  function deplierSections() {
+    if (!FERMEES) return;
+    var f = document.querySelectorAll(FERMEES);
+    for (var i = 0; i < f.length; i++) f[i].classList.remove(CL_FERMEE);
+  }
+
+  /* ── Découpage en mots (uniquement le bloc lu, puis on recolle) ─────── */
+  function decouper(bloc) {
+    var noeuds = [], n, w = parcours(bloc);
+    while ((n = w.nextNode())) noeuds.push(n);
+    var mots = [];
+    noeuds.forEach(function (node) {
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        var sp = document.createElement("span");
+        sp.className = "li-mot";
+        sp.textContent = part;
+        frag.appendChild(sp);
+        mots.push(sp);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    return mots;
+  }
+  function recoller(bloc) {
+    if (!bloc) return;
+    var sp = bloc.querySelectorAll("span.li-mot");
+    for (var i = 0; i < sp.length; i++) {
+      sp[i].parentNode.replaceChild(document.createTextNode(sp[i].textContent), sp[i]);
+    }
+    bloc.normalize();
+  }
+
+  /* ── Surlignage du mot prononcé ─────────────────────────────────────── */
+  function surlignerMot(k) {
+    if (k < 0 || k >= motsCourants.length) return;
+    if (motActif === motsCourants[k]) return;
+    if (motActif) motActif.classList.remove("li-mot-actif");
+    motActif = motsCourants[k];
+    motActif.classList.add("li-mot-actif");
+  }
+
+  /* Tous les navigateurs ne signalent pas les mots prononcés : Safari/iPad et
+     les voix réseau de Chrome restent muets là-dessus. On estime alors la
+     durée de chaque mot pour que le surlignage suive quand même ; dès qu'un
+     vrai signal arrive, la minuterie s'efface au profit du navigateur. */
+  function planifier(rate) {
+    var cps = 13.5 * (parseFloat(rate) || 1), t = 0;
+    plan = motsCourants.map(function (sp) {
+      var mot = sp.textContent;
+      t += (mot.length + 1) / cps * 1000;
+      if (/[.!?:;]$/.test(mot)) t += 320;                 /* respiration de fin de phrase */
+      else if (/[,)»]$/.test(mot)) t += 150;
+      return t;
+    });
+  }
+  function lancerMinuterie() {
+    arreterMinuterie();
+    tDebut = Date.now(); pauseCumul = 0; pauseDebut = 0;
+    minuterie = setInterval(function () {
+      if (boundaryVu) { arreterMinuterie(); return; }     /* le navigateur suit déjà */
+      if (!enLecture || enPause || !plan.length) return;
+      var ecoule = Date.now() - tDebut - pauseCumul;
+      for (var k = 0; k < plan.length; k++) {
+        if (ecoule < plan[k]) { surlignerMot(k); return; }
+      }
+      surlignerMot(plan.length - 1);
+    }, 60);
+  }
+  function arreterMinuterie() {
+    if (minuterie) { clearInterval(minuterie); minuterie = null; }
+  }
+
+  /* ── Lecture ────────────────────────────────────────────────────────── */
+  function nettoyerBloc() {
+    arreterMinuterie();
+    if (index >= 0 && blocs[index]) {
+      blocs[index].classList.remove("li-bloc");
+      recoller(blocs[index]);
+    }
+    motsCourants = []; bornes = []; plan = []; motActif = null;
+  }
+  function lireBloc(i) {
+    nettoyerBloc();
+    index = i;
+    if (index >= blocs.length) { stop(true); return; }
+    var bloc = blocs[index];
+    bloc.classList.add("li-bloc");
+    try { bloc.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { bloc.scrollIntoView(); }
+
+    motsCourants = decouper(bloc);
+    var texte = "", pos = 0;
+    bornes = motsCourants.map(function (sp) {
+      var mot = sp.textContent;
+      var d = pos;
+      texte += (texte ? " " : "") + mot;
+      pos = texte.length;
+      return { debut: texte.length - mot.length, fin: texte.length, sp: sp };
+    });
+    if (!texte) { lireBloc(index + 1); return; }
+
+    var u = new SpeechSynthesisUtterance(texte);
+    u.lang = "fr-FR";
+    u.rate = parseFloat(vitesse());
+    /* Une voix refusée par le navigateur ne doit pas interrompre la lecture :
+       sans voix explicite, la voix par défaut du système prend le relais. */
+    try { if (voixFr) u.voice = voixFr; } catch (e) { voixFr = null; }
+    u.onboundary = function (e) {
+      if (e.name && e.name !== "word") return;
+      boundaryVu = true;
+      arreterMinuterie();
+      var ci = e.charIndex || 0;
+      for (var k = 0; k < bornes.length; k++) {
+        if (ci >= bornes[k].debut && ci < bornes[k].fin) { surlignerMot(k); return; }
+      }
+    };
+    u.onend = function () { if (enLecture && !enPause) lireBloc(index + 1); };
+    u.onerror = function () { if (enLecture && !enPause) lireBloc(index + 1); };
+    /* La minuterie démarre tout de suite puis se recale sur le début réel de
+       la voix, le temps de latence variant d'un appareil à l'autre. */
+    planifier(u.rate);
+    u.onstart = function () { if (!boundaryVu) tDebut = Date.now(); };
+    synth.speak(u);
+    if (!boundaryVu) lancerMinuterie();
+  }
+  function vitesse() {
+    var v = null;
+    try { v = localStorage.getItem(CLE_VITESSE); } catch (e) {}
+    return v || cfg.vitesse || "1";
+  }
+
+  function demarrer(depuis) {
+    if (!synth) { alert("La lecture à voix haute n'est pas disponible dans ce navigateur."); return; }
+    stop(true);
+    deplierSections();
+    construireBlocs();
+    if (!blocs.length) return;
+    enLecture = true; enPause = false; boundaryVu = false;
+    document.body.classList.add("li-en-cours");
+    majBarre();
+    tickReprise = setInterval(function () {          /* Chrome coupe au bout de ~15 s */
+      if (enLecture && !enPause && synth.speaking) { synth.pause(); synth.resume(); }
+    }, 9000);
+    var depart = 0;
+    if (depuis) { var k = blocs.indexOf(depuis); if (k >= 0) depart = k; }
+    lireBloc(depart);
+  }
+  function pause() {
+    if (!enLecture) return;
+    if (enPause) {
+      enPause = false;
+      if (pauseDebut) { pauseCumul += Date.now() - pauseDebut; pauseDebut = 0; }
+      synth.resume();
+    } else {
+      enPause = true; pauseDebut = Date.now(); synth.pause();
+    }
+    majBarre();
+  }
+  function stop(silencieux) {
+    if (synth) synth.cancel();
+    if (tickReprise) { clearInterval(tickReprise); tickReprise = null; }
+    arreterMinuterie();
+    nettoyerBloc();
+    index = -1; enLecture = false; enPause = false;
+    document.body.classList.remove("li-en-cours");
+    var c = document.querySelectorAll(".li-cliquable");
+    for (var i = 0; i < c.length; i++) c[i].classList.remove("li-cliquable");
+    if (!silencieux) majBarre();
+    else majBarre();
+  }
+
+  /* ── Barre de commande ──────────────────────────────────────────────── */
+  var elBtn, elPause, elStop, elVit, elBarre;
+  function majBarre() {
+    if (!elBtn) return;
+    elBtn.classList.toggle("li-on", enLecture);
+    elBtn.innerHTML = enLecture ? "&#x1F50A; Lecture en cours" : "&#x1F50A; Lecture immersive";
+    elPause.hidden = !enLecture;
+    elStop.hidden = !enLecture;
+    elVit.hidden = !enLecture;
+    elPause.innerHTML = enPause ? "&#x25B6;&#xFE0F; Reprendre" : "&#x23F8;&#xFE0F; Pause";
+  }
+  function construireBarre() {
+    elBarre = document.createElement("span");
+    elBarre.className = "li-barre";
+    elBarre.setAttribute("data-nolecture", "");
+
+    elBtn = document.createElement("button");
+    elBtn.type = "button"; elBtn.className = "li-btn";
+    elBtn.title = "Lit la page à voix haute en surlignant le texte";
+    elBtn.onclick = function () { enLecture ? stop() : demarrer(); };
+
+    elPause = document.createElement("button");
+    elPause.type = "button"; elPause.className = "li-btn"; elPause.hidden = true;
+    elPause.onclick = pause;
+
+    elStop = document.createElement("button");
+    elStop.type = "button"; elStop.className = "li-btn"; elStop.hidden = true;
+    elStop.innerHTML = "&#x23F9;&#xFE0F; Arrêter";
+    elStop.onclick = function () { stop(); };
+
+    elVit = document.createElement("select");
+    elVit.className = "li-sel"; elVit.hidden = true;
+    elVit.title = "Vitesse de lecture";
+    [["0.7", "Lent"], ["0.85", "Posé"], ["1", "Normal"], ["1.15", "Rapide"]].forEach(function (o) {
+      var op = document.createElement("option");
+      op.value = o[0]; op.textContent = o[1];
+      if (o[0] === String(vitesse())) op.selected = true;
+      elVit.appendChild(op);
+    });
+    elVit.onchange = function () {
+      try { localStorage.setItem(CLE_VITESSE, elVit.value); } catch (e) {}
+      if (enLecture) { var i = index; synth.cancel(); lireBloc(i); }   /* relit le passage en cours */
+    };
+
+    elBarre.appendChild(elBtn); elBarre.appendChild(elPause);
+    elBarre.appendChild(elStop); elBarre.appendChild(elVit);
+
+    var hote = premierVisible(HOTE);
+    if (hote) hote.appendChild(elBarre);
+    else {
+      elBarre.style.cssText = "position:fixed;left:14px;bottom:70px;z-index:70;background:#fff;" +
+        "border:1px solid #E2E8F0;border-radius:10px;padding:7px 10px;box-shadow:0 4px 16px rgba(0,0,0,.14)";
+      document.body.appendChild(elBarre);
+    }
+    majBarre();
+  }
+
+  /* Déplace la barre vers la page affichée. Appelée par l'application à chaque
+     changement de page ; sans effet quand il n'y a qu'un seul hôte. */
+  function placer() {
+    if (!elBarre) return;
+    var hote = premierVisible(HOTE);
+    if (hote && elBarre.parentNode !== hote) {
+      if (enLecture) stop();                  /* on ne lit pas une page qu'on vient de quitter */
+      hote.appendChild(elBarre);
+    }
+  }
+
+  /* ── Départ ─────────────────────────────────────────────────────────── */
+  function init() {
+    if (!synth) return;                       /* navigateur sans synthèse vocale */
+    injecterStyles();
+    construireBarre();
+    choisirVoix();
+    if (typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = choisirVoix;
+
+    /* En lecture, cliquer un paragraphe reprend à cet endroit. */
+    document.addEventListener("click", function (ev) {
+      if (!enLecture) return;
+      var cible = ev.target.closest(".li-cliquable");
+      if (!cible || elBarre.contains(ev.target)) return;
+      var tag = (ev.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select" || tag === "button" || tag === "a") return;
+      synth.cancel();
+      enPause = false;
+      lireBloc(blocs.indexOf(cible));
+      majBarre();
+    });
+    window.addEventListener("beforeunload", function () { if (synth) synth.cancel(); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+
+  window.LectureImmersive = {
+    demarrer: demarrer, pause: pause, stop: stop, placer: placer,
+    actif: function () { return enLecture; },
+    motParMot: function () { return boundaryVu; }
+  };
+})();
+
+</script>
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════════════════
+   P11 — ENTRAÎNEMENT TABLEUR (facture du club photo). Page d'entraînement :
+   rien n'est envoyé, la progression reste sur cet ordinateur.
+   Contenu : entrainement.py ; assemblage : build_entrainement.py.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var D = {"feuille": [[1, "Libellé", "Commande 1", "Commande 2"], [2, "Nombre de tirages", "40", "65"], [3, "Prix d'un tirage HT (€)", "0,15", "=B3"], [4, "Frais de traitement par tirage (€)", "0,05", "=B4"], [5, "Forfait d'envoi (€)", "4,90", "=B5"], [6, "Montant de la TVA (€) — 20 % du sous-total HT", "FOURNI", "FOURNI"], [7, "Montant des tirages (€)", "", ""], [8, "Total des frais de traitement (€)", "FOURNI", "FOURNI"], [9, "Sous-total HT (€)", "", ""], [10, "TOTAL TTC (€)", "", ""], [11, "Écart entre les deux commandes (€)", null, ""]], "formules": {"B7": "=B2*B3", "B9": "=B7+B8+B5", "B10": "=B9+B6", "C7": "=C2*C3", "C9": "=C7+C8+C5", "C10": "=C9+C6", "C11": "=C10-B10"}, "valeurs": {"B6": "2,58", "B7": "6,00", "B8": "2,00", "B9": "12,90", "B10": "15,48", "C6": "3,58", "C7": "9,75", "C8": "3,25", "C9": "17,90", "C10": "21,48", "C11": "6,00"}, "p1": [["Quel nombre est écrit dans la cellule B3 ?", "0,15", ["0,15", "0.15", ",15"]], ["Dans quelle cellule est écrit le forfait d'envoi de la commande 1 ?", "B5", ["B5"]], ["Dans quelle cellule est écrit le nombre de tirages de la commande 2 ?", "C2", ["C2"]], ["Dans quelle cellule le tableur calcule-t-il le total TTC de la commande 1 ?", "B10", ["B10"]]], "p2": [["B7", "Montant des tirages = nombre de tirages × prix d'un tirage.", "40 × 0,15", "6"], ["B9", "Sous-total HT = montant des tirages + total des frais + forfait d'envoi.", "6 + 2 + 4,90", "12,90"], ["B10", "Total TTC = sous-total HT + montant de la TVA.", "12,90 + 2,58", "15,48"]], "erreurs": ["Il manque le signe =", "Un nombre est écrit à la place d'une adresse", "Ce n'est pas la bonne cellule", "Ce n'est pas la bonne opération"], "p3": [["B7", "B2*B3", 0, "=B2*B3"], ["B9", "=B7+B8+4,90", 1, "=B7+B8+B5"], ["B10", "=B9+B8", 2, "=B9+B6"], ["B7", "=B2+B3", 3, "=B2*B3"]], "p4pred": ["On recopie la formule de B7 (=B2*B3) dans la case voisine C7. Le tableur décale chaque adresse d'une colonne vers la droite. Que devient la formule ?", "=C2*C3"], "p4phrase": ["La commande 2 coûte ", " € de plus que la commande 1.", "6"], "situation": "Le club photo du collège commande des tirages papier chez un imprimeur, en deux fois. Commande 1 : 40 tirages. Commande 2 : 65 tirages. Chaque tirage coûte 0,15 € HT, plus 0,05 € de frais de traitement. L'envoi coûte 4,90 € par commande. La TVA est de 20 %.", "regle": ["Une formule = le signe **=** + des **adresses de cellules** + des **opérations**.", "Une adresse, c'est la **colonne** (lettre) puis la **ligne** (chiffre) : **B3** = colonne B, ligne 3.", "Opérations : + ajouter · - soustraire · * multiplier (l'étoile, pas la lettre x) · / diviser.", "On écrit l'adresse, **pas le nombre** : si la donnée change, le tableur recalcule tout seul."], "exemple": "Exemple résolu — ligne 8, total des frais de traitement = nombre de tirages × frais par tirage. Avec les nombres : 40 × 0,05 = 2. Avec les adresses : **=B2*B4**."};
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function gras(s){ return esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>"); }
+function fr(x,dec){ if(x==null||isNaN(x)) return "?"; return Number(x).toLocaleString("fr-FR",{minimumFractionDigits:dec||0,maximumFractionDigits:dec==null?2:dec}); }
+var CLE="p11-entrainement-tableur";
+var ETAT={ v:{}, essais:{}, ok:{} };
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTEUR DU MINI-TABLEUR — partagé par la capsule (Site Techno) et par la page
+   evaluation-1-tableur.html (techno-p11-eau). Ne pas modifier les pages générées :
+   modifier ce fichier, puis relancer build_capsule.py.
+   Besoins côté page : ETAT.cells, $(id), fr(x,dec), esc(s), et les cellules #ss.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var TABLEUR_FORMULES = { B7:"=B2*B3", B9:"=B7+B8+B5", B10:"=B9+B6", C7:"=C2*C3", C9:"=C7+C8+C5", C10:"=C9+C6", C11:"=C10-B10" };
+var TABLEUR_BAREME = { B7:2, B9:2, B10:2 };
+/* nombres présents dans un texte (« 57,97 € » → 57.97) */
+function nombresTexte(v){
+  var s=String(v||"").replace(/[\u2212\u2013]/g,"-").replace(/(\d)[\s\u00a0\u202f](?=\d{3}\b)/g,"$1");
+  var m=s.match(/-?\d+(?:[.,]\d+)?/g)||[]; return m.map(function(x){ return parseFloat(x.replace(",",".")); });
+}
+function construireTableur(tbody){
+  var lignes=[[1,"Libellé","Sans fuite","Avec la fuite"],[2,"Consommation sur l'année (m³)","",""],
+    [3,"Consommation Vendée Eau — prix unitaire HT (€/m³)","1,162","=B3"],[4,"Redevances Agence de l'eau (€/m³)","0,408","=B4"],
+    [5,"Abonnement pour l'année (€)","","=B5"],[6,"Montant de la TVA (€) — 5,5 % du sous-total HT","FOURNI","FOURNI"],[7,"Total eau (€)","",""],
+    [8,"Total des redevances (€)","FOURNI","FOURNI"],[9,"Sous-total HT (€)","",""],[10,"TOTAL TTC (€)","",""],[11,"Coût de la fuite sur un an (€)",null,""]];
+  tbody.innerHTML=lignes.map(function(l){
+    var n=l[0]; if(n===1) return "<tr><td class=\"rh\">1</td><td class=\"lbl\"><b>Libellé</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Sans fuite</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Avec la fuite</b></td></tr>";
+    var t="<tr><td class=\"rh\">"+n+"</td><td class=\"lbl\"><b>"+esc(l[1])+"</b></td>";
+    [["B",l[2]],["C",l[3]]].forEach(function(p){ var ref=p[0]+n, v=p[1];
+      if(v===null) t+="<td class=\"vide\"></td>";
+      else if(v==="FOURNI") t+="<td class=\"lien\" id=\"td-"+ref+"\"><span id=\"lien-"+ref+"\"></span> <small title=\"calculé seul\">🔒</small></td>";
+      else if(v==="") { var cls=(ref==="B2"||ref==="C2"||ref==="B5")?"don":(n>=10?"ttc":"form");
+        t+="<td class=\"cell "+cls+"\" id=\"td-"+ref+"\"><input type=\"text\" id=\""+ref+"\" data-ref=\""+ref+"\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"cellule "+ref+"\""+(cls==="don"?" inputmode=\"decimal\"":"")+"><span class=\"chip\" id=\"chip-"+ref+"\"></span></td>"; }
+      else if(v.charAt(0)==="=") t+="<td class=\"lien\" id=\"td-"+ref+"\"><span id=\"lien-"+ref+"\"></span> <small>("+v+")</small></td>";
+      else t+="<td class=\"fixe\">"+v+"</td>";
+    });
+    return t+"</tr>";
+  }).join("");
+}
+/* ═══ mini-tableur : analyse et calcul des formules (+ − × ÷, %, parenthèses, SOMME) ═══ */
+function contenu(ref,cells){
+  if(ref==="B3") return "1.162"; if(ref==="B4") return "0.408"; if(ref==="B6") return "5.5";
+  if(/^C[3-5]$/.test(ref)) return "=B"+ref.slice(1);
+  if(ref==="B1"||ref==="C1"||ref==="B11") return "";
+  return String(cells[ref]||"").trim();
+}
+function analyser(src){           // src sans le « = » ; renvoie un arbre ou lève une erreur
+  var s=src.replace(/\s+/g,"").toUpperCase(), i=0;
+  function voir(){ return s.charAt(i); }
+  function expr(){ var g=terme(); while(voir()==="+"||voir()==="-"){ var op=s.charAt(i++); g={op:op,a:g,b:terme()}; } return g; }
+  function terme(){ var g=facteur(); while(voir()==="*"||voir()==="/"){ var op=s.charAt(i++); g={op:op,a:g,b:facteur()}; } return g; }
+  function facteur(){ if(voir()==="-"){ i++; return {op:"neg",a:facteur()}; } if(voir()==="+"){ i++; return facteur(); }
+    var p=primaire(); while(voir()==="%"){ i++; p={op:"pct",a:p}; } return p; }
+  function primaire(){
+    var m;
+    if(voir()==="("){ i++; var e=expr(); if(voir()!==")") throw "parenthèse"; i++; return e; }
+    if((m=/^(SOMME|SUM)\(/.exec(s.slice(i)))){ i+=m[0].length; var args=[];
+      if(voir()!==")") for(;;){ args.push(argument()); if(voir()===";"||voir()===","){ i++; continue; } break; }
+      if(voir()!==")") throw "parenthèse"; i++; return {op:"somme",args:args}; }
+    if((m=/^\$?([A-Z])\$?(\d+)/.exec(s.slice(i)))){ i+=m[0].length; return {op:"ref",ref:m[1]+m[2]}; }
+    if((m=/^\d+(?:[.,]\d+)?/.exec(s.slice(i)))){ i+=m[0].length; return {op:"num",v:parseFloat(m[0].replace(",",".")),txt:m[0]}; }
+    throw "symbole";
+  }
+  function argument(){ var m=/^\$?([A-Z])\$?(\d+):\$?([A-Z])\$?(\d+)/.exec(s.slice(i));
+    if(m){ i+=m[0].length; return {op:"plage",c1:m[1],l1:+m[2],c2:m[3],l2:+m[4]}; } return expr(); }
+  var arbre=expr(); if(i<s.length) throw "symbole"; return arbre;
+}
+function evaluer(n,val){
+  switch(n.op){
+    case "num": return n.v; case "ref": return val(n.ref); case "neg": return -evaluer(n.a,val); case "pct": return evaluer(n.a,val)/100;
+    case "+": return evaluer(n.a,val)+evaluer(n.b,val); case "-": return evaluer(n.a,val)-evaluer(n.b,val);
+    case "*": return evaluer(n.a,val)*evaluer(n.b,val); case "/": return evaluer(n.a,val)/evaluer(n.b,val);
+    case "somme": return n.args.reduce(function(t,a){
+      if(a.op!=="plage") return t+evaluer(a,val);
+      for(var c=a.c1.charCodeAt(0);c<=a.c2.charCodeAt(0);c++) for(var l=a.l1;l<=a.l2;l++){ var x=val(String.fromCharCode(c)+l); if(!isNaN(x)) t+=x; }
+      return t; },0);
+  }
+  return NaN;
+}
+function refsDe(n,out){ out=out||[]; if(!n) return out;
+  if(n.op==="ref") out.push(n.ref);
+  if(n.op==="plage") for(var c=n.c1.charCodeAt(0);c<=n.c2.charCodeAt(0);c++) for(var l=n.l1;l<=n.l2;l++) out.push(String.fromCharCode(c)+l);
+  ["a","b"].forEach(function(k){ if(n[k]) refsDe(n[k],out); }); if(n.args) n.args.forEach(function(a){ refsDe(a,out); }); return out; }
+function nombresDe(n,out){ out=out||[]; if(!n) return out; if(n.op==="num") out.push(n.v);
+  ["a","b"].forEach(function(k){ if(n[k]) nombresDe(n[k],out); }); if(n.args) n.args.forEach(function(a){ nombresDe(a,out); }); return out; }
+/* Cellules fournies, comme dans le mini-tableur de la séance 2 : arrondies au centime et verrouillées. */
+function r2(x){ return isNaN(x)?NaN:Math.round((x+1e-9)*100)/100; }
+var FOURNIES = {
+  B8:function(v){ return r2(v("B2")*v("B4")); }, C8:function(v){ return r2(v("C2")*v("C4")); },
+  B6:function(v){ return r2(v("B9")*5.5/100); }, C6:function(v){ return r2(v("C9")*5.5/100); }
+};
+/* feuille : valeur d'une cellule, avec détection des renvois circulaires */
+function feuille(cells,forcees){
+  var cache={}, pile=[];
+  function val(ref){
+    if(forcees && Object.prototype.hasOwnProperty.call(forcees,ref)) return forcees[ref];
+    if(Object.prototype.hasOwnProperty.call(cache,ref)) return cache[ref];
+    if(FOURNIES[ref]){ cache[ref]=FOURNIES[ref](val); return cache[ref]; }
+    var c=contenu(ref,cells); if(c===""){ cache[ref]=0; return 0; }     // cellule vide = 0, comme dans un tableur
+    if(c.charAt(0)!=="="){ var x=parseFloat(c.replace(",",".")); cache[ref]=(/^-?\d+(?:[.,]\d+)?$/.test(c))?x:NaN; return cache[ref]; }
+    if(pile.indexOf(ref)>=0) return NaN;
+    pile.push(ref); var r=NaN; try{ r=evaluer(analyser(c.slice(1)),val); }catch(e){ r=NaN; } pile.pop();
+    if(!isFinite(r)) r=NaN; cache[ref]=r; return r;
+  }
+  return val;
+}
+function recalculer(){
+  var val=feuille(ETAT.cells);
+  document.querySelectorAll("#ss input[data-ref]").forEach(function(inp){
+    var ref=inp.getAttribute("data-ref"), chip=$("chip-"+ref), c=String(ETAT.cells[ref]||"").trim();
+    if(!chip) return;
+    if(c.charAt(0)!=="="){ chip.textContent=""; return; }
+    var v=val(ref); chip.textContent=isNaN(v)?"#ERREUR":fr(v,2)+" €";
+  });
+  ["C3","C4","C5","B6","C6","B8","C8"].forEach(function(ref){ var v=val(ref), s=$("lien-"+ref);
+    if(s) s.textContent=isNaN(v)?"":(/[68]$/.test(ref)?fr(v,2)+" €":fr(v,ref==="C5"?2:3)); });
+}
+/* recopie vers la droite : toutes les références relatives se décalent d'une colonne */
+function decaler(f){ return String(f).replace(/(\$?)([A-Z])(\$?)(\d+)/gi,function(m,d1,col,d2,lig){
+  return d1 ? m : String.fromCharCode(col.toUpperCase().charCodeAt(0)+1)+d2+lig; }); }
+
+/* ═══ correction ═══ */
+function noterFormule(ref,cells){
+  /* La formule est jugée dans une feuille « idéale » : données justes et autres cellules à leur valeur attendue.
+     Une formule juste reste donc juste si une donnée ou une autre formule est fausse (pas de double peine). */
+  var c=String(cells[ref]||"").trim(), max=TABLEUR_BAREME[ref]||1;
+  if(!c) return {p:0,max:max,why:"vide"};
+  if(c.charAt(0)!=="=") return {p:0,max:max,why:"pas de signe ="};
+  var arbre; try{ arbre=analyser(c.slice(1)); }catch(e){ return {p:0,max:max,why:"formule illisible"}; }
+  var ideal=idealValeurs(), v=evaluer(arbre,function(r){ return ideal.hasOwnProperty(r)?ideal[r]:NaN; });
+  var refs=refsDe(arbre), nums=nombresDe(arbre).filter(function(x){ return x!==100; });
+  if(arbre.op==="num") return {p:0,max:max,why:"résultat tapé à la main, pas une formule"};
+  var juste=Math.abs(v-ideal[ref])<0.011;
+  if(!refs.length) return juste ? {p:max/2,max:max,why:"nombres recopiés au lieu des références"} : {p:0,max:max,why:"aucune référence de cellule"};
+  if(juste) return nums.length ? {p:max/2,max:max,why:"nombre recopié au lieu d'une référence"} : {p:max,max:max,why:"juste"};
+  return {p:0,max:max,why:"résultat faux"};
+}
+var IDEAL=null;
+function idealValeurs(){
+  if(IDEAL) return IDEAL;
+  var cells={B2:"110",C2:"145",B5:"86"}; Object.keys(TABLEUR_FORMULES).forEach(function(k){ cells[k]=TABLEUR_FORMULES[k]; });
+  var val=feuille(cells), o={}; "B2 B3 B4 B5 B6 C2 C3 C4 C5 C6 B7 B8 B9 B10 C7 C8 C9 C10 C11".split(" ").forEach(function(r){ o[r]=val(r); });
+  return (IDEAL=o);
+}
+/* Bouton « Recopier » : lignes 7, 9 et 10 (la ligne 8 est fournie), références décalées d'une colonne. */
+function recopierColonne(cells){
+  ["7","9","10"].forEach(function(l){ var b=String(cells["B"+l]||"").trim(); cells["C"+l]= b.charAt(0)==="=" ? decaler(b) : b; });
+}
+/* Partie C : C1 (données), C2 (formules B7, B9, B10), C3 (colonne C, C11, phrase). item(q, intitulé, points, max, réponse, attendu). */
+function corrigerPartieC(C, phrase, item){
+  // C1
+  var num=function(r){ var v=feuille(C)(r); return v; };
+  item("C1","B2 (sans fuite)",Math.abs(num("B2")-110)<1e-9?0.5:0,0.5,C.B2,"110");
+  item("C1","C2 (avec la fuite)",Math.abs(num("C2")-145)<1e-9?0.5:0,0.5,C.C2,"145 (ou =B2+35)");
+  item("C1","B5 (abonnement annuel)",Math.abs(num("B5")-86)<1e-9?1:0,1,C.B5,"86 (43 × 2)");
+  // C2
+  ["B7","B9","B10"].forEach(function(r){ var x=noterFormule(r,C); item("C2",r,x.p,x.max,C[r],TABLEUR_FORMULES[r]+(x.why!=="juste"?"  ("+x.why+")":"")); });
+  // C3 : C7, C9, C10 justes, ou recopie fidèle de la formule de B (pas de double peine)
+  var justesC=0;
+  ["C7","C9","C10"].forEach(function(r){
+    var x=noterFormule(r,C), bF=String(C["B"+r.slice(1)]||"").trim(), cF=String(C[r]||"").trim().toUpperCase().replace(/\s+/g,"");
+    var recopie = bF.charAt(0)==="=" && cF===decaler(bF).toUpperCase().replace(/\s+/g,"");
+    if(x.p===x.max||recopie) justesC++;
+  });
+  item("C3","C7, C9, C10 ("+justesC+"/3 justes)",justesC===3?2:(justesC===2?1:0),2,["C7","C9","C10"].map(function(r){ return C[r]||"…"; }).join(" ; "),"=C2*C3 ; =C7+C8+C5 ; =C9+C6");
+  var x11=noterFormule("C11",C); item("C3","C11",x11.p,1,C.C11,"=C10-B10"+(x11.why!=="juste"?"  ("+x11.why+")":""));
+  var v11=feuille(C)("C11"), saisi=nombresTexte(phrase)[0];
+  var okPh = saisi!=null && ((!isNaN(v11)&&Math.abs(saisi-v11)<0.011)||Math.abs(saisi-57.97)<0.011);
+  item("C3","Phrase (coût de la fuite)",okPh?1:0,1,phrase,"57,97 €");
+
+}
+
+
+/* ─── la feuille du club photo (remplace celle de la facture d'eau du moteur) ─── */
+var DONNEES_FEUILLE={ B2:"40", C2:"65", B3:"0.15", B4:"0.05", B5:"4.9", C3:"=B3", C4:"=B4", C5:"=B5" };
+function contenu(ref,cells){
+  if(DONNEES_FEUILLE.hasOwnProperty(ref)) return DONNEES_FEUILLE[ref];
+  return String(cells[ref]||"").trim();
+}
+FOURNIES = {
+  B8:function(v){ return r2(v("B2")*v("B4")); }, C8:function(v){ return r2(v("C2")*v("C4")); },
+  B6:function(v){ return r2(v("B9")*20/100); }, C6:function(v){ return r2(v("C9")*20/100); }
+};
+var IDEAL_CP=(function(){ var val=feuille(D.formules), o={};
+  "B2 B3 B4 B5 B6 B7 B8 B9 B10 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11".split(" ").forEach(function(r){ o[r]=val(r); }); return o; })();
+
+/* ─── diagnostic d'une formule : { ok, msg } ─── */
+function diag(ref,f){
+  var c=String(f||"").trim(), att=D.formules[ref];
+  if(!c) return {ok:false,msg:"Écris la formule."};
+  if(c.charAt(0)!=="=") return {ok:false,msg:"Une formule commence toujours par le signe =."};
+  if(/[x×]/i.test(c.slice(1).replace(/[A-Z]\d+/gi,""))) return {ok:false,msg:"Pour multiplier, tape l'étoile * (pas la lettre x)."};
+  var arbre; try{ arbre=analyser(c.slice(1)); }catch(e){ return {ok:false,msg:"Formule illisible : vérifie les symboles et les adresses."}; }
+  if(arbre.op==="num") return {ok:false,msg:"Tu as tapé le résultat : écris le calcul avec les adresses des cellules."};
+  var v=evaluer(arbre,function(r){ return IDEAL_CP.hasOwnProperty(r)?IDEAL_CP[r]:NaN; }), cible=IDEAL_CP[ref];
+  var refs=refsDe(arbre), nums=nombresDe(arbre), attRefs=refsDe(analyser(att.slice(1)));
+  var juste=Math.abs(v-cible)<0.006;
+  if(juste && nums.length) return {ok:false,msg:"Le résultat est juste, mais tu as écrit un nombre : remplace-le par l'adresse de sa cellule. Sinon, si la donnée change, la formule ne suit pas."};
+  if(juste) return {ok:true,msg:"Juste !"};
+  if(Math.abs(v+cible)<0.006) return {ok:false,msg:"Le résultat est négatif : commence par la commande la plus chère (C10)."};
+  var inutile=refs.filter(function(r){ return attRefs.indexOf(r)<0; })[0];
+  if(inutile) return {ok:false,msg:"La cellule "+inutile+" ne sert pas ici : relis la phrase et regarde la colonne A."};
+  if(attRefs.every(function(r){ return refs.indexOf(r)>=0; })) return {ok:false,msg:"Les bonnes cellules, mais pas la bonne opération."};
+  return {ok:false,msg:"Il manque une cellule : relis la phrase."};
+}
+function nombreSaisi(s){ var n=nombresTexte(s); return n.length?n[n.length-1]:NaN; }
+
+/* ─── affichage de la feuille ─── */
+function construireFeuille(){
+  $("ss").querySelector("tbody").innerHTML=D.feuille.map(function(l){
+    var n=l[0];
+    if(n===1) return "<tr><td class=\"rh\">1</td><td class=\"lbl\"><b>Libellé</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Commande 1</b></td><td class=\"lbl\" style=\"text-align:center\"><b>Commande 2</b></td></tr>";
+    var t="<tr><td class=\"rh\">"+n+"</td><td class=\"lbl\">"+esc(l[1])+"</td>";
+    [["B",l[2]],["C",l[3]]].forEach(function(p){ var ref=p[0]+n, v=p[1];
+      if(v===null) t+="<td class=\"vide\"></td>";
+      else if(v==="FOURNI") t+="<td class=\"lien\" id=\"td-"+ref+"\"><span id=\"lien-"+ref+"\"></span> <small title=\"calculé seul\">🔒</small></td>";
+      else if(v==="") t+="<td class=\"form\" id=\"td-"+ref+"\"></td>";
+      else if(v.charAt(0)==="=") t+="<td class=\"lien\">"+esc(D.valeurs[ref]||v.replace(/^=B/,""))+" <small>("+v+")</small></td>";
+      else t+="<td class=\""+(n===2||p[0]==="B"?"don":"fixe")+"\" id=\"td-"+ref+"\">"+esc(v)+"</td>";
+    });
+    return t+"</tr>";
+  }).join("");
+  // C3 à C5 : même valeur que B3 à B5
+  ["3","4","5"].forEach(function(l){ var td=$("ss").querySelectorAll("tbody tr")[+l-1].children[3]; td.innerHTML=esc(D.feuille[+l-1][2])+" <small>(=B"+l+")</small>"; });
+}
+function formulesSaisies(){ var c={}; Object.keys(D.formules).forEach(function(r){ var f=ETAT.v["f-"+r]; if(f) c[r]=f; }); return c; }
+function majFeuille(){
+  var cells=formulesSaisies(), val=feuille(cells);
+  Object.keys(D.formules).forEach(function(r){ var td=$("td-"+r); if(!td) return; var f=String(cells[r]||"").trim();
+    if(!f){ td.innerHTML=""; return; }
+    var x=f.charAt(0)==="="?val(r):NaN;
+    td.innerHTML="<code>"+esc(f)+"</code><b>"+(f.charAt(0)!=="="?"(pas une formule)":isNaN(x)?"#ERREUR":fr(x,2)+" €")+"</b>"; });
+  ["B6","C6","B8","C8"].forEach(function(r){ var s=$("lien-"+r), x=val(r); if(s) s.textContent=isNaN(x)?"":fr(x,2)+" €"; });
+}
+function surligner(ref,on){ var td=$("td-"+ref); if(td) td.classList.toggle("hl",on); }
+
+/* ─── construction des exercices ─── */
+function champ(id,cls,ph,large){ return "<input type=\"text\" id=\""+id+"\" class=\""+(cls||"")+"\" autocomplete=\"off\" spellcheck=\"false\""+(ph?" placeholder=\""+esc(ph)+"\"":"")+" style=\"width:"+(large||160)+"px\" aria-label=\""+esc(ph||id)+"\">"; }
+function construire(){
+  $("situation").textContent=D.situation;
+  $("regle").innerHTML="<p><b>À retenir</b></p>"+D.regle.map(function(l){ return "<p>"+gras(l)+"</p>"; }).join("");
+  $("exemple").innerHTML="<p>"+gras(D.exemple)+"</p>";
+  $("p1").innerHTML=D.p1.map(function(q,i){ return "<div class=\"item\"><div class=\"q\">"+(i+1)+". "+esc(q[0])+"</div><div class=\"ligne\">"+champ("p1-"+i,"",i===0?"un nombre":"une adresse, ex. A1")+"</div><div class=\"fb\" id=\"fb-p1-"+i+"\"></div></div>"; }).join("");
+  $("p2").innerHTML=D.p2.map(function(q,i){ var ref=q[0];
+    return "<div class=\"item\" data-ref=\""+ref+"\"><div class=\"q\"><span class=\"ref\">"+ref+"</span>"+esc(q[1])+"</div><div class=\"ligne\">"+
+      "<label for=\"c-"+ref+"\">Avec les nombres"+(i===0?" : "+esc(q[2])+" =":"")+"</label>"+champ("c-"+ref,"",i===0?"résultat":"ex. 1 + 2 = 3",i===0?110:200)+
+      "<label for=\"f-"+ref+"\">Avec les adresses</label>"+champ("f-"+ref,"f","=…",180)+"</div><div class=\"fb\" id=\"fb-c-"+ref+"\"></div><div class=\"fb\" id=\"fb-f-"+ref+"\"></div></div>"; }).join("");
+  $("p3").innerHTML=D.p3.map(function(q,i){
+    return "<div class=\"item\"><div class=\"q\"><span class=\"ref\">"+q[0]+"</span>Formule écrite : <span class=\"fausse\">"+esc(q[1])+"</span></div><div class=\"ligne\">"+
+      "<select id=\"e-"+i+"\" aria-label=\"type d'erreur\"><option value=\"\">L'erreur…</option>"+D.erreurs.map(function(e,k){ return "<option value=\""+k+"\">"+"ABCD"[k]+" — "+esc(e)+"</option>"; }).join("")+"</select>"+
+      "<label for=\"j-"+i+"\">Formule juste</label>"+champ("j-"+i,"f","=…",180)+"</div><div class=\"fb\" id=\"fb-p3-"+i+"\"></div></div>"; }).join("");
+  $("pred").innerHTML="<div class=\"q\">"+esc(D.p4pred[0])+"</div><div class=\"ligne\">"+champ("pred-f","f","=…",180)+"</div><div class=\"fb\" id=\"fb-pred\"></div>";
+  $("p4").innerHTML=["C7","C9","C10","C11"].map(function(ref){
+    return "<div class=\"item\" data-ref=\""+ref+"\"><div class=\"ligne\"><span class=\"ref\">"+ref+"</span>"+(ref==="C11"?"<label>Écart = commande 2 − commande 1</label>":"")+champ("f-"+ref,"f","=…",200)+"</div><div class=\"fb\" id=\"fb-f-"+ref+"\"></div></div>"; }).join("");
+  $("phrase").innerHTML=esc(D.p4phrase[0])+champ("phrase-v","","montant",120).replace("width:120px","width:120px;display:inline-block")+esc(D.p4phrase[1]);
+}
+
+/* ─── vérification ─── */
+function marquer(el,ok){ el.classList.toggle("juste",ok); el.classList.toggle("faux",!ok); }
+function retour(id,ok,msg,cle,solution){
+  var b=$(id); if(!b) return;
+  if(!ok){ ETAT.essais[cle]=(ETAT.essais[cle]||0)+1; }
+  var sol=(!ok && ETAT.essais[cle]>=3 && solution) ? "<span class=\"sol\">💡 Après 3 essais, la réponse : <b>"+esc(solution)+"</b>. Écris-la pour t'en souvenir.</span>" : "";
+  b.className="fb "+(ok?"ok":"ko"); b.innerHTML=(ok?"✅ ":"❌ ")+esc(msg)+sol; ETAT.ok[cle]=ok;
+}
+function verifierFormule(ref,cle){
+  var el=$("f-"+ref), d=diag(ref,el.value); marquer(el,d.ok); retour("fb-f-"+ref,d.ok,d.msg,cle||"f-"+ref,D.formules[ref]);
+}
+var VERIF={
+  p1:function(){ D.p1.forEach(function(q,i){ var el=$("p1-"+i), s=el.value.trim().toUpperCase().replace(/\s+/g,""), ok=q[2].map(function(x){ return x.toUpperCase(); }).indexOf(s)>=0;
+    if(i===0 && !ok) ok=Math.abs(nombreSaisi(el.value)-0.15)<1e-9;
+    marquer(el,ok); retour("fb-p1-"+i,ok,ok?"Juste !":(i===0?"Regarde la case à l'intersection de la colonne B et de la ligne 3.":"Cherche la ligne dans la colonne A, puis la bonne colonne : B pour la commande 1, C pour la commande 2."),"p1-"+i,q[1]); }); },
+  p2:function(){ D.p2.forEach(function(q){ var ref=q[0], el=$("c-"+ref), att=parseFloat(q[3].replace(",",".")), ok=Math.abs(nombreSaisi(el.value)-att)<0.006;
+    marquer(el,ok); retour("fb-c-"+ref,ok,ok?"Le calcul est juste.":"Calcul avec les nombres à revoir : lis les valeurs dans la feuille.","c-"+ref,q[2]+" = "+q[3]);
+    verifierFormule(ref); }); },
+  p3:function(){ D.p3.forEach(function(q,i){ var s=$("e-"+i), j=$("j-"+i), okE=s.value===String(q[2]), d=diag(q[0],j.value), ok=okE&&d.ok;
+    marquer(s,okE); marquer(j,d.ok);
+    var msg=okE?(d.ok?"Bien vu, et la formule est juste.":"Bonne erreur repérée. Formule : "+d.msg):"Ce n'est pas cette erreur. Compare la formule avec la phrase de la cellule "+q[0]+".";
+    ETAT.ok["e-"+i]=okE; retour("fb-p3-"+i,ok,msg,"p3-"+i,"ABCD"[q[2]]+" · "+q[3]); ETAT.ok["p3-"+i]=d.ok; }); },
+  p4:function(){ var el=$("pred-f"), s=el.value.replace(/\s+/g,"").toUpperCase(), okP=s===D.p4pred[1];
+    marquer(el,okP); retour("fb-pred",okP,okP?"Juste : chaque adresse avance d'une colonne (B devient C).":"Décale chaque lettre d'une colonne vers la droite, sans changer les numéros de ligne.","pred",D.p4pred[1]);
+    ["C7","C9","C10","C11"].forEach(function(r){ verifierFormule(r); });
+    var ph=$("phrase-v"), okV=Math.abs(nombreSaisi(ph.value)-6)<0.006; marquer(ph,okV);
+    retour("fb-phrase",okV,okV?"Juste : 21,48 − 15,48 = 6,00 €.":"Lis la valeur de C11 dans la feuille (avec une formule juste).","phrase","6,00"); }
+};
+function score(){
+  var cles=["p1-0","p1-1","p1-2","p1-3","c-B7","c-B9","c-B10","f-B7","f-B9","f-B10","e-0","e-1","e-2","e-3","p3-0","p3-1","p3-2","p3-3","pred","f-C7","f-C9","f-C10","f-C11","phrase"];
+  var n=cles.filter(function(k){ return ETAT.ok[k]; }).length;
+  $("score").textContent=n+" / 24"; $("bilan").textContent=n+" / 24";
+  $("bilanTxt").textContent= n===24 ? "Bravo : tu sais lire une feuille, écrire des formules et les recopier. Tu es prêt pour la partie C."
+    : n>=18 ? "Presque ! Refais les parties où il reste une croix rouge." : "Continue : relis l'encadré « À retenir » et l'exemple résolu, puis vérifie à nouveau.";
+}
+
+/* ─── sauvegarde ─── */
+function champs(){ return document.querySelectorAll("main input[type=text], main select"); }
+function sauver(){ champs().forEach(function(el){ ETAT.v[el.id]=el.value; }); try{ localStorage.setItem(CLE,JSON.stringify(ETAT)); }catch(e){} }
+function restaurer(){ try{ var e=JSON.parse(localStorage.getItem(CLE)||"null"); if(e&&e.v) ETAT=e; }catch(err){}
+  champs().forEach(function(el){ if(ETAT.v[el.id]!=null) el.value=ETAT.v[el.id]; }); }
+
+document.addEventListener("DOMContentLoaded",function(){
+  construireFeuille(); construire(); restaurer(); majFeuille(); score();
+  document.querySelectorAll("[data-verif]").forEach(function(b){ b.addEventListener("click",function(){ sauver(); VERIF[b.getAttribute("data-verif")](); score(); sauver(); }); });
+  document.querySelector("main").addEventListener("input",function(e){ sauver(); if(e.target.id.indexOf("f-")===0) majFeuille(); });
+  document.querySelector("main").addEventListener("focusin",function(e){ var m=/^[fc]-([BC]\d+)$/.exec(e.target.id); if(m) surligner(m[1],true); });
+  document.querySelector("main").addEventListener("focusout",function(e){ var m=/^[fc]-([BC]\d+)$/.exec(e.target.id); if(m) surligner(m[1],false); });
+  $("btnRecopie").addEventListener("click",function(){
+    var deja=["C7","C9","C10"].some(function(r){ return $("f-"+r).value.trim(); });
+    if(deja && !window.confirm("La colonne C contient déjà quelque chose. La remplacer par la recopie de la colonne B ?")) return;
+    ["7","9","10"].forEach(function(l){ var b=$("f-B"+l).value.trim(); $("f-C"+l).value=b.charAt(0)==="="?decaler(b):b; });
+    sauver(); majFeuille();
+  });
+  $("btnReset").addEventListener("click",function(){ if(!window.confirm("Effacer toutes tes réponses et recommencer ?")) return;
+    try{ localStorage.removeItem(CLE); }catch(e){} location.reload(); });
+});
+</script>
+</body>
+</html>
