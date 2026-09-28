@@ -34,9 +34,13 @@ deux missions, non pénalisé deux fois.
 |---|---:|---|
 | La fonction principale relie **l'utilisateur** et **l'eau** à travers l'objet | 3 | le trait traverse l'objet et joint deux EME |
 | Chaque fonction contrainte relie l'objet à **un seul** EME | 5 | 1 point par contrainte juste (mains, milieu humide, énergie, lavabo, budget) |
+| Trait faux | −1 par trait | contrainte vers l'utilisateur ou l'eau, fonction principale entre deux autres éléments — note plancher 0 |
 
-Une contrainte tracée vers un EME qui appartient à la fonction principale est
-signalée à l'élève : c'est l'erreur de raisonnement la plus fréquente.
+**Chaque trait faux retire un point.** Sans cette pénalité, relier tous les
+éléments en contrainte puis tracer la bonne FP donnait 8/8 : les traits justes
+étaient comptés, les faux ignorés. Une contrainte tracée vers un EME qui
+appartient à la fonction principale est en plus signalée à l'élève : c'est
+l'erreur de raisonnement la plus fréquente.
 
 ### 2.2 Tableau d'analyse fonctionnelle (12 points)
 
