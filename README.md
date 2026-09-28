@@ -100,6 +100,7 @@ apps-script/
 s5-pieuvre-cdcf/
 ├── index.html            page unique, tous les écrans
 ├── css/style.css         charte et composants
+├── img/kit/              vignettes des 26 pièces du kit (rendus des modèles 3D)
 └── js/
     ├── data.js           TOUT le contenu pédagogique (voir ci-dessous)
     ├── core.js           état, sauvegarde locale, navigation, outils de texte
@@ -118,6 +119,29 @@ contient les éléments du milieu extérieur, les six fonctions à classer, les
 quatre objets techniques proposés avec leurs critères, niveaux et plages de
 tolérance, le barème et les quatre niveaux de maîtrise. Le reste du code ne
 contient aucune connaissance métier.
+
+### Le kit de la maquette (mission 3)
+
+26 pièces en quatre onglets — Eau, Commande, Énergie, Équipements — choisies
+pour que chacune des six pistes proposées se monte avec des pièces qui la
+représentent : WC et gouttière pour la chasse d'eau, lavabo et filtre pour
+l'eau des lavabos, compteur et smartphone pour la fuite, jardinière, sonde et
+programmateur pour le potager, douche et afficheur pour le gymnase, pavés
+drainants et caniveau pour la cour. La liste est dans `KIT3D` (`data.js`), les
+modèles dans `scene3d.js`.
+
+Les vignettes des boutons (`img/kit/*.png`) sont des rendus des modèles 3D,
+calculés une fois pour toutes : les produire à chaque ouverture bloquait la
+page plusieurs secondes. **Après avoir retouché ou ajouté un modèle**, les
+régénérer : ouvrir l'activité, puis dans la console du navigateur
+
+```js
+var h = document.createElement('div'); h.style.cssText = 'width:300px;height:200px';
+document.body.appendChild(h);
+var v = SCENE3D.atelier(h).vignettes(P11DATA.KIT3D, 160);   // { id: dataURL PNG }
+```
+
+et enregistrer chaque image sous `img/kit/<id>.png`.
 
 ### Adresses utiles
 
