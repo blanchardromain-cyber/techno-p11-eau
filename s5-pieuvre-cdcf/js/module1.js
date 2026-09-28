@@ -684,7 +684,24 @@ var M1 = (function(){
       remarques.push({ ok:false, t:"Un élément est relié comme contrainte alors qu'il fait partie de la fonction principale : "
         + fcEnTrop.map(nomEME).join(', ') + ". L'utilisateur et l'eau sont les deux extrémités de la FP." });
     }
-    ptsLiens = Math.min(P11DATA.BAREME.m1.liens, ptsLiens);
+
+    // Chaque trait faux retire un point. Sans cela, relier tous les éléments
+    // en contrainte puis tracer la bonne FP donnait 8/8 : les traits justes
+    // étaient comptés, les faux ignorés.
+    var fpFaux = fps.filter(function(l){
+      return !(attenduFP.indexOf(l.de) !== -1 && attenduFP.indexOf(l.a) !== -1);
+    });
+    if (fpJuste && fpFaux.length){
+      remarques.push({ ok:false, t:"Fonction principale en trop : " + fpFaux.map(function(l){
+        return nomEME(l.de) + " ↔ " + nomEME(l.a); }).join(', ') +
+        ". Le robinet automatique n'a qu'une fonction principale." });
+    }
+    var nbFaux = fpFaux.length + fcEnTrop.length;
+    if (nbFaux){
+      remarques.push({ ok:false, t:"− " + nbFaux + " point" + (nbFaux > 1 ? 's' : '') + " : " + nbFaux +
+        " trait" + (nbFaux > 1 ? 's faux' : ' faux') + ". Chaque trait faux retire un point." });
+    }
+    ptsLiens = Math.max(0, Math.min(P11DATA.BAREME.m1.liens, ptsLiens) - nbFaux);
 
     html += bloc(ptsLiens === P11DATA.BAREME.m1.liens ? 'ok' : (ptsLiens >= 4 ? 'partial' : 'ko'),
       'Le tracé de la pieuvre — ' + ptsLiens + ' / ' + P11DATA.BAREME.m1.liens + ' points',
