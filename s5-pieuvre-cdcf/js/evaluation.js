@@ -138,6 +138,80 @@ var EVAL = (function(){
 
   function appreciation(){ return phrasesAppreciation().join(' '); }
 
+  /**
+   * Remarques pour le classeur des classes : « Réussi · À revoir · Conseil ».
+   *
+   * Aucune note, aucun point, aucun barème : la note sur 20 et le niveau ont
+   * leurs propres colonnes. Ce texte dit seulement ce qui est acquis et ce qui
+   * ne l'est pas encore, pour que le professeur puisse le reprendre tel quel
+   * dans une appréciation. Le conseil porte sur la première difficulté.
+   */
+  function remarques(){
+    var s = P11.state, B = P11DATA.BAREME;
+    var rendu = function(v){ return v !== null && v !== undefined; };
+    var ok = [], revoir = [], conseils = [], absent = [];
+    function manque(txt, conseil){ revoir.push(txt); if (conseil) conseils.push(conseil); }
+
+    /* Mission 1 */
+    var d1 = s.m1.detail;
+    if (!rendu(s.m1.score) || !d1) absent.push('mission 1');
+    else {
+      if (d1.liens === B.m1.liens) ok.push('pieuvre du robinet');
+      else manque('tracé de la pieuvre',
+        "une fonction principale relie deux éléments à travers l'objet, une contrainte n'en relie qu'un");
+      if (d1.typage === B.m1.typage) ok.push("tableau d'analyse");
+      else manque('correspondance fonctions / repères',
+        'relire sa pieuvre avant de choisir un repère : chaque trait correspond à une seule fonction');
+    }
+
+    /* Mission 2 : quel champ fait défaut, et sur quelles lignes */
+    var ost = P11.ostParId(s.m2.ost);
+    if (!rendu(s.m2.score) || !ost) absent.push('mission 2');
+    else {
+      var fautes = { critere:[], valeur:[], unite:[] };
+      ost.lignes.forEach(function(l){
+        var r = (window.M2 && M2.evaluerLigne) ? M2.evaluerLigne(l) : null;
+        if (!r) return;
+        ['critere','valeur','unite'].forEach(function(k){
+          if (r[k].n < (k === 'unite' ? 1 : 2)) fautes[k].push(l.rep);
+        });
+      });
+      if (!fautes.critere.length && !fautes.valeur.length && !fautes.unite.length)
+        ok.push('cahier des charges chiffré');
+      else {
+        if (fautes.critere.length) manque('critères (' + fautes.critere.join(', ') + ')',
+          'un critère est une grandeur que l\'on mesure : volume, durée, coût…');
+        if (fautes.valeur.length) manque('niveaux (' + fautes.valeur.join(', ') + ')',
+          'un niveau est un nombre réaliste, tiré de la demande du client');
+        if (fautes.unite.length) manque('unités (' + fautes.unite.join(', ') + ')',
+          'un niveau sans unité ne veut rien dire : 10, c\'est 10 quoi ?');
+      }
+    }
+
+    /* Mission 3 */
+    var d3 = s.m3.detail;
+    if (!rendu(s.m3.score) || !d3) absent.push('mission 3');
+    else {
+      if (d3.dossier === 3) ok.push('présentation de la solution');
+      else manque('présentation de la solution', 'décrire le problème traité et le principe de fonctionnement');
+      if (d3.structure === 2) ok.push('structure de sa pieuvre');
+      else manque('structure de sa pieuvre', 'une seule fonction principale et au moins trois contraintes');
+      if (d3.formulation === 3) ok.push('fonctions à l\'infinitif');
+      else manque('formulation des fonctions', 'commencer chaque fonction par un verbe à l\'infinitif');
+      if (d3.exigences === 3) ok.push('exigences chiffrées');
+      else manque('exigences de sa solution', 'chiffrer chaque exigence avec un niveau et son unité');
+      if (d3.maquette === 1) ok.push('maquette');
+      else manque('maquette', 'monter la maquette et la photographier');
+    }
+
+    var p = [];
+    if (ok.length) p.push('Réussi : ' + ok.join(', ') + '.');
+    if (revoir.length) p.push('À revoir : ' + revoir.join(', ') + '.');
+    if (absent.length) p.push('Non rendu : ' + absent.join(', ') + '.');
+    if (conseils.length) p.push('Conseil : ' + conseils[0].charAt(0).toUpperCase() + conseils[0].slice(1) + '.');
+    return p.join(' ');
+  }
+
   /* ====================== Construction du dossier ========================= */
 
   function construireDossier(){
@@ -446,6 +520,6 @@ var EVAL = (function(){
   }
 
   return { init:init, construireDossier:construireDossier, bilan:bilan,
-           appreciation:appreciation,
+           appreciation:appreciation, remarques:remarques,
            exporterJSON:exporterJSON, imprimer:imprimer };
 })();
