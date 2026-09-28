@@ -380,7 +380,9 @@ var EVAL = (function(){
     if (!s.m3.snapshot){ P11.signaler("Aucune photo de maquette. Utilise « Photographier la maquette »."); return; }
     var a = document.createElement('a');
     a.href = s.m3.snapshot;
-    a.download = 'P11-S5-' + s.badge.code + '-maquette.png';
+    // Les photos récentes sont en JPEG, les plus anciennes en PNG.
+    var ext = /^data:image\/jpeg/.test(s.m3.snapshot) ? 'jpg' : 'png';
+    a.download = 'P11-S5-' + s.badge.code + '-maquette.' + ext;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
 
