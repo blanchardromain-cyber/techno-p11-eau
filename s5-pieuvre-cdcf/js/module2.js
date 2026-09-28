@@ -244,12 +244,25 @@ var M2 = (function(){
     var montrer = st.essais >= 2;
 
     var res = evaluerLigne(l);
+
+    // La ligne est notée au moment où son corrigé s'affiche pour la première
+    // fois, AVANT que l'élève ait pu le lire. Sans cela, il recopiait le
+    // corrigé puis revérifiait pour obtenir tous les points. Ce qui suit reste
+    // corrigé et commenté, pour s'entraîner, mais ne compte plus.
+    st.figees = st.figees || {};
+    var fig = st.figees[st.ost] || (st.figees[st.ost] = {});
+    if (montrer && fig[l.rep] === undefined) fig[l.rep] = res.pts;
+    var fixe = fig[l.rep] !== undefined;
+    res.note = fixe ? fig[l.rep] : res.pts;
+
     var cls = res.pts === res.max ? 'ok' : (res.pts > 0 ? 'partial' : 'ko');
+    var clsNote = res.note === res.max ? 'ok' : (res.note > 0 ? 'partial' : 'ko');
     var tr = document.querySelector('tr[data-rep="' + l.rep + '"]');
     var fb = document.querySelector('tr[data-fb="' + l.rep + '"] td');
 
     tr.querySelector('.stat').innerHTML =
-      '<span class="pill ' + cls + '">' + P11.fmt(res.pts) + '/' + res.max + '</span>';
+      '<span class="pill ' + clsNote + '"' + (fixe ? ' title="Note fixée"' : '') + '>' +
+      (fixe ? '🔒 ' : '') + P11.fmt(res.note) + '/' + res.max + '</span>';
     tr.querySelector('.in-crit').className = 'in-crit f-' + etatChamp(res.critere.n, PTS.critere);
     tr.querySelector('.in-val').className  = 'in-val f-'  + etatChamp(res.valeur.n,  PTS.valeur);
     tr.querySelector('.in-unit').className = 'in-unit f-' + etatChamp(res.unite.n,   PTS.unite);
@@ -265,7 +278,12 @@ var M2 = (function(){
       html += '<div class="corr">Corrigé : critère <b>' + P11.esc(l.critereAttendu) + '</b> · niveau <b>' +
               P11.esc(l.niveauAttendu) + '</b></div>';
     } else if (!montrer && res.pts < res.max){
-      html += '<div class="corr"><em>Reprends cette ligne, puis vérifie une seconde fois : le corrigé s\'affichera.</em></div>';
+      html += '<div class="corr"><em>Reprends cette ligne. Attention : à ta prochaine vérification — de cette ' +
+              'ligne ou du cahier entier — le corrigé s\'affichera et la note de la ligne sera fixée.</em></div>';
+    }
+    if (fixe && res.pts !== res.note){
+      html += '<div class="corr"><em>Note de la ligne fixée à ' + P11.fmt(res.note) + '/' + res.max +
+              ' : ta correction t\'entraîne, mais ne change plus la note.</em></div>';
     }
     html += '</div>';
     fb.innerHTML = html;
@@ -287,10 +305,12 @@ var M2 = (function(){
     var montrer = st.essais >= 2;
 
     var total = 0, max = 0, detail = [];
+    // res.note : les points de la ligne, fixés dès que son corrigé a été vu.
+    // Au 2e essai, toutes les lignes le sont : la note ne bouge plus.
     ost.lignes.forEach(function(l){
       var res = verifierLigne(l, false);
-      total += res.pts; max += res.max;
-      detail.push({ rep:l.rep, pts:res.pts, max:res.max });
+      total += res.note; max += res.max;
+      detail.push({ rep:l.rep, pts:res.note, max:res.max });
     });
 
     // Le barème de la mission vaut 20 points quel que soit le nombre de lignes
@@ -319,10 +339,12 @@ var M2 = (function(){
       html += '<p style="margin-top:14px;text-align:center"><span class="seal">✓ Dossier validé par le bureau d\'études</span></p>';
     } else if (!montrer){
       html += '<div class="again">Corrige les lignes signalées, puis vérifie une seconde fois : ' +
-              'le corrigé complet apparaîtra sous chaque ligne.</div>';
-      document.getElementById('m2-verif').textContent = 'Vérifier le cahier des charges (2ᵉ essai)';
+              'le corrigé complet apparaîtra sous chaque ligne et ta note sera fixée.</div>';
+      document.getElementById('m2-verif').textContent = 'Vérifier le cahier des charges (2ᵉ essai, note fixée)';
     } else {
-      document.getElementById('m2-verif').textContent = 'Vérifier à nouveau';
+      html += '<div class="again">Ta note est fixée. Tu peux encore corriger et vérifier pour ' +
+              't\'entraîner : cela ne change plus la note.</div>';
+      document.getElementById('m2-verif').textContent = 'Vérifier à nouveau (entraînement)';
     }
 
     document.getElementById('m2-sortie').innerHTML = html;
