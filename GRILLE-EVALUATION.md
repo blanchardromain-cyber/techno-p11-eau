@@ -24,6 +24,15 @@ La note sur 20 est calculée au demi-point : `20 × points obtenus / points poss
 rendue ». Un élève qui n'a fait que les missions 1 et 2 est donc noté sur ces
 deux missions, non pénalisé deux fois.
 
+**La note est fixée au 2e essai (missions 1 et 2).** La première vérification
+signale les erreurs ; la deuxième affiche le corrigé et fixe la note. Les
+vérifications suivantes restent possibles pour s'entraîner, mais ne changent plus
+rien : sans cette règle, un élève recopiait le corrigé et revérifiait pour
+obtenir 20/20. En mission 2, chaque ligne a aussi son bouton « Vérifier », qui
+compte comme un essai : une ligne est notée au moment où son corrigé s'affiche
+pour la première fois (🔒 dans le tableau), et changer d'objet puis revenir ne
+la remet pas à zéro.
+
 ---
 
 ## 2. Mission 1 — Décryptage de la pieuvre (20 points)
@@ -260,5 +269,6 @@ pas conçue pour repasser toutes les maquettes.
   bascule sur des schémas et **le barème est inchangé** — le point de maquette
   s'obtient alors par la description écrite du principe.
 - **Correction en deux temps.** Chaque vérification donne une aide au premier
-  essai et le corrigé au second. Annoncer ce fonctionnement : les élèves qui
-  cliquent deux fois d'affilée sans corriger perdent le bénéfice de l'aide.
+  essai, puis le corrigé au second, qui fixe la note. Annoncer ce fonctionnement :
+  les élèves qui cliquent deux fois d'affilée sans corriger perdent le bénéfice
+  de l'aide, et leur note avec.
