@@ -106,6 +106,8 @@ var CLOUD = (function(){
       // La clé garde son ancien nom : la renommer obligerait à redéployer le
       // script du classeur.
       m3_appreciation: b.rendues ? EVAL.appreciation() : '',
+      // Remarques sans note, pour le classeur des classes de 4e.
+      remarques_classe: b.rendues ? EVAL.remarques() : '',
 
       total:   b.obtenu,
       sur:     b.maxi,
