@@ -505,6 +505,17 @@ header.band p{ margin:6px 0 0; color:#dce8f8; font-size:14px; position:relative 
 }
 .kit button:hover{ border-color:var(--blue); background:var(--lighter); transform:translateY(-2px) }
 .kit button .ico{ display:block; font-size:22px; margin-bottom:4px }
+.kit button img.ico{ width:58px; height:58px; margin:0 auto 4px; object-fit:contain }
+.kit button[hidden]{ display:none }
+.kit-familles{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px }
+.kit-familles button{
+  border:1.5px solid var(--line); border-radius:999px; background:#fff; cursor:pointer;
+  padding:6px 13px; font-family:inherit; font-size:12px; font-weight:700; color:var(--navy);
+  transition:.15s;
+}
+.kit-familles button:hover{ border-color:var(--blue) }
+.kit-familles button[aria-selected="true"]{ background:var(--navy); border-color:var(--navy); color:#fff }
+.part-row img.mini{ width:24px; height:24px; object-fit:contain; vertical-align:middle }
 
 .parts-list{ margin-top:12px; max-height:180px; overflow-y:auto }
 .part-row{
