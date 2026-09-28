@@ -60,7 +60,7 @@ var P11 = (function(){
         nom:'', probleme:'', principe:'',
         fonctions: [],    // {type, texte, eme, critere, valeur, unite}
         pieces: [],       // maquette 3D : {kit, x, z, rot}
-        snapshot: '',     // image PNG (dataURL) de la maquette
+        snapshot: '',     // image JPEG (dataURL) de la maquette
         essais: 0,
         score: null,
         detail: null,
