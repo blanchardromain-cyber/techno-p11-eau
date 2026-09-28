@@ -535,13 +535,11 @@ var M1 = (function(){
    * Séparé de l'affichage : la même fonction sert au retour en direct, à la
    * note de la mission et au dossier final.
    *
-   * Barème d'une ligne, sur 2 points, lus dans le SEUL repère choisi :
-   *   · 1 point si le type est le bon — FP là où il faut une FP ;
-   *   · 1 point de plus si le trait désigné aboutit au bon élément du milieu.
-   *
-   * Les deux moitiés sont égales parce qu'un seul choix les porte désormais :
-   * se tromper de type et se tromper d'élément sont deux erreurs de même
-   * poids, là où le type valait davantage quand il se choisissait à part.
+   * Barème d'une ligne : 2 points si le repère choisi désigne LE trait de
+   * cette fonction, 0 sinon. Pas de demi-point pour le « bon type » : cinq
+   * fonctions sur six sont des contraintes, si bien que n'importe quel FC
+   * rapportait un point — un tableau entièrement faux valait 4/12.
+   * Le type et le doublon restent expliqués dans la remarque de la ligne.
    */
   function evaluerAnalyse(){
     var st = P11.state.m1;
@@ -569,26 +567,27 @@ var M1 = (function(){
                     (f.type === 'FP' ? "DEUX éléments du milieu extérieur." : "UN SEUL.");
         return res;
       }
-      res.pts = 1;
-
-      if (comptes[st.repere[f.id]] > 1){
-        res.motif = "Le repère " + rep + " est attribué à deux fonctions : un trait ne correspond qu'à une seule.";
-        return res;
-      }
 
       // Le trait désigné aboutit-il au bon élément du milieu extérieur ?
       var bon = (f.type === 'FP')
         ? (f.via.indexOf(lien.de) !== -1 && f.via.indexOf(lien.a) !== -1)
         : (lien.de === f.via[0]);
+      var double = comptes[st.repere[f.id]] > 1;
       if (!bon){
-        res.motif = "Bon type, mais pas le bon trait : sur ta pieuvre, " + rep + " relie " +
-                    (lien.type === 'FP' ? nomEME(lien.de) + " et " + nomEME(lien.a) : nomEME(lien.de)) +
-                    ".";
+        res.motif = double
+          ? "Le repère " + rep + " est attribué à deux fonctions : un trait ne correspond qu'à une seule."
+          : "Bon type, mais pas le bon trait : sur ta pieuvre, " + rep + " relie " +
+            (lien.type === 'FP' ? nomEME(lien.de) + " et " + nomEME(lien.a) : nomEME(lien.de)) + ".";
         return res;
       }
+      // Chaque fonction a son propre élément : un trait n'est juste que pour
+      // une seule d'entre elles. Le doublon coûte donc la ligne fausse, pas
+      // celle-ci.
       res.repOk = true;
       res.pts = 2;
-      res.motif = "Repère correct.";
+      res.motif = double
+        ? "Repère correct, mais tu l'as aussi attribué à une autre fonction."
+        : "Repère correct.";
       return res;
     });
   }
@@ -611,7 +610,7 @@ var M1 = (function(){
       if (!st.valide){ cellFb.innerHTML = ''; tr.title = ''; return; }
       cellFb.innerHTML = r.pts === 2
         ? '<span class="pill ok">✓</span>'
-        : (r.pts > 0 ? '<span class="pill partial">≈</span>' : '<span class="pill ko">✗</span>');
+        : '<span class="pill ko">✗</span>';
       tr.title = r.motif;
     });
 
@@ -705,10 +704,10 @@ var M1 = (function(){
         ' pas renseignée' + (nonRemplies>1?'s':'') + '.</p>'
       : '';
     texteType += '<ul>' + analyse.map(function(r){
-        var icone = r.pts === 2 ? '✔' : (r.pts > 0 ? '≈' : (r.lien ? '✘' : '·'));
+        var icone = r.pts === 2 ? '✔' : (r.lien ? '✘' : '·');
         var ligne = '<li>' + icone + ' ' + P11.esc(r.f.texte);
         if (r.lien){
-          ligne += ' <span class="pill ' + (r.pts === 2 ? 'ok' : (r.pts > 0 ? 'partial' : 'ko')) + '">' +
+          ligne += ' <span class="pill ' + (r.pts === 2 ? 'ok' : 'ko') + '">' +
                    P11.esc(r.rep) + '</span>';
         }
         // Le « pourquoi » complet est donné dès le premier essai quand la
