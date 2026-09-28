@@ -741,23 +741,34 @@ var M1 = (function(){
       'Le tableau d\'analyse — ' + P11.fmt(ptsType) + ' / ' + P11DATA.BAREME.m1.typage + ' points', texteType);
     /* --- 3. Score et suite ----------------------------------------------- */
     var total = ptsLiens + ptsType;
-    st.score = total;
-    st.detail = { liens:ptsLiens, typage:ptsType };
+    // La note est fixée au 2e essai, celui qui affiche le corrigé. Sans cela,
+    // l'élève recopiait le corrigé puis revérifiait pour obtenir 20/20. Les
+    // vérifications suivantes restent possibles, pour s'entraîner.
+    var entrainement = st.essais > 2 && st.score !== null && st.score !== undefined;
+    if (!entrainement){
+      st.score = total;
+      st.detail = { liens:ptsLiens, typage:ptsType };
+    }
 
     var appreciation =
       total >= 18 ? "La pieuvre du robinet automatique n'a plus de secret pour toi."
     : total >= 13 ? "Bon travail. Revois surtout la différence entre « relier deux éléments » et « s'adapter à un élément »."
     : total >= 8  ? "Les bases sont là, mais le critère FP / FC n'est pas encore automatique. Relis le mémo."
     :               "Reprends la pieuvre de la fiche papier avec le mémo sous les yeux, puis recommence.";
-    html += '<div class="score">Mission 1 — ' + total + ' / ' + P11DATA.BAREME.m1.total + ' points · ' + appreciation + '</div>';
+    html += entrainement
+      ? '<div class="score">Mission 1 — note fixée au 2ᵉ essai : ' + P11.fmt(st.score) + ' / ' +
+        P11DATA.BAREME.m1.total + ' points. Cette vérification t\'entraîne mais ne change plus ta note ' +
+        '(tu obtiendrais ' + total + ' / ' + P11DATA.BAREME.m1.total + ' maintenant).</div>'
+      : '<div class="score">Mission 1 — ' + total + ' / ' + P11DATA.BAREME.m1.total + ' points' +
+        (montrer ? ' · note fixée' : '') + ' · ' + appreciation + '</div>';
 
     if (!montrer){
       html += '<div class="again">Corrige tes réponses à l\'aide des remarques, puis clique une seconde fois sur ' +
-              '<b>Vérifier la mission 1</b> : le corrigé complet s\'affichera.</div>';
-      document.getElementById('m1-verif').textContent = 'Vérifier la mission 1 (2ᵉ essai)';
+              '<b>Vérifier la mission 1</b> : le corrigé complet s\'affichera et ta note sera fixée.</div>';
+      document.getElementById('m1-verif').textContent = 'Vérifier la mission 1 (2ᵉ essai, note fixée)';
     } else {
       html += bloc('info', 'Corrigé complet', corrigeHTML());
-      document.getElementById('m1-verif').textContent = 'Vérifier à nouveau';
+      document.getElementById('m1-verif').textContent = 'Vérifier à nouveau (entraînement)';
     }
 
     document.getElementById('m1-sortie').innerHTML = html;
