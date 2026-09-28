@@ -391,15 +391,48 @@ var P11DATA = (function(){
   // `couleur` est la teinte dominante de la pièce : elle sert de pastille dans
   // la liste, et le modèle 3D la reprend sur sa partie principale. La forme des
   // pièces, elle, est décrite dans scene3d.js — c'est du rendu, pas du cours.
+  //
+  // Le kit couvre les six pistes ci-dessus : chacune doit pouvoir se monter
+  // avec des pièces qui la représentent (WC et gouttière pour la chasse d'eau,
+  // compteur et smartphone pour la fuite, jardinière et programmateur pour le
+  // potager, pavés drainants et caniveau pour la cour…). `famille` range les
+  // pièces en onglets : vingt-six boutons d'un seul tenant se lisent mal.
+  var KIT_FAMILLES = [
+    { id:'eau',      nom:"Eau" },
+    { id:'commande', nom:"Commande" },
+    { id:'energie',  nom:"Énergie" },
+    { id:'lieux',    nom:"Équipements" }
+  ];
   var KIT3D = [
-    { id:'cuve',    nom:"Cuve",     ico:'🛢️', couleur:0x2E75B6 },
-    { id:'tuyau',   nom:"Tuyau",    ico:'➖', couleur:0x9AA7B4 },
-    { id:'pompe',   nom:"Pompe",    ico:'⚙️', couleur:0xB7791F },
-    { id:'filtre',  nom:"Filtre",   ico:'🧽', couleur:0x1E8E5A },
-    { id:'capteur', nom:"Capteur",  ico:'📡', couleur:0xC0392B },
-    { id:'panneau', nom:"Panneau",  ico:'🔆', couleur:0x0F766E },
-    { id:'vanne',   nom:"Vanne",    ico:'🔩', couleur:0x7C3AED },
-    { id:'goutteur',nom:"Goutteur", ico:'💧', couleur:0x0EA5E9 }
+    { id:'cuve',        famille:'eau',      nom:"Cuve",               ico:'🛢️', couleur:0x2E75B6 },
+    { id:'tuyau',       famille:'eau',      nom:"Tuyau",              ico:'➖', couleur:0x9AA7B4 },
+    { id:'raccord',     famille:'eau',      nom:"Raccord en T",       ico:'🔧', couleur:0xB8913F },
+    { id:'pompe',       famille:'eau',      nom:"Pompe",              ico:'⚙️', couleur:0xB7791F },
+    { id:'filtre',      famille:'eau',      nom:"Filtre",             ico:'🧽', couleur:0x1E8E5A },
+    { id:'vanne',       famille:'eau',      nom:"Vanne",              ico:'🔩', couleur:0x7C3AED },
+    { id:'electrovanne',famille:'eau',      nom:"Électrovanne",       ico:'🧲', couleur:0x1D4ED8 },
+    { id:'compteur',    famille:'eau',      nom:"Compteur d'eau",     ico:'⏱️', couleur:0x1E3A8A },
+    { id:'gouttiere',   famille:'eau',      nom:"Gouttière",          ico:'🏠', couleur:0x94A3B8 },
+    { id:'goutteur',    famille:'eau',      nom:"Goutteur",           ico:'💧', couleur:0x0EA5E9 },
+
+    { id:'capteur',     famille:'commande', nom:"Capteur de présence",ico:'📡', couleur:0xC0392B },
+    { id:'sonde',       famille:'commande', nom:"Sonde d'humidité",   ico:'🌡️', couleur:0x65A30D },
+    { id:'carte',       famille:'commande', nom:"Carte programmable", ico:'🔲', couleur:0x0369A1 },
+    { id:'bouton',      famille:'commande', nom:"Bouton poussoir",    ico:'🔘', couleur:0xDC2626 },
+    { id:'programmateur',famille:'commande',nom:"Programmateur",      ico:'⏲️', couleur:0xEA580C },
+    { id:'afficheur',   famille:'commande', nom:"Afficheur",          ico:'📟', couleur:0x475569 },
+    { id:'smartphone',  famille:'commande', nom:"Smartphone",         ico:'📱', couleur:0x1F2937 },
+
+    { id:'panneau',     famille:'energie',  nom:"Panneau solaire",    ico:'🔆', couleur:0x0F766E },
+    { id:'batterie',    famille:'energie',  nom:"Batterie",           ico:'🔋', couleur:0x22A35A },
+    { id:'cable',       famille:'energie',  nom:"Câble électrique",   ico:'🔌', couleur:0xB91C1C },
+
+    { id:'wc',          famille:'lieux',    nom:"WC et chasse d'eau", ico:'🚽', couleur:0xCBD5E1 },
+    { id:'lavabo',      famille:'lieux',    nom:"Lavabo",             ico:'🚰', couleur:0xB6C4D4 },
+    { id:'douche',      famille:'lieux',    nom:"Douche",             ico:'🚿', couleur:0x9CA3AF },
+    { id:'jardiniere',  famille:'lieux',    nom:"Jardinière",         ico:'🪴', couleur:0x92400E },
+    { id:'caniveau',    famille:'lieux',    nom:"Caniveau à grille",  ico:'🕳️', couleur:0x64748B },
+    { id:'paves',       famille:'lieux',    nom:"Pavés drainants",    ico:'🧱', couleur:0xA8A29E }
   ];
 
   /* ---------------------------------------------------------------------
@@ -567,7 +600,7 @@ var P11DATA = (function(){
 
   return {
     EME:EME, FONCTIONS:FONCTIONS, HOTSPOTS:HOTSPOTS,
-    OST:OST, PISTES:PISTES, KIT3D:KIT3D,
+    OST:OST, PISTES:PISTES, KIT3D:KIT3D, KIT_FAMILLES:KIT_FAMILLES,
     BAREME:BAREME, NIVEAUX:NIVEAUX, BRIEF:BRIEF, MEMO:MEMO, VERBES:VERBES,
     CLASSES:CLASSES, COUPS_DE_POUCE:COUPS_DE_POUCE, CLOUD:CLOUD
   };
