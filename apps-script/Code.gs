@@ -22,6 +22,14 @@ var SECRET_PARTAGE = 'P11-S5-RB-2026';
 // Onglet où sont écrits les résultats. Créé au premier envoi s'il n'existe pas.
 var NOM_FEUILLE = 'P11-S5';
 
+// Classeur des classes de 4e : un onglet par classe, peuplé à la main des
+// identités (NOM en colonne A, Prénom en colonne B, à partir de la ligne 2).
+// Chaque envoi y remplit la ligne de l'élève : note, niveau, observation.
+var CLASSEUR_CLASSES_ID = '1Wqz5lFJVBpaP2BWh42BC2MnbeQaxMcPuqMXaSq-KbBE';
+var CLASSES = ['4A', '4B', '4C', '4D', '4E', '4F', '4G'];
+var ENTETES_CLASSE = ['NOM', 'Prénom', 'Note /20', 'Niveau', 'Observation', 'Équipe', 'Mis à jour'];
+var ONGLET_A_RAPPROCHER = 'À rapprocher';
+
 // Colonnes, dans l'ordre. Ajouter une colonne à la FIN ne casse rien ;
 // en insérer une au milieu décale l'existant.
 // L'ordre est pense pour la LECTURE : identite (A-I), puis immediatement la
@@ -84,7 +92,12 @@ function doPost(e) {
     });
 
     var cree = _upsert(feuille, String(l.code), rangee);
-    return _json({ ok: true, cree: cree });
+
+    // Report dans le classeur des classes. Une erreur ici (classeur déplacé,
+    // onglet renommé) ne doit pas faire perdre la ligne déjà écrite ci-dessus.
+    var classes = 'ok';
+    try { _reporterDansClasse(l, d); } catch (errClasse) { classes = String(errClasse); }
+    return _json({ ok: true, cree: cree, classes: classes });
   } catch (err) {
     return _json({ ok: false, erreur: String(err) });
   }
@@ -214,6 +227,127 @@ function _upsert(feuille, code, rangee) {
   return true;
 }
 
+// ============================================================================
+// Classeur des classes de 4e
+// ============================================================================
+
+/** NOM ou prénom ramené à une forme comparable : sans accent, sans casse. */
+function _cle(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toUpperCase().replace(/[^A-Z]+/g, ' ').trim();
+}
+
+/**
+ * Écrit note, niveau et observation sur la ligne de chaque élève de l'équipe
+ * (deux lignes pour un binôme), dans l'onglet de sa classe. Un élève qu'on ne
+ * retrouve pas — faute de frappe, élève absent de la liste — part dans l'onglet
+ * « À rapprocher » : rien n'est perdu, rien n'est écrit sur la mauvaise ligne.
+ */
+function _reporterDansClasse(l, date) {
+  var ss = SpreadsheetApp.openById(CLASSEUR_CLASSES_ID);
+  var quand = Utilities.formatDate(date, Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm');
+  var valeurs = {
+    'Note /20': l.note20 === null || l.note20 === undefined ? '' : l.note20,
+    'Niveau': l.niveau || '',
+    'Observation': l.remarques_classe || '',
+    'Équipe': l.code,
+    'Mis à jour': quand
+  };
+  var eleves = [[l.nom1, l.prenom1]];
+  if (l.nom2) eleves.push([l.nom2, l.prenom2]);
+
+  var onglet = ss.getSheetByName(String(l.classe || ''));
+  eleves.forEach(function (e) {
+    var ligne = onglet ? _trouverEleve(onglet, e[0], e[1]) : 0;
+    if (ligne) {
+      var entetes = _entetesClasse(onglet);
+      Object.keys(valeurs).forEach(function (nom) {
+        onglet.getRange(ligne, entetes[nom]).setValue(valeurs[nom]);
+      });
+    } else {
+      _aRapprocher(ss, l, e, valeurs);
+    }
+  });
+}
+
+/** Numéro de ligne de l'élève (NOM en A, Prénom en B), 0 s'il n'y est pas. */
+function _trouverEleve(onglet, nom, prenom) {
+  var der = onglet.getLastRow();
+  if (der < 2) return 0;
+  var noms = onglet.getRange(2, 1, der - 1, 2).getValues();
+  var kn = _cle(nom), kp = _cle(prenom);
+  for (var i = 0; i < noms.length; i++) {
+    if (_cle(noms[i][0]) === kn && _cle(noms[i][1]) === kp) return i + 2;
+  }
+  return 0;
+}
+
+/** Colonnes par nom d'en-tête ; ajoute à droite celles qui manquent. */
+function _entetesClasse(onglet) {
+  var larg = Math.max(onglet.getLastColumn(), 2);
+  var ligne1 = onglet.getRange(1, 1, 1, larg).getValues()[0];
+  var pos = {};
+  ligne1.forEach(function (v, i) { if (v) pos[String(v)] = i + 1; });
+  ENTETES_CLASSE.forEach(function (nom) {
+    if (!pos[nom]) {
+      larg += 1;
+      onglet.getRange(1, larg).setValue(nom).setFontWeight('bold');
+      pos[nom] = larg;
+    }
+  });
+  return pos;
+}
+
+function _aRapprocher(ss, l, eleve, valeurs) {
+  var f = ss.getSheetByName(ONGLET_A_RAPPROCHER);
+  var entetes = ['Mis à jour', 'Classe', 'NOM', 'Prénom', 'Équipe', 'Note /20', 'Niveau', 'Observation'];
+  if (!f) {
+    f = ss.insertSheet(ONGLET_A_RAPPROCHER);
+    f.appendRow(entetes);
+    f.getRange(1, 1, 1, entetes.length).setFontWeight('bold');
+    f.setFrozenRows(1);
+  }
+  var rangee = [valeurs['Mis à jour'], l.classe || '', eleve[0] || '', eleve[1] || '', l.code,
+                valeurs['Note /20'], valeurs['Niveau'], valeurs['Observation']];
+  // Une ligne par élève et par équipe, mise à jour à chaque envoi.
+  var der = f.getLastRow();
+  if (der > 1) {
+    var cles = f.getRange(2, 3, der - 1, 3).getValues();
+    for (var i = 0; i < cles.length; i++) {
+      if (_cle(cles[i][0]) === _cle(eleve[0]) && _cle(cles[i][1]) === _cle(eleve[1]) &&
+          String(cles[i][2]) === String(l.code)) {
+        f.getRange(i + 2, 1, 1, rangee.length).setValues([rangee]);
+        return;
+      }
+    }
+  }
+  f.appendRow(rangee);
+}
+
+/**
+ * Crée les onglets 4A à 4G dans le classeur des classes, avec leurs en-têtes.
+ * Ne touche pas à un onglet qui existe déjà : on peut le relancer sans risque.
+ * Il reste ensuite à coller les NOM (colonne A) et Prénom (colonne B).
+ */
+function preparerOngletsClasses() {
+  var ss = SpreadsheetApp.openById(CLASSEUR_CLASSES_ID);
+  var crees = [];
+  CLASSES.forEach(function (c) {
+    if (ss.getSheetByName(c)) return;
+    var f = ss.insertSheet(c);
+    f.getRange(1, 1, 1, ENTETES_CLASSE.length).setValues([ENTETES_CLASSE]).setFontWeight('bold');
+    f.setFrozenRows(1);
+    f.setColumnWidth(5, 520);
+    f.getRange('E:E').setWrap(true);
+    crees.push(c);
+  });
+  var vide = ss.getSheetByName('Feuille 1');
+  if (vide && vide.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(vide);
+  SpreadsheetApp.getUi().alert(crees.length
+    ? 'Onglets créés : ' + crees.join(', ') + '.\n\nCollez maintenant les NOM en colonne A et les Prénom en colonne B, à partir de la ligne 2.'
+    : 'Les 7 onglets existent déjà : rien n\'a été modifié.');
+}
+
 function _json(o) {
   return ContentService
     .createTextOutput(JSON.stringify(o))
@@ -228,6 +362,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('P11')
     .addItem('Reorganiser les colonnes', 'reorganiserColonnes')
+    .addItem('Preparer les onglets des classes (4A-4G)', 'preparerOngletsClasses')
     .addSeparator()
     .addItem('Tester l\'installation', 'testerInstallation')
     .addToUi();
