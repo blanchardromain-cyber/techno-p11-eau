@@ -179,6 +179,39 @@ au bon trait.
 Une cellule de tableur n'est pas faite pour cela — ils restent dans le dossier
 imprimé et dans l'export JSON de l'élève.
 
+## Le classeur des classes de 4e
+
+En plus de l'onglet `P11-S5` (le détail, une ligne par équipe), chaque envoi
+remplit la ligne de l'élève dans le classeur des classes :
+
+<https://docs.google.com/spreadsheets/d/1Wqz5lFJVBpaP2BWh42BC2MnbeQaxMcPuqMXaSq-KbBE/edit>
+
+| Colonne | Contenu |
+|---|---|
+| `NOM`, `Prénom` | collés par le professeur, à partir de la ligne 2 |
+| `Note /20`, `Niveau` | comme dans `P11-S5` |
+| `Observation` | remarques **sans aucune note** : « Réussi : … · À revoir : … · Non rendu : … · Conseil : … » |
+| `Équipe`, `Mis à jour` | code d'équipe et date du dernier envoi |
+
+Un binôme remplit les deux lignes. Un élève introuvable dans son onglet (faute
+de frappe, nom absent) part dans l'onglet **« À rapprocher »** : il suffit de
+corriger le nom dans la liste, le prochain envoi remplira la bonne ligne.
+Accents et majuscules sont ignorés dans la comparaison.
+
+**Mise en place, une seule fois :**
+
+1. coller le nouveau `Code.gs`, **Enregistrer**, recharger la page du classeur
+   `P11-S5` ;
+2. **P11 → Préparer les onglets des classes (4A-4G)** : Google redemande une
+   autorisation, cette fois pour ouvrir *un autre* classeur — l'accepter ;
+3. dans le classeur des classes, coller les **NOM** en colonne A et les
+   **Prénom** en colonne B de chaque onglet ;
+4. **redéployer** (Gérer les déploiements → ✏️ → Nouvelle version).
+
+L'étape 2 doit précéder l'étape 4 : c'est elle qui fait accepter la nouvelle
+autorisation, sans laquelle les envois des élèves ne pourraient pas écrire
+dans le classeur des classes.
+
 ## Croiser avec le travail en classe
 
 Ce classeur est **séparé** de la feuille « Travail en classe » : rien n'y est
