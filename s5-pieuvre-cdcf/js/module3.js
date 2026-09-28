@@ -143,13 +143,35 @@ var M3 = (function(){
       }
     });
 
-    // Kit de pièces
+    // Kit de pièces, rangé par familles. Chaque bouton montre la vignette de
+    // la pièce telle qu'elle apparaîtra sur l'établi.
     var kit = document.getElementById('m3-kit');
+    var onglets = document.getElementById('m3-familles');
     kit.innerHTML = '';
+    onglets.innerHTML = '';
+    P11DATA.KIT_FAMILLES.forEach(function(f, i){
+      var o = document.createElement('button');
+      o.type = 'button';
+      o.setAttribute('role', 'tab');
+      o.dataset.famille = f.id;
+      o.textContent = f.nom;
+      o.addEventListener('click', function(){ montrerFamille(f.id); });
+      onglets.appendChild(o);
+    });
+    function montrerFamille(id){
+      onglets.querySelectorAll('button').forEach(function(o){
+        o.setAttribute('aria-selected', o.dataset.famille === id ? 'true' : 'false');
+      });
+      kit.querySelectorAll('button').forEach(function(b){
+        b.hidden = b.dataset.famille !== id;
+      });
+    }
+
     P11DATA.KIT3D.forEach(function(k){
       var b = document.createElement('button');
       b.type = 'button';
-      b.innerHTML = '<span class="ico" aria-hidden="true">' + k.ico + '</span>' + P11.esc(k.nom);
+      b.dataset.famille = k.famille;
+      b.innerHTML = icone(k, 'ico') + P11.esc(k.nom);
       b.addEventListener('click', function(){
         if (!atelier.actif){ P11.signaler("L'atelier 3D n'est pas disponible sur ce poste."); return; }
         // Les pièces se posent en spirale pour ne pas s'empiler au centre.
@@ -161,6 +183,7 @@ var M3 = (function(){
       });
       kit.appendChild(b);
     });
+    montrerFamille(P11DATA.KIT_FAMILLES[0].id);
 
     document.getElementById('m3-pivoter').addEventListener('click', function(){
       if (!atelier.pivoter()) P11.signaler("Sélectionne d'abord une pièce dans la maquette.");
@@ -204,7 +227,7 @@ var M3 = (function(){
       var k = kitParId(p.kit) || { nom:p.kit, couleur:0x999999, ico:'▫' };
       return '<div class="part-row" data-p="' + P11.esc(p.id) + '" aria-current="false">' +
              '<span class="sw" style="background:#' + k.couleur.toString(16).padStart(6,'0') + '"></span>' +
-             '<span class="nm">' + k.ico + ' ' + P11.esc(k.nom) + '</span>' +
+             '<span class="nm">' + icone(k, 'mini') + ' ' + P11.esc(k.nom) + '</span>' +
              '<button class="del" type="button" title="Supprimer" aria-label="Supprimer ' + P11.esc(k.nom) + '">✕</button>' +
              '</div>';
     }).join('');
@@ -222,6 +245,19 @@ var M3 = (function(){
         });
       });
     });
+  }
+
+  /**
+   * Vignette de la pièce.
+   * Les images sont des rendus des modèles 3D, calculés une fois pour toutes
+   * (voir SCENE3D.atelier().vignettes et le README) plutôt qu'à chaque
+   * ouverture : les produire sur place bloquait la page deux à cinq secondes.
+   * Elles s'affichent aussi quand la 3D est indisponible.
+   */
+  function icone(k, classe){
+    return k.id
+      ? '<img class="' + classe + '" src="img/kit/' + k.id + '.png" alt="">'
+      : '<span class="' + classe + '" aria-hidden="true">' + k.ico + '</span>';
   }
 
   // Le panneau solaire s'appelait « solaire » avant d'être modélisé.
