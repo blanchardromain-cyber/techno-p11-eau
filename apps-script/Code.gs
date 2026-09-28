@@ -22,6 +22,11 @@ var SECRET_PARTAGE = 'P11-S5-RB-2026';
 // Onglet où sont écrits les résultats. Créé au premier envoi s'il n'existe pas.
 var NOM_FEUILLE = 'P11-S5';
 
+// Classeur du détail (onglet P11-S5), désigné par son identifiant : le script
+// y écrit quel que soit le classeur auquel il est attaché. Collé par erreur
+// dans le classeur des classes, il écrivait le détail au mauvais endroit.
+var CLASSEUR_DETAIL_ID = '1KM0b8t2JWtRS6dmB6K_qRlFj0paHwRGYAWRA7CSENDE';
+
 // Classeur des classes de 4e : un onglet par classe, peuplé à la main des
 // identités (NOM en colonne A, Prénom en colonne B, à partir de la ligne 2).
 // Chaque envoi y remplit la ligne de l'élève : note, niveau, observation.
@@ -139,7 +144,7 @@ function doGet(e) {
 // ============================================================================
 
 function _feuille() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(CLASSEUR_DETAIL_ID);
   var f = ss.getSheetByName(NOM_FEUILLE);
   if (!f) {
     f = ss.insertSheet(NOM_FEUILLE);
