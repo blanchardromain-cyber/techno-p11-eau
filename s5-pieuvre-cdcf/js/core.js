@@ -54,7 +54,12 @@ var P11 = (function(){
         aides: [],        // coups de pouce ouverts, pour information du professeur
         essais: 0,
         score: null,
-        detail: null
+        detail: null,
+        // Points de chaque ligne, fixés quand son corrigé s'affiche pour la
+        // première fois : 'objet' -> { 'rep' -> points }. Rangés par objet et
+        // conservés quand on change d'objet, sinon changer puis revenir
+        // remettrait les lignes à zéro après avoir vu le corrigé.
+        figees: {}
       },
       m3: {
         nom:'', probleme:'', principe:'',
