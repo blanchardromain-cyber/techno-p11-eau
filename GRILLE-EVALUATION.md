@@ -62,16 +62,18 @@ repères réellement tracés — `FP1`, `FC1`, `FC2`…
 schéma pour savoir quel trait porte quel numéro. C'est là que se fait le lien
 entre le dessin et l'énoncé, et c'est tout l'objet de l'exercice.
 
-**2 points par ligne**, lus dans ce seul choix :
+**2 points par ligne, tout ou rien** : la ligne est juste si le repère choisi
+désigne le trait de cette fonction — celui qui aboutit au bon élément du milieu
+extérieur. Sinon, 0.
 
-| Élément | Points | Ce qui est vérifié |
-|---|---:|---|
-| Type | 1 | le repère choisi est bien une FP là où il faut une FP |
-| Élément relié | 1 | le trait désigné aboutit au bon élément du milieu extérieur |
+Il n'y a pas de point pour le « bon type » seul. Cinq fonctions sur six sont des
+contraintes : n'importe quel `FC` aurait rapporté un point, et un tableau
+entièrement faux valait 4/12. Le type reste expliqué dans la remarque de la
+ligne (« Mauvais type… », « Bon type, mais pas le bon trait… »), sans compter
+dans la note.
 
-Les deux moitiés pèsent pareil parce qu'un seul choix les porte : se tromper
-de type et se tromper d'élément sont deux erreurs de même nature. Un repère
-attribué à deux fonctions différentes ne vaut que le point de type.
+Un repère attribué à deux fonctions n'est juste que pour l'une d'elles : chaque
+fonction a son propre élément. La ligne juste garde ses 2 points, l'autre vaut 0.
 
 | Énoncé | Type attendu | Trait attendu |
 |---|---|---|
