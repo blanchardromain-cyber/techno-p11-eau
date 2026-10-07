@@ -73,7 +73,7 @@
       la transformer, fabriquer la pièce, la transporter, puis la traiter en fin de vie. Seule son <b>utilisation</b> n'est pas comptée.
       <ul>
         <li><b>B1</b> : choisis le matériau que tu as retenu pour la turbine dans la Matériauthèque.</li>
-        <li><b>B3</b> et <b>C3</b> : recopie la <b>masse volumique</b> lue sur les cartes de la Matériauthèque.</li>
+        <li><b>B3</b> et <b>C3</b> : recopie la <b>masse volumique</b> donnée par la Matériauthèque, à l'étape 5 « Je justifie », dans l'encadré <b>« Masses volumiques »</b> sous le dessin de la turbine (ton matériau et le laiton). Elle figure aussi sur ta fiche PDF.</li>
         <li>Les cellules <b>🔒</b> sont fournies : le volume de la turbine et l'énergie grise de chaque matériau.</li>
       </ul>
     </div>
@@ -198,7 +198,7 @@ $('donBtn').addEventListener('click', function(){
     if (r==='') { msgs.push('<b>'+t[0]+'</b> : recopie la masse volumique de la carte « '+t[2]+' ».'); return; }
     if (Math.abs(v - t[1]) <= 0.02) { ok++; td.classList.add('ok'); return; }
     td.classList.add('ko');
-    msgs.push('<b>'+t[0]+'</b> : ce n\'est pas la masse volumique du matériau « '+t[2]+' ». Elle est écrite en g/cm³ sur sa carte, à l\'étape « Je trie ».');
+    msgs.push('<b>'+t[0]+'</b> : ce n\'est pas la masse volumique du matériau « '+t[2]+' ». Elle est écrite en g/cm³ dans l\'encadré « Masses volumiques » de l\'étape 5 de la Matériauthèque.');
   });
   if (ok === 2) afficher('don-msg', true, '🎉 Données justes. Les énergies grises (ligne 5) sont fournies : écris maintenant tes formules.');
   else afficher('don-msg', false, ok+'/2 donnée(s) juste(s).<ul><li>'+msgs.join('</li><li>')+'</li></ul>');
