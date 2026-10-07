@@ -16,6 +16,7 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 | `s5-pieuvre-cdcf/` | 5 | CT 2.1 | Pieuvre, cahier des charges et défi créatif (3 missions) |
 | `entrainement-tableur.html` | Avant l'éval. 1 | CT 5.1 | Entraînement non noté : lire une feuille, écrire et corriger des formules, recopier (club photo) |
 | `evaluation-1-tableur.html` | Éval. 1 | CT 5.1 | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
+| `energie-grise.html` | 8 | CT 4.5 | Calcule la masse et l'énergie grise de sa turbine (matériau choisi dans la Matériauthèque) et d'une turbine en laiton ; valeurs identiques à `materiautheque/data/materiaux.json` (contrôlé par `outils/controle-donnees.mjs`) |
 
 La séance 5 prolonge la fiche papier *P11 — S5 : Pieuvre et cahier des charges*.
 Elle reprend le même objet technique que la séance 3, le robinet automatique :
