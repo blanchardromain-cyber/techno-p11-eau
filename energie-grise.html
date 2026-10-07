@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Mini-tableur : l'énergie grise de la turbine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--ok:#1E8E5A;--ko:#C0392B;--grey:#6b7280}
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.5}
+  .wrap{max-width:860px;margin:0 auto;padding:22px 16px 60px}
+  header.band{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
+  header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
+  header.band h1{margin:6px 0 0;font-size:22px;font-weight:800}
+  header.band p{margin:6px 0 0;color:#dce8f8;font-size:14px}
+  .card{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px 22px;margin-top:18px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  h2{color:var(--blue);font-size:16px;margin:0 0 12px;border-bottom:2px solid var(--light);padding-bottom:8px}
+  label{display:block;font-weight:600;color:var(--navy);font-size:13px;margin:10px 0 4px}
+  select{padding:9px 11px;border:1px solid #cbd6e4;border-radius:9px;font-size:14px;font-family:inherit;min-width:220px}
+  .tscroll{overflow-x:auto}
+  table.ss{border-collapse:collapse;width:100%;margin-top:6px;font-size:14px;min-width:560px}
+  table.ss th,table.ss td{border:1px solid #c4d0e0;padding:0}
+  table.ss thead th{background:var(--navy);color:#fff;text-align:center;padding:6px;font-weight:700}
+  table.ss .rh{background:var(--lighter);color:var(--navy);text-align:center;font-weight:700;width:34px}
+  table.ss td.lbl{background:#f3f7fc;color:var(--navy);font-weight:600;padding:8px 10px}
+  table.ss td.cell{padding:0;position:relative;min-width:150px}
+  table.ss td.cell input{border:none;border-radius:0;width:100%;padding:8px 70px 8px 10px;background:transparent;font-size:14px;font-family:inherit}
+  table.ss td.cell input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--blue)}
+  td.data input{font-weight:700;color:#13633d;background:#eef7f1}
+  td.formula{background:#fffdf5}
+  td.fige{background:#EDF1F6}
+  td.fige input{color:#41506A;font-weight:700;cursor:default}
+  .chip{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--lighter);color:var(--navy);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;pointer-events:none}
+  .chip.lock{background:#CBD5E1;color:#334155}
+  td.ok{box-shadow:inset 0 0 0 2px var(--ok)}
+  td.ko{box-shadow:inset 0 0 0 2px var(--ko)}
+  .help{background:var(--lighter);border-left:5px solid var(--blue);padding:11px 13px;border-radius:8px;font-size:13.5px;color:var(--navy);margin-top:12px}
+  .help ul{margin:6px 0 0 18px;padding:0}
+  .aide{background:#FFF8E7;border:1px solid #F0D089;border-radius:10px;padding:11px 14px;margin-top:14px}
+  .aide .at{font-size:13px;font-weight:700;color:#8A5A00;margin-bottom:8px}
+  .aide-bts{display:flex;gap:7px;flex-wrap:wrap}
+  .aidebt{background:#fff;border:2px solid #E0B65C;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:700;color:#8A5A00}
+  .aidebt.used{background:#F5E2B8;border-color:#C79A34}
+  .aide-msg{margin-top:9px;font-size:13px;color:#6B4A00}
+  .aide-msg .cran{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;color:#A87400;display:block;margin-bottom:2px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin:14px 8px 0 0}
+  .btn.pt{padding:8px 14px;font-size:13.5px;margin-top:10px}
+  .msg{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;display:none}
+  .msg.ok{background:#e7f6ee;color:#13633d;border-left:5px solid var(--ok);display:block}
+  .msg.ko{background:#fbeae8;color:#8e2018;border-left:5px solid var(--ko);display:block}
+  .msg ul{margin:6px 0 0 18px;padding:0}
+  .bilan{background:#fff;border:2px solid var(--ok);border-radius:12px;padding:12px 16px;margin-top:14px;display:none}
+  .bilan.vu{display:block}
+  .footer{color:var(--grey);font-size:11px;text-align:center;margin-top:26px}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="band">
+    <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ &nbsp;|&nbsp; P11 — L'eau, ressource essentielle</div>
+    <h1>Mini-tableur — L'énergie grise de la turbine</h1>
+    <p>Activité 8 — Ta turbine coûte-t-elle plus ou moins d'énergie à fabriquer qu'une turbine en laiton ?</p>
+  </header>
+
+  <section class="card">
+    <h2>1 — Les données</h2>
+    <div class="help">
+      L'<b>énergie grise</b>, c'est toute l'énergie qu'il faut pour qu'une pièce existe : extraire la matière première,
+      la transformer, fabriquer la pièce, la transporter, puis la traiter en fin de vie. Seule son <b>utilisation</b> n'est pas comptée.
+      <ul>
+        <li><b>B1</b> : choisis le matériau que tu as retenu pour la turbine dans la Matériauthèque.</li>
+        <li><b>B3</b> et <b>C3</b> : recopie la <b>masse volumique</b> lue sur les cartes de la Matériauthèque.</li>
+        <li>Les cellules <b>🔒</b> sont fournies : le volume de la turbine et l'énergie grise de chaque matériau.</li>
+      </ul>
+    </div>
+    <label for="B1">B1 — Mon matériau pour la turbine</label>
+    <select id="B1"><option value="" selected disabled>Choisir…</option></select>
+    <div class="tscroll">
+    <table class="ss">
+      <thead><tr><th class="rh"></th><th style="width:44%">A</th><th>B</th><th>C</th></tr></thead>
+      <tbody>
+        <tr><td class="rh">1</td><td class="lbl">Matériau de la turbine</td><td class="lbl" id="nomB">ma turbine</td><td class="lbl">Laiton</td></tr>
+        <tr><td class="rh">2</td><td class="lbl">Volume de la turbine (cm³)</td>
+          <td class="cell fige"><input id="B2" value="8" readonly tabindex="-1"><span class="chip lock">🔒</span></td>
+          <td class="cell fige"><input id="C2" value="8" readonly tabindex="-1"><span class="chip lock">🔒</span></td></tr>
+        <tr><td class="rh">3</td><td class="lbl">Masse volumique (g/cm³)</td>
+          <td class="cell data" id="td-B3"><input id="B3" placeholder="sur la carte" inputmode="decimal"></td>
+          <td class="cell data" id="td-C3"><input id="C3" placeholder="sur la carte" inputmode="decimal"></td></tr>
+        <tr><td class="rh">4</td><td class="lbl">Masse de la turbine (g)</td>
+          <td class="cell formula" id="td-B4"><input id="B4" placeholder="= …"><span class="chip" id="cB4"></span></td>
+          <td class="cell formula" id="td-C4"><input id="C4" placeholder="= …"><span class="chip" id="cC4"></span></td></tr>
+        <tr><td class="rh">5</td><td class="lbl">Énergie grise du matériau (kJ par gramme)</td>
+          <td class="cell fige"><input id="B5" readonly tabindex="-1" placeholder="—"><span class="chip lock">🔒</span></td>
+          <td class="cell fige"><input id="C5" readonly tabindex="-1"><span class="chip lock">🔒</span></td></tr>
+        <tr><td class="rh">6</td><td class="lbl">Énergie grise de la turbine (kJ)</td>
+          <td class="cell formula" id="td-B6"><input id="B6" placeholder="= …"><span class="chip" id="cB6"></span></td>
+          <td class="cell formula" id="td-C6"><input id="C6" placeholder="= …"><span class="chip" id="cC6"></span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <button class="btn pt" id="donBtn">Vérifier mes données</button>
+    <div class="msg" id="don-msg"></div>
+  </section>
+
+  <section class="card">
+    <h2>2 — Les formules (B4, C4, B6 et C6)</h2>
+    <div class="help">Comme pour la facture d'eau : une formule commence par <b>=</b> et utilise les <b>références</b> des cellules (B2, B3…), pas les nombres recopiés.</div>
+    <div class="aide">
+      <div class="at">💡 Coup de pouce — clique sur la cellule qui te bloque</div>
+      <div class="aide-bts">
+        <button type="button" class="aidebt" id="aide-B4" data-aide="B4">B4</button>
+        <button type="button" class="aidebt" id="aide-B6" data-aide="B6">B6</button>
+      </div>
+      <div class="aide-msg" id="aide-msg">Un 1<sup>er</sup> clic explique la ligne avec des mots, un 2<sup>e</sup> dit quelles cellules interviennent. La colonne C se calcule de la même façon que la colonne B.</div>
+    </div>
+    <button class="btn" id="checkBtn">Vérifier mes formules</button>
+    <div class="msg" id="msg"></div>
+    <div class="bilan" id="bilan"></div>
+  </section>
+
+  <div class="footer">Collège Saint Pierre – Les Essarts · P11 · Activité 8 · Énergie grise (ordres de grandeur, d'après les bases de données d'enseignement des matériaux)</div>
+</div>
+
+<script>
+/* Énergie grise : ordres de grandeur pour un matériau neuf, en kJ par gramme (= MJ par kg).
+   Mêmes valeurs que data/materiaux.json de la Matériauthèque, champ energieGrise (à valider). */
+var MATERIAUX = {
+  pom:{nom:"POM (polyacétal)", rho:1.39, eg:90}, abs:{nom:"ABS", rho:1.04, eg:95},
+  pmma:{nom:"PMMA (plexiglas)", rho:1.19, eg:100}, pp:{nom:"PP (polypropylène)", rho:0.91, eg:75},
+  pehd:{nom:"PE-HD (polyéthylène)", rho:0.95, eg:80}, pa6:{nom:"PA (nylon)", rho:1.13, eg:120},
+  pla:{nom:"PLA", rho:1.24, eg:50}, alu:{nom:"Aluminium", rho:2.7, eg:200}, inox:{nom:"Inox", rho:7.9, eg:60},
+  acier:{nom:"Acier", rho:7.85, eg:25}, cuivre:{nom:"Cuivre", rho:8.96, eg:60}
+};
+var LAITON = {rho:8.5, eg:40};
+var FORMULES = ['B4','C4','B6','C6'];
+var CELLULES = {B4:['B2','B3'], C4:['C2','C3'], B6:['B4','B5'], C6:['C4','C5']};
+var AIDE = {
+  B4:["La masse d'une pièce, c'est son volume multiplié par la masse d'un centimètre cube de son matériau.",
+      "Deux cellules interviennent : <b>B2</b> et <b>B3</b>."],
+  B6:["Chaque gramme de matériau a demandé une certaine énergie. Pour toute la turbine, on la compte autant de fois qu'il y a de grammes.",
+      "Deux cellules interviennent : <b>B4</b> et <b>B5</b>."]
+};
+var AIDES = {B4:0, B6:0};
+
+function $(id){ return document.getElementById(id); }
+var sel = $('B1');
+Object.keys(MATERIAUX).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=MATERIAUX[k].nom; sel.appendChild(o); });
+$('C5').value = String(LAITON.eg);
+
+function raw(ref){ var e=$(ref); return e ? e.value.trim().replace(',', '.') : ''; }
+function valeur(ref, cache, pile){
+  if (Object.prototype.hasOwnProperty.call(cache, ref)) return cache[ref];
+  var r = raw(ref);
+  if (r === '') return NaN;
+  if (r.charAt(0) === '=') {
+    if (pile.indexOf(ref) >= 0) return NaN;
+    pile.push(ref);
+    var mauvais = false;
+    var expr = r.slice(1).toUpperCase().replace(/[BC][0-9]+/g, function(m){ var v=valeur(m, cache, pile); if (isNaN(v)) { mauvais=true; return '(0)'; } return '('+v+')'; });
+    pile.pop();
+    var res = NaN;
+    if (!mauvais && /^[-+*/(). 0-9]+$/.test(expr)) { try { var x=Function('return ('+expr+')')(); if (typeof x==='number' && isFinite(x)) res=x; } catch(e) {} }
+    cache[ref]=res; return res;
+  }
+  var n=parseFloat(r); cache[ref]=isNaN(n)?NaN:n; return cache[ref];
+}
+function fmt(x, d){ return isNaN(x) ? '?' : x.toLocaleString('fr-FR', {maximumFractionDigits: d === undefined ? 1 : d}); }
+function recalculer(){
+  var m = MATERIAUX[sel.value];
+  $('B5').value = m ? String(m.eg) : '';
+  $('nomB').textContent = m ? m.nom : 'ma turbine';
+  var cache = {};
+  FORMULES.forEach(function(ref){
+    var chip=$('c'+ref);
+    if (raw(ref)==='') { chip.textContent=''; return; }
+    var v=valeur(ref, cache, []);
+    chip.textContent = isNaN(v) ? '?' : fmt(v) + (ref.charAt(1)==='4' ? ' g' : ' kJ');
+  });
+}
+document.querySelectorAll('table.ss input, #B1').forEach(function(el){
+  el.addEventListener('input', function(){ recalculer(); var td=this.parentNode; if (td && td.classList) td.classList.remove('ok','ko'); $('bilan').classList.remove('vu'); });
+  el.addEventListener('change', recalculer);
+});
+recalculer();
+
+function afficher(id, ok, html){ var b=$(id); b.className='msg '+(ok?'ok':'ko'); b.innerHTML=html; }
+
+$('donBtn').addEventListener('click', function(){
+  var m = MATERIAUX[sel.value], msgs=[], ok=0;
+  ['B3','C3'].forEach(function(r){ $('td-'+r).classList.remove('ok','ko'); });
+  if (!m) { afficher('don-msg', false, "Choisis d'abord ton matériau en <b>B1</b>."); return; }
+  [['B3', m.rho, m.nom], ['C3', LAITON.rho, 'Laiton']].forEach(function(t){
+    var r=raw(t[0]), v=parseFloat(r), td=$('td-'+t[0]);
+    if (r==='') { msgs.push('<b>'+t[0]+'</b> : recopie la masse volumique de la carte « '+t[2]+' ».'); return; }
+    if (Math.abs(v - t[1]) <= 0.02) { ok++; td.classList.add('ok'); return; }
+    td.classList.add('ko');
+    msgs.push('<b>'+t[0]+'</b> : ce n\'est pas la masse volumique du matériau « '+t[2]+' ». Elle est écrite en g/cm³ sur sa carte, à l\'étape « Je trie ».');
+  });
+  if (ok === 2) afficher('don-msg', true, '🎉 Données justes. Les énergies grises (ligne 5) sont fournies : écris maintenant tes formules.');
+  else afficher('don-msg', false, ok+'/2 donnée(s) juste(s).<ul><li>'+msgs.join('</li><li>')+'</li></ul>');
+});
+
+function coupDePouce(ref){
+  if (AIDES[ref] < 2) AIDES[ref]++;
+  $('aide-'+ref).classList.add('used');
+  $('aide-msg').innerHTML = '<span class="cran">'+ref+' — coup de pouce '+AIDES[ref]+'/2</span>'+AIDE[ref][AIDES[ref]-1];
+}
+document.querySelectorAll('[data-aide]').forEach(function(b){ b.addEventListener('click', function(){ coupDePouce(b.dataset.aide); }); });
+
+function attendu(){
+  var m = MATERIAUX[sel.value];
+  var b4 = 8 * parseFloat(raw('B3')), c4 = 8 * parseFloat(raw('C3'));
+  return { B4: b4, C4: c4, B6: b4 * (m ? m.eg : NaN), C6: c4 * LAITON.eg };
+}
+function diagnostic(ref, r, exp){
+  if (r.charAt(0) !== '=') return /^[-+*/(). 0-9]+$/.test(r) ? "tu as tapé le résultat à la main : écris une <b>formule</b>, qui commence par <b>=</b>." : "il manque le signe <b>=</b> au début.";
+  var refs = (r.toUpperCase().match(/[BC][0-9]+/g) || []);
+  if (!refs.length) return "la formule ne renvoie à aucune cellule : utilise les références (B2, B3…).";
+  if (refs.slice().sort().join() === CELLULES[ref].slice().sort().join()) return "les cellules sont les bonnes, mais pas l'opération.";
+  var col = ref.charAt(0);
+  if (refs.some(function(x){ return x.charAt(0) !== col; })) return "la colonne " + col + " doit utiliser les cellules de la colonne " + col + ".";
+  return "relis le libellé de la ligne : il dit quelles valeurs combiner.";
+}
+$('checkBtn').addEventListener('click', function(){
+  var m = MATERIAUX[sel.value];
+  if (!m || isNaN(parseFloat(raw('B3'))) || isNaN(parseFloat(raw('C3')))) { afficher('msg', false, "Complète et vérifie d'abord les données (B1, B3, C3)."); return; }
+  var exp = attendu(), cache = {}, ok = 0, details = [];
+  FORMULES.forEach(function(ref){
+    var td=$('td-'+ref); td.classList.remove('ok','ko');
+    var r = raw(ref);
+    if (r==='') { details.push('<b>'+ref+'</b> : encore vide.'); return; }
+    var v = valeur(ref, cache, []);
+    if (r.charAt(0)==='=' && !isNaN(v) && Math.abs(v - exp[ref]) < 0.5) { ok++; td.classList.add('ok'); }
+    else { td.classList.add('ko'); details.push('<b>'+ref+'</b> : '+diagnostic(ref, r, exp)); }
+  });
+  if (ok < 4) { afficher('msg', false, ok+'/4 formule(s) juste(s).<ul><li>'+details.join('</li><li>')+'</li></ul>'); return; }
+  afficher('msg', true, '🎉 Les 4 formules sont justes.');
+  var rapport = exp.C6 / exp.B6;
+  var parKilo = LAITON.eg < m.eg;
+  $('bilan').innerHTML = '<b>À reporter sur ta fiche :</b><ul>' +
+    '<li>Turbine en '+m.nom+' : <b>'+fmt(exp.B4)+' g</b> et <b>'+fmt(exp.B6, 0)+' kJ</b>.</li>' +
+    '<li>Turbine en laiton : <b>'+fmt(exp.C4)+' g</b> et <b>'+fmt(exp.C6, 0)+' kJ</b>.</li>' +
+    '<li>' + (rapport >= 1
+      ? 'La turbine en laiton demande environ <b>'+fmt(rapport)+' fois plus</b> d\'énergie grise que la tienne'
+      : 'Ta turbine demande environ <b>'+fmt(1 / rapport)+' fois plus</b> d\'énergie grise que la turbine en laiton') + '.</li></ul>' +
+    (parKilo && rapport >= 1 ? '<p>Remarque : par gramme, le laiton demande <b>moins</b> d\'énergie que ton matériau (ligne 5)… mais la turbine en laiton est bien plus <b>lourde</b>. On compare donc l\'énergie grise <b>de la pièce</b>, pas seulement celle du matériau.</p>' : '');
+  $('bilan').classList.add('vu');
+});
+</script>
+</body>
+</html>
