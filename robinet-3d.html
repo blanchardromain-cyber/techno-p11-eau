@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Activité 7 : le robinet qui se recharge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--grey:#5b6472;
+    /* Couleurs des flux : chacune double une FORME (cube, cône, anneau, losange, goutte),
+       la couleur n'est jamais seule à porter l'information. */
+    --info:#1d4ed8;--hydro:#c2410c;--meca:#a16207;--elec:#b91c1c;--eau:#0891b2;
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#f4f7fb;color:#1f2430;line-height:1.45}
+  .wrap{max-width:1280px;margin:0 auto;padding:16px 16px 40px}
+  header.band{background:var(--navy);color:#fff;border-radius:14px;padding:14px 20px;box-shadow:0 6px 18px rgba(31,56,100,.18)}
+  header.band .k{font-size:12px;letter-spacing:.04em;color:#bcd2ee;font-weight:600}
+  header.band h1{margin:4px 0 0;font-size:22px;font-weight:800}
+  header.band p{margin:4px 0 0;color:#dce8f8;font-size:16px;font-style:italic}
+  .grille{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:14px}
+  @media (max-width:900px){.grille{grid-template-columns:1fr} .scene{height:52vh;min-height:320px}}
+
+  /* ---- Scène ---- */
+  .scene{position:relative;background:linear-gradient(#dfe8f1,#b9c9da);border:1px solid #d5e0ec;border-radius:14px;
+         overflow:hidden;height:min(68vh,640px);min-height:380px;touch-action:none}
+  .scene canvas{display:block;width:100%;height:100%;cursor:grab}
+  .scene canvas:active{cursor:grabbing}
+  .badge{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;
+         background:#fff;border:2px solid var(--navy);color:var(--navy);border-radius:999px;
+         font:800 16px/1 Inter,Arial,sans-serif;padding:0;min-width:32px;height:32px;justify-content:center;
+         cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.18);white-space:nowrap;z-index:2}
+  .badge .n{display:inline-flex;width:28px;justify-content:center}
+  .badge .nom{display:none;font-weight:700;font-size:14px;padding-right:12px}
+  body.correction .badge .nom{display:inline}
+  .badge.actif{background:#FFF3C4;border-color:#8A5A00;color:#5a3b00;outline:3px solid #F0B429}
+  .badge.choisi{background:var(--navy);color:#fff}
+  .badge:focus-visible{outline:3px solid #F0B429;outline-offset:2px}
+  .badge.cache{display:none}
+  .aide-geste{position:absolute;left:12px;bottom:10px;font-size:13px;color:var(--grey);background:rgba(255,255,255,.85);
+              padding:4px 10px;border-radius:8px;pointer-events:none}
+  .outils-scene{position:absolute;right:10px;top:10px;display:flex;gap:6px;z-index:3}
+  .mini{background:#fff;border:1px solid #c4d0e0;border-radius:8px;padding:6px 10px;font:600 13px Inter,Arial;color:var(--navy);cursor:pointer}
+  .mini:hover{border-color:var(--blue)}
+  .alerte{position:absolute;inset:auto 12px 12px 12px;background:#FFF8E7;border:1px solid #F0D089;color:#6b4a00;
+          border-radius:10px;padding:8px 12px;font-size:14px;z-index:3}
+
+  /* ---- Panneau ---- */
+  .panneau{display:flex;flex-direction:column;gap:12px}
+  .carte{background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:14px 16px;box-shadow:0 2px 8px rgba(31,56,100,.06)}
+  .carte h2{color:var(--blue);font-size:15px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.03em}
+  .seg{display:flex;border:1px solid #c4d0e0;border-radius:10px;overflow:hidden}
+  .seg button{flex:1;border:0;background:#fff;padding:9px 6px;font:700 15px Inter,Arial;color:var(--navy);cursor:pointer}
+  .seg button+button{border-left:1px solid #c4d0e0}
+  .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+  .ligne{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .bt{border:2px solid var(--blue);background:#fff;color:var(--navy);border-radius:10px;padding:8px 12px;
+      font:700 16px Inter,Arial;cursor:pointer;min-width:44px;min-height:44px}
+  .bt:hover{background:var(--lighter)}
+  .bt.plein{background:var(--blue);color:#fff}
+  .bt:disabled{opacity:.4;cursor:default}
+  .bt:focus-visible,.seg button:focus-visible,.calque:focus-visible,.mini:focus-visible{outline:3px solid #F0B429;outline-offset:2px}
+  .compteur{font-weight:800;color:var(--navy);font-size:17px;min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
+  .points{display:flex;gap:6px;justify-content:center;margin-top:8px}
+  .points span{width:28px;height:8px;border-radius:4px;background:#d5e0ec}
+  .points span.fait{background:var(--blue)}
+  .legende{min-height:96px;background:var(--lighter);border-left:5px solid var(--blue);border-radius:8px;padding:10px 12px;
+           font-size:16px;color:#14213d;margin-top:10px}
+  .legende b{color:var(--navy)}
+  .calques{display:grid;gap:6px}
+  .calque{display:flex;align-items:center;gap:10px;border:1px solid #d5e0ec;background:#fff;border-radius:10px;padding:8px 10px;
+          font:600 15px Inter,Arial;color:#1f2430;cursor:pointer;text-align:left}
+  .calque[aria-pressed="false"]{opacity:.5;background:#f3f5f8}
+  .calque[aria-pressed="false"] .etat::after{content:"masqué"}
+  .calque[aria-pressed="true"] .etat::after{content:"affiché"}
+  .calque .etat{margin-left:auto;font-size:12px;color:var(--grey);font-weight:600}
+  .sym{display:inline-flex;gap:3px;align-items:center}
+  .sym svg{display:block}
+  .formes{font-size:13px;color:var(--grey);margin:6px 0 0 4px;display:grid;gap:3px}
+  .formes div{display:flex;align-items:center;gap:8px}
+  .fiche-el{font-size:15px}
+  .fiche-el .titre{font-weight:800;color:var(--navy);font-size:17px;margin-bottom:4px}
+  .fiche-el .verbe{display:inline-block;background:#d9d9d9;color:#000;border-radius:6px;padding:1px 8px;font-weight:700;letter-spacing:.03em}
+  .fiche-el .vide{color:var(--grey);font-style:italic}
+  .note-prof{font-size:12.5px;color:var(--grey);margin-top:8px}
+  .footer{color:var(--grey);font-size:12px;text-align:center;margin-top:18px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+  /* ---- Repli 2D (schéma SVG) ---- */
+  .schema2d{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:8px}
+  .schema2d svg{width:100%;height:100%}
+  .schema2d .comp{cursor:pointer}
+  .schema2d .comp rect,.schema2d .comp circle.corps{fill:#fff;stroke:#1F3864;stroke-width:2}
+  .schema2d .comp.actif rect,.schema2d .comp.actif circle.corps{fill:#FFF3C4;stroke:#8A5A00;stroke-width:4}
+  .schema2d .num{font:800 16px Inter,Arial;fill:#1F3864}
+  .schema2d .nom2d{font:700 15px Inter,Arial;fill:#1F3864;display:none}
+  body.correction .schema2d .nom2d{display:inline}
+  .schema2d .flux{fill:none;stroke-width:4;opacity:0}
+  .schema2d .flux.on{opacity:1}
+  .schema2d .f-info{stroke:var(--info);stroke-dasharray:3 7;stroke-linecap:round}
+  .schema2d .f-hydro{stroke:var(--hydro)}
+  .schema2d .f-meca{stroke:var(--meca);stroke-dasharray:12 4 2 4}
+  .schema2d .f-elec{stroke:var(--elec);stroke-dasharray:10 5}
+  .schema2d .f-eau{stroke:var(--eau);stroke-width:7;opacity:0}
+  .schema2d .f-eau.on{opacity:.55}
+  .schema2d .flux.on{animation:defile 1.2s linear infinite}
+  @keyframes defile{to{stroke-dashoffset:-20}}
+  @media (prefers-reduced-motion:reduce){.schema2d .flux.on{animation:none}}
+  .masque-info .f-info,.masque-energie .f-hydro,.masque-energie .f-meca,.masque-energie .f-elec,.masque-eau .f-eau{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="band">
+    <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ · P11 — L'eau, ressource essentielle · Activité 7</div>
+    <h1>Flux d'énergie et d'information — le robinet automatique</h1>
+    <p>Comment ce robinet peut-il fonctionner sans pile ni prise ?</p>
+  </header>
+
+  <div class="grille">
+    <section class="scene" id="scene" aria-label="Maquette 3D du robinet automatique. Fais-la tourner en glissant ; clique sur un numéro pour l'observer.">
+      <div class="outils-scene">
+        <button class="mini" id="btRecadrer" type="button" title="Revenir à la vue de départ">⟲ Vue</button>
+        <button class="mini" id="btPleinEcran" type="button" title="Plein écran (vidéoprojection)">⛶ Plein écran</button>
+      </div>
+      <div class="aide-geste" id="aideGeste">Glisse pour tourner · molette ou pincement pour zoomer · clique sur un numéro</div>
+    </section>
+
+    <aside class="panneau">
+      <div class="carte">
+        <h2>Mode</h2>
+        <div class="seg" role="group" aria-label="Mode d'affichage">
+          <button type="button" id="modeEnquete" aria-pressed="true">🔍 Enquête</button>
+          <button type="button" id="modeCorrection" aria-pressed="false">✔ Correction</button>
+        </div>
+        <div class="seg" role="group" aria-label="Vue de la maquette" style="margin-top:8px">
+          <button type="button" id="vueAssemble" aria-pressed="true">Robinet fermé</button>
+          <button type="button" id="vueEclate" aria-pressed="false">Vue éclatée</button>
+        </div>
+      </div>
+
+      <div class="carte">
+        <h2>Pas à pas</h2>
+        <div class="ligne" style="justify-content:space-between">
+          <button class="bt" id="btPrec" type="button" aria-label="Étape précédente">◀</button>
+          <span class="compteur" id="compteur" aria-live="polite">Au repos</span>
+          <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante">▶</button>
+        </div>
+        <div class="points" id="points" aria-hidden="true"></div>
+        <div class="ligne" style="margin-top:8px;justify-content:center">
+          <button class="bt plein" id="btLecture" type="button">⏵ Lecture</button>
+          <button class="bt" id="btZero" type="button">↺ Recommencer</button>
+        </div>
+        <div class="legende" id="legende" aria-live="polite"></div>
+      </div>
+
+      <div class="carte">
+        <h2>Calques</h2>
+        <div class="calques">
+          <button type="button" class="calque" id="cqInfo" aria-pressed="true">
+            <span class="sym"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="5" y="5" width="12" height="12" fill="#1d4ed8"/></svg></span>
+            Flux d'information <span class="etat"></span></button>
+          <button type="button" class="calque" id="cqEnergie" aria-pressed="true">
+            <span class="sym"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L19 11 L11 19 L3 11Z" fill="#b91c1c"/></svg></span>
+            Flux d'énergie <span class="etat"></span></button>
+          <button type="button" class="calque" id="cqEau" aria-pressed="true">
+            <span class="sym"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="#0891b2" fill-opacity=".7"/></svg></span>
+            Eau <span class="etat"></span></button>
+        </div>
+        <div class="formes" aria-label="Légende des formes">
+          <div><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><rect x="5" y="5" width="12" height="12" fill="#1d4ed8"/></svg> cube bleu : information</div>
+          <div><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 18 L11 3 L18 18Z" fill="#c2410c"/></svg> cône orange : énergie hydraulique (eau sous pression)</div>
+          <div><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="#a16207" stroke-width="3.5"/></svg> anneau ocre : énergie mécanique (rotation)</div>
+          <div><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 3 L19 11 L11 19 L3 11Z" fill="#b91c1c"/></svg> losange rouge : énergie électrique</div>
+          <div><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="#0891b2" fill-opacity=".7"/></svg> goutte cyan : eau</div>
+        </div>
+      </div>
+
+      <div class="carte">
+        <h2>Élément observé</h2>
+        <div class="fiche-el" id="ficheEl"><span class="vide">Clique sur un numéro de la maquette.</span></div>
+      </div>
+    </aside>
+  </div>
+  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 7 · Aucune donnée n'est enregistrée ni envoyée.</div>
+  <div class="sr" id="annonce" aria-live="assertive"></div>
+</div>
+
+<script>
+/* ==========================================================================
+   P11 · Activité 7 — Flux d'énergie et d'information du robinet automatique
+   --------------------------------------------------------------------------
+   Modèle validé par le professeur (08/10/2026), identique à la capsule A6 :
+     Chaîne d'information : ACQUÉRIR = capteur infrarouge ; TRAITER = carte
+       électronique ; COMMUNIQUER = voyant.
+     Chaîne d'énergie : ALIMENTER = tuyauterie ; DISTRIBUER = électrovanne ;
+       CONVERTIR = turbine / générateur ; TRANSMETTRE = fils électriques.
+     La micro-batterie n'est un bloc d'aucune chaîne : elle stocke l'énergie
+     produite et alimente le capteur, la carte, le voyant et l'électrovanne
+     (la boucle de recharge).
+   Toute modification de ces termes se reporte dans la fiche, le corrigé et le
+   déroulé (sources : P11/P11_activite_7/_sources).
+
+   Deux vues partagent la même interface : la maquette 3D (three.js, CDN) et
+   un schéma SVG de repli, utilisé quand le réseau bloque le CDN, quand WebGL
+   manque, ou avec ?no3d dans l'adresse.
+   ========================================================================== */
+
+/* ---- Données partagées : repères numérotés dans l'ordre spatial (haut → bas),
+        pas dans l'ordre des chaînes, pour ne pas souffler la réponse. -------- */
+var COMPOSANTS = {
+  1:{ nom:"Capteur infrarouge", chaine:"information", verbe:"ACQUÉRIR",
+      fonction:"Il détecte la présence des mains sous le bec.",
+      indice:"Il est placé sous le bec, tourné vers les mains. Observe-le à l'étape 1." },
+  2:{ nom:"Voyant", chaine:"information", verbe:"COMMUNIQUER",
+      fonction:"Il s'allume : il informe l'utilisateur que ses mains sont détectées.",
+      indice:"Observe-le à l'étape 3 : quand change-t-il ? À qui s'adresse-t-il ?" },
+  3:{ nom:"Carte électronique (microcontrôleur)", chaine:"information", verbe:"TRAITER",
+      fonction:"Elle reçoit l'information du capteur et décide d'ouvrir ou de fermer l'eau.",
+      indice:"Une plaque couverte de composants électroniques. Observe les flux bleus qui y arrivent et en repartent (étapes 1 et 2)." },
+  4:{ nom:"Micro-batterie", chaine:"aucune", verbe:"—",
+      fonction:"Elle stocke l'électricité produite, puis alimente le capteur, la carte, le voyant et l'électrovanne. Ce n'est un bloc d'aucune des deux chaînes : c'est elle qui ferme la boucle de recharge.",
+      indice:"Observe-la à l'étape 6 : que reçoit-elle ? que donne-t-elle ensuite ?" },
+  5:{ nom:"Turbine / générateur", chaine:"énergie", verbe:"CONVERTIR",
+      fonction:"L'eau fait tourner la turbine, liée mécaniquement au générateur : l'énergie hydraulique devient énergie électrique.",
+      indice:"Deux pièces montées sur le même axe. Observe-les à l'étape 5 : quelle énergie entre ? laquelle sort ?" },
+  6:{ nom:"Électrovanne", chaine:"énergie", verbe:"DISTRIBUER",
+      fonction:"Elle s'ouvre ou se ferme : elle laisse passer ou bloque l'eau sous pression, donc son énergie.",
+      indice:"Observe-la à l'étape 4 : que fait-elle pour l'eau ?" },
+  7:{ nom:"Tuyauterie", chaine:"énergie", verbe:"ALIMENTER",
+      fonction:"Elle amène l'eau sous pression du réseau : c'est par elle que l'énergie entre dans le robinet.",
+      indice:"Par où l'eau arrive-t-elle dans le robinet ? Observe l'étape 4." },
+  8:{ nom:"Fils électriques", chaine:"énergie", verbe:"TRANSMETTRE",
+      fonction:"Ils acheminent l'électricité produite par le générateur jusqu'à la micro-batterie.",
+      indice:"Observe-les à l'étape 6 : que transportent-ils, et vers où ?" }
+};
+
+var ETAPES = [
+  { actifs:[], enquete:"Le robinet est au repos. Avance étape par étape avec ▶, ou lance la lecture.",
+    correction:"Le robinet est au repos : aucune main, l'électrovanne est fermée, l'eau ne coule pas." },
+  { actifs:[1], enquete:"<b>Étape 1.</b> Des mains s'approchent sous le bec. Quel élément réagit en premier ? Note son numéro.",
+    correction:"<b>Étape 1 — ACQUÉRIR.</b> Le <b>capteur infrarouge ①</b> détecte les mains. L'information part vers la carte." },
+  { actifs:[3], enquete:"<b>Étape 2.</b> Suis les cubes bleus : vers quel élément l'information arrive-t-elle ? Que décide cet élément ?",
+    correction:"<b>Étape 2 — TRAITER.</b> La <b>carte électronique ③</b> traite l'information : elle décide d'ouvrir l'eau." },
+  { actifs:[2], enquete:"<b>Étape 3.</b> Un élément s'allume. Lequel ? À qui donne-t-il une information ?",
+    correction:"<b>Étape 3 — COMMUNIQUER.</b> Le <b>voyant ②</b> s'allume : il informe l'utilisateur." },
+  { actifs:[7,6], enquete:"<b>Étape 4.</b> L'eau arrive. Par quel élément entre-t-elle ? Quel élément s'ouvre pour la laisser passer ?",
+    correction:"<b>Étape 4 — ALIMENTER puis DISTRIBUER.</b> L'eau sous pression arrive par la <b>tuyauterie ⑦</b> ; l'<b>électrovanne ⑥</b> s'ouvre et la laisse passer." },
+  { actifs:[5], enquete:"<b>Étape 5.</b> L'eau traverse un élément qui se met à tourner. Quelle forme d'énergie y entre ? Laquelle en sort ? (regarde la légende des formes)",
+    correction:"<b>Étape 5 — CONVERTIR.</b> L'eau fait tourner la turbine, liée au générateur ⑤ : l'énergie <b>hydraulique</b> devient énergie <b>électrique</b>." },
+  { actifs:[8,4], enquete:"<b>Étape 6.</b> Suis les losanges rouges. Où l'électricité est-elle stockée ? Vers quels éléments repart-elle ensuite ?",
+    correction:"<b>Étape 6 — TRANSMETTRE.</b> Les <b>fils électriques ⑧</b> amènent l'électricité à la <b>micro-batterie ④</b>, qui se recharge et alimente le capteur, la carte, le voyant et l'électrovanne : <b>c'est la boucle de recharge</b>. L'eau qui coule recharge le robinet." }
+];
+var NB_ETAPES = ETAPES.length - 1;
+
+/* Flux : type (info, hydro, meca, elec, eau), étape d'apparition, extrémités. */
+var FLUX = [
+  { id:"i1", type:"info",  des:1, de:"capteur",  vers:"carte" },
+  { id:"i3", type:"info",  des:2, de:"carte",    vers:"vanne" },
+  { id:"i2", type:"info",  des:3, de:"carte",    vers:"voyant" },
+  { id:"w",  type:"eau",   des:4, chemin:"eau" },
+  { id:"h",  type:"hydro", des:4, chemin:"hydro" },
+  { id:"m",  type:"meca",  des:5, chemin:"meca" },
+  { id:"e1", type:"elec",  des:5, chemin:"fil" },
+  { id:"e2", type:"elec",  des:6, de:"batterie", vers:"capteur" },
+  { id:"e3", type:"elec",  des:6, de:"batterie", vers:"carte" },
+  { id:"e4", type:"elec",  des:6, de:"batterie", vers:"voyant" },
+  { id:"e5", type:"elec",  des:6, de:"batterie", vers:"vanne" }
+];
+var CALQUE_DE = { info:"info", hydro:"energie", meca:"energie", elec:"energie", eau:"eau" };
+
+/* ---- État de l'interface ------------------------------------------------ */
+var etat = { etape:0, lecture:false, correction:false, eclate:false, choisi:null,
+             calques:{ info:true, energie:true, eau:true } };
+var REDUIT = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var vue = null;  // vue 3D ou 2D, même interface
+
+function $(id){ return document.getElementById(id); }
+function cercle(n){ return "①②③④⑤⑥⑦⑧".charAt(n-1); }
+
+function majInterface(){
+  var e = ETAPES[etat.etape];
+  $("compteur").textContent = etat.etape === 0 ? "Au repos" : "Étape " + etat.etape + " / " + NB_ETAPES;
+  $("legende").innerHTML = etat.correction ? e.correction : e.enquete;
+  $("btPrec").disabled = etat.etape === 0;
+  $("btSuiv").disabled = etat.etape === NB_ETAPES;
+  $("btLecture").textContent = etat.lecture ? "⏸ Pause" : "⏵ Lecture";
+  var pts = $("points").children;
+  for (var i = 0; i < pts.length; i++) pts[i].className = (i < etat.etape) ? "fait" : "";
+  $("modeEnquete").setAttribute("aria-pressed", String(!etat.correction));
+  $("modeCorrection").setAttribute("aria-pressed", String(etat.correction));
+  $("vueAssemble").setAttribute("aria-pressed", String(!etat.eclate));
+  $("vueEclate").setAttribute("aria-pressed", String(etat.eclate));
+  document.body.classList.toggle("correction", etat.correction);
+  ["info","energie","eau"].forEach(function(c){
+    var bt = $({info:"cqInfo", energie:"cqEnergie", eau:"cqEau"}[c]);
+    bt.setAttribute("aria-pressed", String(etat.calques[c]));
+  });
+  majFiche();
+  if (vue) vue.appliquer(etat);
+}
+
+function majFiche(){
+  var f = $("ficheEl");
+  if (!etat.choisi){ f.innerHTML = '<span class="vide">Clique sur un numéro de la maquette.</span>'; return; }
+  var c = COMPOSANTS[etat.choisi];
+  if (!etat.correction){
+    f.innerHTML = '<div class="titre">Élément ' + cercle(etat.choisi) + '</div>' +
+      '<div>' + c.indice + '</div>' +
+      '<div class="note-prof">Son nom et sa fonction s\'affichent en mode Correction.</div>';
+  } else {
+    var ch = c.chaine === "aucune" ? "Bloc d'aucune chaîne (stockage)" :
+             "Chaîne d'" + c.chaine + " · <span class=\"verbe\">" + c.verbe + "</span>";
+    f.innerHTML = '<div class="titre">' + cercle(etat.choisi) + ' ' + c.nom + '</div>' +
+      '<div style="margin:4px 0 6px">' + ch + '</div><div>' + c.fonction + '</div>';
+  }
+}
+
+function choisir(n){
+  etat.choisi = (etat.choisi === n) ? null : n;
+  majInterface();
+  $("annonce").textContent = etat.choisi ? ("Élément " + n + " sélectionné") : "";
+}
+
+var minuterie = null;
+var dejaEclate = false;
+function allerA(n){
+  etat.etape = Math.max(0, Math.min(NB_ETAPES, n));
+  majInterface();
+}
+function lecture(on){
+  etat.lecture = on;
+  clearInterval(minuterie);
+  if (on){
+    if (etat.etape === NB_ETAPES) allerA(0);
+    minuterie = setInterval(function(){
+      // Après l'étape 6, on revient au repos : les mains s'éloignent, l'eau s'arrête.
+      allerA(etat.etape === NB_ETAPES ? 0 : etat.etape + 1);
+    }, 4200);
+  }
+  majInterface();
+}
+
+function brancherInterface(){
+  for (var i = 0; i < NB_ETAPES; i++) $("points").appendChild(document.createElement("span"));
+  $("btPrec").onclick = function(){ lecture(false); allerA(etat.etape - 1); };
+  $("btSuiv").onclick = function(){
+    // Les flux circulent dans le corps : au premier pas à pas, on ouvre la vue éclatée (une seule
+    // fois). La lecture continue, elle, garde le robinet fermé pour la situation déclenchante.
+    if (!dejaEclate){ dejaEclate = true; etat.eclate = true; }
+    lecture(false); allerA(etat.etape + 1);
+  };
+  $("btLecture").onclick = function(){ lecture(!etat.lecture); };
+  $("btZero").onclick = function(){ lecture(false); allerA(0); };
+  $("modeEnquete").onclick = function(){ etat.correction = false; majInterface(); };
+  $("modeCorrection").onclick = function(){
+    if (etat.correction) return;
+    if (!window.confirm("Le mode Correction affiche le nom et la fonction de chaque élément.\n" +
+                        "Il sert à la mise en commun : ta fiche est-elle complétée ?")) return;
+    etat.correction = true; majInterface();
+  };
+  $("vueAssemble").onclick = function(){ etat.eclate = false; majInterface(); };
+  $("vueEclate").onclick = function(){ etat.eclate = true; majInterface(); };
+  $("cqInfo").onclick = function(){ etat.calques.info = !etat.calques.info; majInterface(); };
+  $("cqEnergie").onclick = function(){ etat.calques.energie = !etat.calques.energie; majInterface(); };
+  $("cqEau").onclick = function(){ etat.calques.eau = !etat.calques.eau; majInterface(); };
+  $("btRecadrer").onclick = function(){ if (vue) vue.recadrer(); };
+  $("btPleinEcran").onclick = function(){
+    var s = $("scene");
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (s.requestFullscreen) s.requestFullscreen();
+  };
+  document.addEventListener("fullscreenchange", function(){ setTimeout(function(){ if (vue) vue.redimensionner(); }, 60); });
+  window.addEventListener("resize", function(){ if (vue) vue.redimensionner(); });
+  document.addEventListener("keydown", function(e){
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") $("btSuiv").onclick();
+    else if (e.key === "ArrowLeft"){ lecture(false); allerA(etat.etape - 1); }
+  });
+}
+
+/* ---- Pastilles numérotées, communes aux deux vues ------------------------ */
+function creerPastilles(conteneur){
+  var p = {};
+  Object.keys(COMPOSANTS).forEach(function(k){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "badge";
+    b.setAttribute("aria-label", "Élément " + k);
+    // Nom court sur la pastille : « (microcontrôleur) » débordait de la scène.
+    b.innerHTML = '<span class="n">' + k + '</span><span class="nom">' + COMPOSANTS[k].nom.replace(/ \(.*\)$/, "") + '</span>';
+    b.onclick = function(ev){ ev.stopPropagation(); choisir(+k); };
+    conteneur.appendChild(b);
+    p[k] = b;
+  });
+  return p;
+}
+function majPastilles(p, etat){
+  var actifs = ETAPES[etat.etape].actifs;
+  Object.keys(p).forEach(function(k){
+    p[k].classList.toggle("actif", actifs.indexOf(+k) >= 0);
+    p[k].classList.toggle("choisi", etat.choisi === +k);
+    p[k].setAttribute("aria-label", etat.correction ? (k + " : " + COMPOSANTS[k].nom) : ("Élément " + k));
+  });
+}
+
+/* ==========================================================================
+   Vue 3D
+   ========================================================================== */
+function vue3D(holder){
+  var T = window.THREE;
+  var renderer = new T.WebGLRenderer({ antialias:true, alpha:true });
+  // Mesuré (banc ?fps) : le coût est le remplissage des pixels, pas le calcul ni les ombres.
+  // ×1,5 → 16,7 ms/image ; ×1 → 9,5 ms. On plafonne à ×1,25, puis on descend si besoin.
+  var ratioMax = Math.min(window.devicePixelRatio || 1, 1.25);
+  renderer.setPixelRatio(ratioMax);
+  renderer.setSize(holder.clientWidth, holder.clientHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = T.PCFSoftShadowMap;
+  if (T.ACESFilmicToneMapping){ renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.85; }
+  if ("outputColorSpace" in renderer && T.SRGBColorSpace) renderer.outputColorSpace = T.SRGBColorSpace;
+  else if ("outputEncoding" in renderer && T.sRGBEncoding) renderer.outputEncoding = T.sRGBEncoding;
+  holder.insertBefore(renderer.domElement, holder.firstChild);
+
+  var scene = new T.Scene();
+  scene.environment = envDegrade();
+  var camera = new T.PerspectiveCamera(36, holder.clientWidth / holder.clientHeight, 0.05, 60);
+  // Le point visé glisse du robinet fermé (C0) vers le centre de la vue éclatée (C1).
+  var C0 = new T.Vector3(0.05, 0.72, -0.2), C1 = new T.Vector3(0.62, 0.8, -0.3);
+  var cible = C0.clone();
+  var orb = { theta:0.18, phi:1.25, r:2.9, rmin:1.2, rmax:7 };
+  var DEPART = { theta:0.18, phi:1.25, r:2.9 };
+
+  function envDegrade(){
+    var c = document.createElement("canvas"); c.width = 64; c.height = 64;
+    var x = c.getContext("2d"), g = x.createLinearGradient(0,0,0,64);
+    g.addColorStop(0,"#ffffff"); g.addColorStop(.45,"#cfe4f5"); g.addColorStop(.55,"#9fb3c6"); g.addColorStop(1,"#5b6b7a");
+    x.fillStyle = g; x.fillRect(0,0,64,64);
+    var tex = new T.CanvasTexture(c);
+    tex.mapping = T.EquirectangularReflectionMapping;
+    var pm = new T.PMREMGenerator(renderer), env = pm.fromEquirectangular(tex).texture;
+    pm.dispose(); tex.dispose();
+    return env;
+  }
+
+  /* -- Orbite (même principe que la scène de l'activité 5) -- */
+  function placer(){
+    var s = Math.sin(orb.phi);
+    camera.position.set(cible.x + orb.r*s*Math.sin(orb.theta), cible.y + orb.r*Math.cos(orb.phi), cible.z + orb.r*s*Math.cos(orb.theta));
+    camera.lookAt(cible);
+  }
+  (function(){
+    var dom = renderer.domElement, glisse = false, lx = 0, ly = 0, pince = 0, bouge = 0;
+    function borne(v,a,b){ return Math.max(a, Math.min(b, v)); }
+    function ecart(t){ var dx=t[0].clientX-t[1].clientX, dy=t[0].clientY-t[1].clientY; return Math.sqrt(dx*dx+dy*dy); }
+    dom.addEventListener("pointerdown", function(e){ glisse = true; bouge = 0; lx = e.clientX; ly = e.clientY; });
+    window.addEventListener("pointermove", function(e){
+      if (!glisse) return;
+      bouge += Math.abs(e.clientX-lx) + Math.abs(e.clientY-ly);
+      orb.theta -= (e.clientX - lx) * 0.008;
+      orb.phi = borne(orb.phi - (e.clientY - ly) * 0.006, 0.25, Math.PI*0.62);
+      lx = e.clientX; ly = e.clientY; placer(); demander();
+    });
+    window.addEventListener("pointerup", function(e){
+      if (glisse && bouge < 6 && e.target === dom) piocher(e);
+      glisse = false;
+    });
+    dom.addEventListener("touchstart", function(e){ if (e.touches.length === 2) pince = ecart(e.touches); }, {passive:true});
+    dom.addEventListener("touchmove", function(e){
+      if (e.touches.length === 2){ var d = ecart(e.touches); if (pince){ orb.r = borne(orb.r*(pince/d), orb.rmin, orb.rmax); placer(); demander(); } pince = d; glisse = false; }
+    }, {passive:true});
+    dom.addEventListener("touchend", function(){ pince = 0; });
+    dom.addEventListener("wheel", function(e){
+      orb.r = borne(orb.r * (e.deltaY > 0 ? 1.1 : 0.9), orb.rmin, orb.rmax); placer(); demander(); e.preventDefault();
+    }, {passive:false});
+  })();
+  placer();
+
+  /* -- Lumières -- */
+  scene.add(new T.HemisphereLight(0xdcefff, 0x8b9aa8, 0.5));
+  var cle = new T.DirectionalLight(0xffffff, 0.95);
+  cle.position.set(3, 5.5, 3.2); cle.castShadow = true;
+  cle.shadow.mapSize.set(1024, 1024);
+  var sc = cle.shadow.camera; sc.near = 1; sc.far = 16; sc.left = -2.5; sc.right = 2.5; sc.top = 2.5; sc.bottom = -2.5;
+  cle.shadow.bias = -0.0016;
+  scene.add(cle);
+  var appoint = new T.DirectionalLight(0xbfe0ff, 0.3); appoint.position.set(-3.5, 2, -2); scene.add(appoint);
+
+  /* -- Matériaux -- */
+  function std(o){ return new T.MeshStandardMaterial(o); }
+  var chrome = std({ color:0xdfe6ee, metalness:0.94, roughness:0.16, envMapIntensity:1.1, transparent:true });
+  var plan   = std({ color:0x9aaec2, metalness:0.05, roughness:0.6, transparent:true });
+  var murMat = std({ color:0xf7f9fb, roughness:0.4, metalness:0.02 });
+  var ceram  = std({ color:0xfdfefe, roughness:0.24, metalness:0.02, side:T.DoubleSide, transparent:true });
+  var peau   = std({ color:0xe8b894, roughness:0.85 });
+  var matEau = std({ color:0x7fd0f5, transparent:true, opacity:0.5, roughness:0.05, depthWrite:false });
+
+  function maille(geo, mat, x, y, z, parent){
+    var m = new T.Mesh(geo, mat); m.position.set(x||0, y||0, z||0);
+    m.castShadow = true; m.receiveShadow = true;
+    (parent || scene).add(m); return m;
+  }
+
+  /* -- Décor : plan de vasque (y = 0,10), mur, vasque -- */
+  var planM = maille(new T.BoxGeometry(2.4, 0.1, 1.5), plan, 0, 0.05, 0); planM.castShadow = false;
+  var mur = maille(new T.BoxGeometry(2.4, 2.4, 0.06), murMat, 0, 0.5, -0.79); mur.castShadow = false;
+  maille(new T.CylinderGeometry(0.56, 0.36, 0.32, 48, 1, true), ceram, 0, 0.26, 0.16);
+  maille(new T.CircleGeometry(0.36, 40), ceram, 0, 0.105, 0.16).rotation.x = -Math.PI/2;
+  maille(new T.TorusGeometry(0.56, 0.015, 10, 56), std({ color:0xb9c9d8, roughness:0.4 }), 0, 0.42, 0.16).rotation.x = Math.PI/2;
+
+  /* -- Corps du robinet (colonne + bec) : il devient translucide en vue éclatée -- */
+  var AXE = { x:0, z:-0.52 };
+  var corps = new T.Group(); scene.add(corps);
+  maille(new T.CylinderGeometry(0.18, 0.21, 0.05, 32), chrome, AXE.x, 0.125, AXE.z, corps);
+  maille(new T.CylinderGeometry(0.135, 0.145, 0.95, 32), chrome, AXE.x, 0.62, AXE.z, corps);
+  var bec = new T.QuadraticBezierCurve3(new T.Vector3(0,1.06,AXE.z), new T.Vector3(0,1.46,AXE.z), new T.Vector3(0,1.30,0.12));
+  maille(new T.TubeGeometry(bec, 28, 0.092, 18, false), chrome, 0, 0, 0, corps);
+  maille(new T.CylinderGeometry(0.105, 0.1, 0.06, 24), chrome, 0, 1.27, 0.12, corps);
+
+  /* -- Composants : position « fermé » (A) et « éclaté » (E) -- */
+  var comps = {};
+  function composant(n, A, E, construire){
+    var g = new T.Group(); g.userData.n = n; scene.add(g);
+    var mats = [];
+    construire(g, function(geo, couleur, extra){
+      var o = { color:couleur, roughness:0.5, metalness:0.2, emissive:0x000000 };
+      for (var k in extra) o[k] = extra[k];
+      var mat = std(o); mats.push(mat);
+      var m = new T.Mesh(geo, mat); m.castShadow = true; m.userData.n = n; g.add(m); return m;
+    });
+    comps[n] = { g:g, A:new T.Vector3(A[0],A[1],A[2]), E:new T.Vector3(E[0],E[1],E[2]), mats:mats };
+    g.position.copy(comps[n].A);
+    return comps[n];
+  }
+
+  // ① capteur infrarouge, sous l'extrémité du bec
+  composant(1, [0,1.18,0.15], [0,1.10,0.32], function(g, m){
+    m(new T.BoxGeometry(0.17, 0.08, 0.07), 0x24303c);
+    var l = m(new T.SphereGeometry(0.024, 14, 12), 0x7a1f1f, { emissive:0x330000 }); l.position.set(0,-0.03,0.03);
+  });
+  // ② voyant, sur la face avant de la colonne
+  var voyant = composant(2, [0,0.98,AXE.z+0.14], [0.55,1.50,-0.22], function(g, m){
+    m(new T.CylinderGeometry(0.035, 0.035, 0.02, 20), 0x2b3440).rotation.x = Math.PI/2;
+    var led = m(new T.SphereGeometry(0.026, 16, 12), 0x3a7d44, { emissive:0x000000, roughness:0.3 });
+    led.position.z = 0.015; led.userData.led = true;
+  });
+  // ③ carte électronique
+  composant(3, [0,0.88,AXE.z], [1.00,1.22,-0.30], function(g, m){
+    m(new T.BoxGeometry(0.2, 0.012, 0.16), 0x1f7a4a, { roughness:0.6 });
+    [[-0.05,0.03],[0.04,-0.02],[0.05,0.05]].forEach(function(p){
+      m(new T.BoxGeometry(0.05, 0.02, 0.04), 0x1b1f24).position.set(p[0], 0.016, p[1]);
+    });
+  });
+  // ④ micro-batterie
+  composant(4, [0,0.72,AXE.z], [1.45,0.86,-0.30], function(g, m){
+    m(new T.BoxGeometry(0.12, 0.13, 0.07), 0x2f4f8a, { roughness:0.45 });
+    m(new T.BoxGeometry(0.03, 0.015, 0.02), 0xc9ced6, { metalness:0.8 }).position.set(-0.03, 0.072, 0);
+    m(new T.BoxGeometry(0.03, 0.015, 0.02), 0xc9ced6, { metalness:0.8 }).position.set(0.03, 0.072, 0);
+  });
+  // ⑤ turbine / générateur : la turbine dans le courant d'eau, le générateur sur le même axe
+  var turbine, comps5mats = [];
+  composant(5, [0,0.48,AXE.z], [0.95,0.58,-0.30], function(g, m){
+    var carter = m(new T.CylinderGeometry(0.075, 0.075, 0.08, 24, 1, true), 0x9fb3c6, { transparent:true, opacity:0.35, side:T.DoubleSide, depthWrite:false });
+    carter.castShadow = false;
+    turbine = new T.Group(); g.add(turbine);
+    for (var i = 0; i < 6; i++){
+      var pale = new T.Mesh(new T.BoxGeometry(0.06, 0.05, 0.008), std({ color:0xd9a441, roughness:0.4, metalness:0.3 }));
+      comps5mats.push(pale.material);
+      pale.position.set(Math.cos(i*Math.PI/3)*0.035, 0, Math.sin(i*Math.PI/3)*0.035);
+      pale.rotation.y = -i*Math.PI/3; pale.userData.n = 5; pale.castShadow = true;
+      turbine.add(pale);
+    }
+    m(new T.CylinderGeometry(0.008, 0.008, 0.16, 10), 0xc9ced6, { metalness:0.85 }).position.y = 0.06;   // axe commun
+    m(new T.CylinderGeometry(0.055, 0.055, 0.075, 24), 0xb87333, { metalness:0.6, roughness:0.35 }).position.y = 0.12; // générateur
+  });
+  // ⑥ électrovanne : corps de vanne et bobine
+  composant(6, [0,0.27,AXE.z], [0.95,0.20,-0.30], function(g, m){
+    m(new T.BoxGeometry(0.13, 0.08, 0.1), 0x8a96a3, { metalness:0.6, roughness:0.35 });
+    m(new T.CylinderGeometry(0.035, 0.035, 0.07, 20), 0xb87333, { metalness:0.5 }).position.set(0, 0.075, 0);
+  });
+  // ⑦ tuyauterie : arrivée d'eau sous le plan, depuis le mur
+  composant(7, [0,0,0], [0,0,0], function(g, m){
+    var c = new T.CatmullRomCurve3([new T.Vector3(0,-0.75,-0.78), new T.Vector3(0,-0.75,-0.62), new T.Vector3(0,-0.6,AXE.z),
+                                    new T.Vector3(0,-0.1,AXE.z), new T.Vector3(0,0.15,AXE.z)]);
+    m(new T.TubeGeometry(c, 40, 0.028, 12, false), 0xb9c4cf, { metalness:0.85, roughness:0.25 });
+  });
+  comps[5].mats = comps[5].mats.concat(comps5mats);
+
+  // ⑧ fils électriques : tubes reconstruits quand la vue s'éclate
+  // Gaine neutre : le rouge est réservé aux particules d'énergie électrique.
+  var filsMat = std({ color:0x3b4250, roughness:0.55, emissive:0x000000 });
+  var filsGroupe = new T.Group(); filsGroupe.userData.n = 8; scene.add(filsGroupe);
+  comps[8] = { g:filsGroupe, A:new T.Vector3(), E:new T.Vector3(), mats:[filsMat] };
+
+  /* -- Mains et jet d'eau -- */
+  var mains = new T.Group();
+  [-0.14, 0.14].forEach(function(dx){
+    var m = new T.Mesh(new T.SphereGeometry(0.16, 20, 14), peau); m.scale.set(1, 0.34, 1.2); m.position.x = dx; m.castShadow = true; mains.add(m);
+  });
+  mains.position.set(0, 0.95, 0.18); mains.visible = false; scene.add(mains);
+  var jet = new T.Mesh(new T.CylinderGeometry(0.03, 0.05, 0.62, 16), matEau);
+  jet.position.set(0, 0.93, 0.12); jet.visible = false; scene.add(jet);
+
+  /* -- Points d'accroche pour les flux -- */
+  function pos(n){ return comps[n].g.position; }
+  var ancre = {
+    capteur:function(){ return pos(1).clone().add(new T.Vector3(0,-0.02,0)); },
+    voyant:function(){ return pos(2).clone(); },
+    carte:function(){ return pos(3).clone().add(new T.Vector3(0,0.02,0)); },
+    batterie:function(){ return pos(4).clone(); },
+    vanne:function(){ return pos(6).clone().add(new T.Vector3(0,0.07,0)); }
+  };
+  function cheminEau(decalage){
+    var d = decalage || 0, t = pos(5), v = pos(6);
+    return [ new T.Vector3(d,-0.75,-0.78), new T.Vector3(d,-0.6,AXE.z), new T.Vector3(d,0.12,AXE.z),
+             new T.Vector3(v.x+d, v.y, v.z), new T.Vector3(t.x+d, t.y, t.z), new T.Vector3(t.x*0.4+d, 0.7, (t.z+AXE.z)/2),
+             new T.Vector3(d,1.06,AXE.z), new T.Vector3(d,1.36,-0.30), new T.Vector3(d,1.24,0.12) ];
+  }
+  function points(f){
+    if (f.chemin === "eau") return cheminEau(0);
+    if (f.chemin === "hydro") return cheminEau(0.045).slice(0, 5);
+    var e5 = comps[5].g.scale.x;   // la turbine et le générateur grossissent en vue éclatée
+    if (f.chemin === "meca"){ var t = pos(5); return [ t.clone(), t.clone().add(new T.Vector3(0,0.13*e5,0)) ]; }
+    if (f.chemin === "fil"){ var g = pos(5).clone().add(new T.Vector3(0.06*e5,0.12*e5,0)), b = pos(4);
+      return [ g, new T.Vector3(g.x+0.1, (g.y+b.y)/2, g.z+0.05), b.clone().add(new T.Vector3(0.05,-0.05,0)) ]; }
+    var a = ancre[f.de](), z = ancre[f.vers]();
+    var mi = a.clone().lerp(z, 0.5).add(new T.Vector3(0.08, 0.04, 0.1));
+    return [a, mi, z];
+  }
+
+  /* -- Particules de flux : une forme par type d'énergie / d'information -- */
+  var FORMES = {
+    info:  { geo:new T.BoxGeometry(0.045,0.045,0.045),       coul:0x1d4ed8, n:6,  v:0.4 },
+    hydro: { geo:new T.ConeGeometry(0.032,0.075,10),          coul:0xc2410c, n:9,  v:0.3 },
+    meca:  { geo:new T.TorusGeometry(0.05,0.012,8,20),        coul:0xa16207, n:3,  v:0.5 },
+    elec:  { geo:new T.OctahedronGeometry(0.036),             coul:0xb91c1c, n:6,  v:0.4 },
+    eau:   { geo:new T.SphereGeometry(0.026,10,8),            coul:0x22b8e0, n:16, v:0.3 }
+  };
+  var traitMats = {
+    info: new T.LineDashedMaterial({ color:0x1d4ed8, dashSize:0.03, gapSize:0.03, transparent:true, opacity:0.7 }),
+    hydro:new T.LineBasicMaterial({ color:0xc2410c, transparent:true, opacity:0.5 }),
+    meca: new T.LineBasicMaterial({ color:0xa16207, transparent:true, opacity:0.5 }),
+    elec: new T.LineDashedMaterial({ color:0xb91c1c, dashSize:0.05, gapSize:0.025, transparent:true, opacity:0.6 }),
+    eau:  new T.LineBasicMaterial({ color:0x0891b2, transparent:true, opacity:0.35 })
+  };
+  var flux = FLUX.map(function(f){
+    var F = FORMES[f.type], g = new T.Group(); scene.add(g);
+    var mat = new T.MeshStandardMaterial({ color:F.coul, emissive:F.coul, emissiveIntensity:0.35, roughness:0.4,
+                                           transparent:f.type === "eau", opacity:f.type === "eau" ? 0.75 : 1 });
+    var parts = [];
+    for (var i = 0; i < F.n; i++){ var p = new T.Mesh(F.geo, mat); g.add(p); parts.push(p); }
+    var trait = new T.Line(new T.BufferGeometry(), traitMats[f.type]); g.add(trait);
+    return { def:f, g:g, parts:parts, trait:trait, courbe:null, F:F };
+  });
+  function reconstruireTraces(){
+    flux.forEach(function(x){
+      x.courbe = new T.CatmullRomCurve3(points(x.def));
+      x.trait.geometry.dispose();
+      x.trait.geometry = new T.BufferGeometry().setFromPoints(x.courbe.getPoints(48));
+      if (x.trait.computeLineDistances) x.trait.computeLineDistances();
+    });
+    // Fils : du générateur à la batterie, puis de la batterie vers les quatre éléments alimentés.
+    while (filsGroupe.children.length){ var c = filsGroupe.children.pop(); c.geometry.dispose(); }
+    flux.forEach(function(x){
+      if (x.def.type !== "elec") return;
+      var t = new T.Mesh(new T.TubeGeometry(x.courbe, 24, 0.006, 6, false), filsMat);
+      t.userData.n = 8; filsGroupe.add(t);
+    });
+  }
+
+  /* -- Choix au clic -- */
+  var lanceur = new T.Raycaster(), souris = new T.Vector2();
+  function piocher(e){
+    var r = renderer.domElement.getBoundingClientRect();
+    souris.set(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
+    lanceur.setFromCamera(souris, camera);
+    var cibles = [];
+    Object.keys(comps).forEach(function(k){ comps[k].g.traverse(function(o){ if (o.isMesh) cibles.push(o); }); });
+    var h = lanceur.intersectObjects(cibles, false)[0];
+    if (h){ var o = h.object; while (o && !o.userData.n) o = o.parent; if (o) choisir(o.userData.n); }
+  }
+
+  /* -- Pastilles HTML -- */
+  var pastilles = creerPastilles(holder);
+  var DECAL = { 1:[0.0,-0.10,0.06], 2:[0.0,0.0,0.10], 3:[0.14,0.05,0], 4:[0.12,0,0.05], 5:[0.14,0.0,0.05],
+                6:[0.13,0.0,0.05], 7:[0.0,-0.3,-0.5], 8:[0,0,0] };
+  var v3 = new T.Vector3();
+  function placerPastilles(){
+    var w = holder.clientWidth, h = holder.clientHeight;
+    Object.keys(pastilles).forEach(function(k){
+      if (+k === 8){
+        var f = flux.filter(function(x){ return x.def.chemin === "fil"; })[0];
+        v3.copy(f.courbe.getPointAt(0.5)).add(new T.Vector3(0.05,0,0.05));
+      } else {
+        var ech = comps[k].g.scale.x;
+        v3.copy(pos(+k)).add(new T.Vector3(DECAL[k][0]*ech, DECAL[k][1]*ech, DECAL[k][2]*ech));
+      }
+      v3.project(camera);
+      var b = pastilles[k];
+      b.classList.toggle("cache", v3.z > 1 || !visibleSelonVue(+k));
+      b.style.left = ((v3.x*0.5 + 0.5) * w) + "px";
+      b.style.top = ((-v3.y*0.5 + 0.5) * h) + "px";
+    });
+  }
+  // Robinet fermé : seuls les éléments visibles de l'extérieur portent un numéro.
+  function visibleSelonVue(n){ return eclat > 0.5 || n === 1 || n === 2; }
+
+  /* -- Animation -- */
+  var eclat = 0, horloge = 0, t0 = performance.now(), anim = null, enVue = true, aDessiner = true;
+  var E = etat;
+  var mesures = [], degrade = 0;
+  function demander(){ aDessiner = true; }
+  function boucle(now){
+    anim = requestAnimationFrame(boucle);
+    var dt = Math.max(0, Math.min(0.05, (now - t0) / 1000)); t0 = now;
+    if (!enVue || document.hidden) return;
+    boucleCorps(now, dt);
+  }
+  function boucleCorps(now, dt){
+    horloge += dt;
+
+    // Qualité adaptative : moyenne des 90 premières images, puis allègement si la machine peine.
+    // Palier 1 : ×1 ; palier 2 : ×0,75 sans ombres ; ensuite on n'y touche plus.
+    if (degrade < 2 && mesures.length < 90){ mesures.push(dt); if (mesures.length === 90){
+      var moy = mesures.reduce(function(a,b){ return a+b; }, 0) / 90;
+      if (moy > 0.024){
+        degrade++;
+        renderer.setPixelRatio(degrade === 1 ? 1 : 0.75);
+        if (degrade === 2){ renderer.shadowMap.enabled = false;
+          scene.traverse(function(o){ if (o.material) o.material.needsUpdate = true; }); }
+        mesures = [];
+      } else degrade = 2;
+    }}
+
+    var cibleEclat = E.eclate ? 1 : 0;
+    if (Math.abs(eclat - cibleEclat) > 0.001){
+      eclat += (cibleEclat - eclat) * Math.min(1, dt * (REDUIT ? 60 : 5));
+      if (Math.abs(eclat - cibleEclat) < 0.002) eclat = cibleEclat;
+      // En vue éclatée, les pièces s'écartent ET grossissent : à l'échelle réelle, elles sont illisibles au vidéoprojecteur.
+      for (var k in comps) if (+k !== 8 && +k !== 7){
+        comps[k].g.position.lerpVectors(comps[k].A, comps[k].E, eclat);
+        comps[k].g.scale.setScalar(1 + 0.9 * eclat);
+      }
+      chrome.opacity = 1 - 0.85 * eclat; chrome.depthWrite = eclat < 0.5;
+      plan.opacity = 1 - 0.6 * eclat; plan.depthWrite = eclat < 0.5;
+      ceram.opacity = 1 - 0.75 * eclat; ceram.depthWrite = eclat < 0.5;
+      cible.lerpVectors(C0, C1, eclat); placer();
+      reconstruireTraces();
+    }
+
+    var s = E.etape;
+    var mainsLa = s >= 1, eauCoule = s >= 4;
+    mains.visible = mainsLa;
+    jet.visible = eauCoule && E.calques.eau;
+    if (jet.visible && !REDUIT) matEau.opacity = 0.42 + 0.12 * Math.sin(horloge * 20);
+    if (eauCoule && !REDUIT) turbine.rotation.y += dt * 9;
+
+    // Voyant : allumé à partir de l'étape 3.
+    voyant.mats[1].emissive.setHex(s >= 3 ? 0x3ddc5a : 0x000000);
+    voyant.mats[1].color.setHex(s >= 3 ? 0x7cf08f : 0x3a7d44);
+
+    // Mise en évidence des éléments de l'étape en cours (pulsation douce).
+    var actifs = ETAPES[s].actifs, puls = REDUIT ? 0.5 : 0.35 + 0.3 * Math.sin(horloge * 5);
+    Object.keys(comps).forEach(function(k){
+      var on = actifs.indexOf(+k) >= 0 || E.choisi === +k;
+      comps[k].mats.forEach(function(m){
+        if (+k === 2 && m === voyant.mats[1]) return;
+        if (m.emissive) { m.emissive.setHex(on ? 0xF0B429 : 0x000000); m.emissiveIntensity = on ? puls : 1; }
+      });
+    });
+    filsGroupe.visible = eclat > 0.3;
+
+    // Flux.
+    flux.forEach(function(x){
+      // Robinet fermé : les flux passent à l'intérieur du corps, on ne les montre qu'en vue éclatée.
+      var visible = s >= x.def.des && E.calques[CALQUE_DE[x.def.type]] && eclat > 0.3;
+      x.g.visible = visible;
+      if (!visible) return;
+      var n = x.parts.length, vit = REDUIT ? 0 : x.F.v;
+      for (var i = 0; i < n; i++){
+        var u = ((horloge * vit) + i / n) % 1;
+        var p = x.courbe.getPointAt(u);
+        x.parts[i].position.copy(p);
+        if (x.def.type === "hydro"){ var tg = x.courbe.getTangentAt(u); x.parts[i].quaternion.setFromUnitVectors(new T.Vector3(0,1,0), tg); }
+        if (x.def.type === "meca"){ x.parts[i].rotation.x = Math.PI/2; x.parts[i].rotation.z = horloge * 6; }
+        if (x.def.type === "info" || x.def.type === "elec"){ x.parts[i].rotation.y = horloge * 2; }
+      }
+    });
+
+    var tr = performance.now();
+    renderer.render(scene, camera);
+    placerPastilles();
+    // ?fps : coût moyen d'une image en ms (mesurable même quand l'onglet est bridé).
+    if (MESURE){ MESURE.n++; MESURE.ms += performance.now() - tr + (tr - now); }
+  }
+  var MESURE = /[?&]fps/.test(location.search) ? (window.__coutImage = { n:0, ms:0 }) : null;
+  if (MESURE){
+    // Banc d'essai : n images calculées d'affilée, GPU synchronisé par une lecture de pixel.
+    window.__banc = function(n, options){
+      var o = options || {}, gl = renderer.getContext(), px = new Uint8Array(4), t = performance.now();
+      if ("ombres" in o){ renderer.shadowMap.enabled = o.ombres; scene.traverse(function(x){ if (x.material) x.material.needsUpdate = true; }); }
+      if ("ratio" in o) renderer.setPixelRatio(o.ratio);
+      boucleCorps(t, 1/60);
+      t = performance.now();
+      for (var i = 0; i < n; i++){ boucleCorps(t + i * 16.7, 1/60); if (!o.sansSync) gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); }
+      return (performance.now() - t) / n;
+    };
+  }
+  reconstruireTraces();
+  anim = requestAnimationFrame(boucle);
+
+  // Arrêt du rendu hors de l'écran (onglet masqué, zone défilée).
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(function(es){ enVue = es[0].isIntersecting; }).observe(holder);
+  }
+
+  return {
+    appliquer:function(e){ majPastilles(pastilles, e); },
+    recadrer:function(){ orb.theta = DEPART.theta; orb.phi = DEPART.phi; orb.r = DEPART.r; placer(); },
+    redimensionner:function(){
+      camera.aspect = holder.clientWidth / holder.clientHeight; camera.updateProjectionMatrix();
+      renderer.setSize(holder.clientWidth, holder.clientHeight);
+    }
+  };
+}
+
+/* ==========================================================================
+   Vue 2D de repli : schéma en coupe, mêmes numéros, mêmes étapes
+   ========================================================================== */
+function vue2D(holder, raison){
+  var d = document.createElement("div"); d.className = "schema2d";
+  d.innerHTML =
+  // Coupe du robinet : la colonne (x 60–200) contient, de haut en bas, la carte, la
+  // micro-batterie, la turbine / générateur et l'électrovanne ; l'eau monte par un canal
+  // à gauche (x = 80) qui traverse l'électrovanne et la turbine, puis suit le bec.
+  '<svg viewBox="0 0 640 520" role="img" aria-label="Schéma en coupe du robinet automatique">' +
+  '<rect x="0" y="0" width="16" height="520" fill="#dde4ec"/>' +
+  '<ellipse cx="480" cy="356" rx="120" ry="16" fill="#eef3f8" stroke="#c7d3df"/>' +
+  '<rect x="0" y="360" width="640" height="14" fill="#9aaec2"/>' +
+  // Corps : colonne et bec
+  '<rect x="60" y="120" width="140" height="240" rx="12" fill="#f6f8fb" stroke="#aebdcc" stroke-width="3"/>' +
+  '<path d="M80 122 V96 Q80 80 100 80 H470 Q490 80 490 100 V120" fill="none" stroke="#c9d4df" stroke-width="22" stroke-linecap="round"/>' +
+  // Tuyauterie sous le plan (dessin de la pièce elle-même)
+  '<path d="M16 480 H80 V360" fill="none" stroke="#9fb3c6" stroke-width="14"/>' +
+  // Flux d'eau : tuyauterie → électrovanne → turbine → bec → jet
+  '<path class="flux f-eau" data-des="4" d="M16 480 H80 V96 Q80 80 100 80 H470 Q490 80 490 100 V335"/>' +
+  // Énergie hydraulique : tuyauterie → électrovanne → turbine
+  '<path class="flux f-hydro" data-des="4" d="M16 490 H90 V258"/>' +
+  // Énergie mécanique : turbine → générateur (même axe)
+  '<path class="flux f-meca" data-des="5" d="M112 252 H150"/>' +
+  // Énergie électrique : générateur → fils → micro-batterie, puis micro-batterie → éléments alimentés
+  '<path class="flux f-elec" data-des="5" d="M194 252 H222 V198 H196"/>' +
+  '<path class="flux f-elec" data-des="6" d="M170 182 V162"/>' +
+  '<path class="flux f-elec" data-des="6" d="M196 186 H214 V164"/>' +
+  '<path class="flux f-elec" data-des="6" d="M196 206 H300 V100 H396"/>' +
+  '<path class="flux f-elec" data-des="6" d="M196 210 H250 V318 H196"/>' +
+  // Information : capteur → carte → électrovanne, carte → voyant
+  '<path class="flux f-info" data-des="1" d="M396 120 H330 V146 H196"/>' +
+  '<path class="flux f-info" data-des="2" d="M196 156 H280 V326 H196"/>' +
+  '<path class="flux f-info" data-des="3" d="M180 136 V128 H232 V137"/>' +
+  // Composants : numéro dans la pièce, nom (mode Correction) à côté
+  comp2d(1, 396, 102, 64, 24, "Capteur infrarouge") +
+  comp2d(2, 214, 138, 26, 26, "Voyant", true) +
+  comp2d(3, 110, 134, 86, 28, "Carte électronique") +
+  comp2d(4, 110, 180, 86, 34, "Micro-batterie") +
+  comp2d(5, 66, 232, 128, 40, "Turbine / générateur") +
+  comp2d(6, 66, 300, 128, 34, "Électrovanne") +
+  comp2d(7, 24, 440, 46, 26, "Tuyauterie") +
+  comp2d(8, 226, 216, 26, 22, "Fils électriques") +
+  '<ellipse class="mains2d" cx="490" cy="250" rx="52" ry="13" fill="#e8b894" opacity="0"/>' +
+  '<text x="634" y="22" text-anchor="end" font-size="12" fill="#5b6472">Schéma en coupe (vue 3D : ' + raison + ')</text>' +
+  '</svg>';
+  holder.appendChild(d);
+
+  // En mode Correction, les noms s'affichent en liste sous le plan (pas dans les pièces, trop étroites).
+  function comp2d(n, x, y, w, h, nom, rond){
+    var forme = rond ? '<circle class="corps" cx="' + (x+w/2) + '" cy="' + (y+h/2) + '" r="' + (h/2) + '"/>'
+                     : '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="6"/>';
+    var nx = rond ? (x+w/2-5) : (x+7);
+    return '<g class="comp" data-n="' + n + '" tabindex="0" role="button" aria-label="Élément ' + n + '">' + forme +
+      '<text class="num" x="' + nx + '" y="' + (y+h/2+6) + '">' + n + '</text>' +
+      '<text class="nom2d" x="330" y="' + (386 + (n-1)*16) + '">' + n + ' · ' + nom + '</text></g>';
+  }
+  Array.prototype.forEach.call(d.querySelectorAll(".comp"), function(g){
+    g.addEventListener("click", function(){ choisir(+g.getAttribute("data-n")); });
+    g.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); choisir(+g.getAttribute("data-n")); } });
+  });
+  $("btRecadrer").style.display = "none";
+  $("aideGeste").textContent = "Clique sur un numéro pour l'observer";
+  return {
+    appliquer:function(e){
+      var actifs = ETAPES[e.etape].actifs, svg = d.querySelector("svg");
+      Array.prototype.forEach.call(d.querySelectorAll(".flux"), function(p){
+        p.classList.toggle("on", e.etape >= +p.getAttribute("data-des"));
+      });
+      Array.prototype.forEach.call(d.querySelectorAll(".comp"), function(g){
+        var n = +g.getAttribute("data-n");
+        g.classList.toggle("actif", actifs.indexOf(n) >= 0 || e.choisi === n);
+        g.setAttribute("aria-label", e.correction ? (n + " : " + COMPOSANTS[n].nom) : ("Élément " + n));
+      });
+      d.querySelector(".mains2d").setAttribute("opacity", e.etape >= 1 ? "1" : "0");
+      svg.classList.toggle("masque-info", !e.calques.info);
+      svg.classList.toggle("masque-energie", !e.calques.energie);
+      svg.classList.toggle("masque-eau", !e.calques.eau);
+      // Le voyant s'allume à l'étape 3.
+      var v = d.querySelector('.comp[data-n="2"] circle');
+      v.style.fill = e.etape >= 3 ? "#7cf08f" : "";
+    },
+    recadrer:function(){}, redimensionner:function(){}
+  };
+}
+
+/* ==========================================================================
+   Démarrage : tester les capacités AVANT de télécharger three.js
+   ========================================================================== */
+function webglDispo(){
+  try { var c = document.createElement("canvas"); return !!(window.WebGLRenderingContext && (c.getContext("webgl") || c.getContext("experimental-webgl"))); }
+  catch(e){ return false; }
+}
+function chargerScript(urls, ok, ko){
+  if (!urls.length) return ko();
+  var s = document.createElement("script");
+  s.src = urls[0]; s.crossOrigin = "anonymous";
+  s.onload = function(){ window.THREE ? ok() : chargerScript(urls.slice(1), ok, ko); };
+  s.onerror = function(){ chargerScript(urls.slice(1), ok, ko); };
+  document.head.appendChild(s);
+}
+function demarrer(){
+  brancherInterface();
+  majInterface();
+  var holder = $("scene");
+  function repli(raison){
+    vue = vue2D(holder, raison);
+    var a = document.createElement("div"); a.className = "alerte";
+    a.textContent = "Vue 3D indisponible sur ce poste (" + raison + ") : voici le schéma en coupe, avec les mêmes numéros et les mêmes étapes.";
+    holder.appendChild(a);
+    setTimeout(function(){ a.remove(); }, 9000);
+    majInterface();
+  }
+  if (/[?&]no3d(&|=|$)/.test(location.search)) return repli("mode schéma demandé");
+  if (!webglDispo()) return repli("WebGL absent");
+  chargerScript([
+    "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js",
+    "https://unpkg.com/three@0.150.1/build/three.min.js"
+  ], function(){
+    try { vue = vue3D(holder); majInterface(); }
+    catch(e){ console.error(e); repli("erreur 3D"); }
+  }, function(){ repli("bibliothèque 3D bloquée par le réseau"); });
+}
+demarrer();
+</script>
+</body>
+</html>
