@@ -389,7 +389,7 @@ var EVAL = (function(){
     h += '</section>';
 
     /* --- Grille de compétence -------------------------------------------- */
-    h += '<section><h2>Compétence CT 2.1 — S\'approprier un cahier des charges</h2>' +
+    h += '<section><h2>Compétence — Décrire les interactions entre un objet ou un système technique, son environnement et les utilisateurs</h2>' +
          grilleHTML(b) + '</section>';
 
     box.innerHTML = h;

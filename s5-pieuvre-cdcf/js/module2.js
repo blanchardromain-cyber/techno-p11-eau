@@ -56,7 +56,7 @@ var M2 = (function(){
      un client les dit : « une dizaine de centimètres », « un demi-litre », « un
      quart d'heure ». Le travail de l'élève n'est donc pas de recopier une
      cellule, c'est de traduire une formulation en grandeur, nombre et unité —
-     ce que demande exactement la compétence CT 2.1.
+     ce que demande exactement la compétence « Décrire les interactions entre un OST, son environnement et les utilisateurs ».
      ====================================================================== */
 
   function construireDemande(ost){

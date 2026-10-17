@@ -457,7 +457,7 @@ var P11DATA = (function(){
     { min:60, code:'MS', nom:"Maîtrise satisfaisante", couleur:'#2E75B6',
       texte:"Tu sais lire et compléter un cahier des charges fonctionnel. Soigne encore la formulation des fonctions (verbe à l'infinitif)." },
     { min:80, code:'TBM',nom:"Très bonne maîtrise",    couleur:'#1E8E5A',
-      texte:"Tu t'appropries un cahier des charges et tu sais en rédiger un pour un objet nouveau. C'est exactement l'attendu de la compétence CT 2.1." }
+      texte:"Tu t'appropries un cahier des charges et tu sais en rédiger un pour un objet nouveau. C'est exactement l'attendu de la compétence « Décrire les interactions entre un objet ou un système technique, son environnement et les utilisateurs »." }
   ];
 
   /* ---------------------------------------------------------------------

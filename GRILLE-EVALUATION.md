@@ -1,7 +1,7 @@
 # Grille d'évaluation — P11 · Séance 5
 
 **Pieuvre et cahier des charges** · Technologie, cycle 4, classe de 4ᵉ
-Compétence travaillée : **CT 2.1 — S'approprier un cahier des charges.**
+Compétence travaillée : **Décrire les interactions entre un objet ou un système technique, son environnement et les utilisateurs — Faire la liste des interacteurs extérieurs d’un OST ; Repérer et expliquer les contraintes, exigences prises en compte pour répondre aux attentes des utilisateurs.**
 
 Cette grille décrit ce que l'activité numérique
 [`s5-pieuvre-cdcf/`](s5-pieuvre-cdcf/) évalue, comment, et ce qui reste à la
@@ -125,7 +125,7 @@ d'heure », « quatre-vingts millimètres de diamètre ».
 
 Le travail de l'élève n'est donc pas de recopier une cellule, mais de traduire
 une formulation en grandeur, nombre et unité. C'est exactement ce que demande
-CT 2.1, et c'est le registre du document de référence sur le robot explorateur.
+la compétence « Décrire les interactions… », et c'est le registre du document de référence sur le robot explorateur.
 
 Un **exemple entièrement traité** précède le tableau : une phrase du même
 courrier, suivie de la fonction, du critère, du niveau et de l'unité qu'on en
@@ -219,7 +219,7 @@ La compétence est positionnée sur le pourcentage de points obtenus.
 | **Maîtrise insuffisante** | < 40 % | Les notions de fonction principale et de contrainte ne sont pas en place |
 | **Maîtrise fragile** | 40 à 59 % | Distingue l'essentiel, mais critères et niveaux restent flous |
 | **Maîtrise satisfaisante** | 60 à 79 % | Sait lire et compléter un cahier des charges fonctionnel |
-| **Très bonne maîtrise** | ≥ 80 % | Sait en rédiger un pour un objet nouveau — l'attendu de CT 2.1 |
+| **Très bonne maîtrise** | ≥ 80 % | Sait en rédiger un pour un objet nouveau — l'attendu de la compétence |
 
 ---
 

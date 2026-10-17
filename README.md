@@ -10,15 +10,15 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 | Fichier | Activité | Compétence | Ce que l'élève fait |
 |---|---|---|---|
 | `index.html` | — | — | Page d'accueil : la liste des outils de la séquence |
-| `tableur-facture.html` | 2 | CT 2.5 | Retrouve les formules de calcul d'une facture d'eau |
-| `bete-a-cornes.html` | 3 | CT 2.5 | Exprime le besoin auquel répond le robinet automatique |
-| `quiz-ip.html` | 4 | CT 2.5 | Vérifie ses connaissances sur l'indice de protection |
-| `s5-pieuvre-cdcf/` | 5 | CT 2.1 | Pieuvre, cahier des charges et défi créatif (3 missions) |
-| `entrainement-tableur.html` | Avant l'éval. 1 | CT 5.1 | Entraînement non noté : lire une feuille, écrire et corriger des formules, recopier (club photo) |
-| `evaluation-1-tableur.html` | Éval. 1 | CT 5.1 | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
-| `robinet-3d.html` | 7 | CT 4.5 | Observe le robinet en 3D (vue éclatée, flux d'information, d'énergie et d'eau, pas à pas) puis nomme et classe ses composants dans les deux chaînes ; mode Correction pour la mise en commun, schéma 2D si la 3D est bloquée (`?no3d`). Termes alignés sur la fiche A7 V2 : `P11/P11_activite_7/_sources/verif_coherence.py` |
-| [Matériauthèque](https://blanchardromain-cyber.github.io/materiautheque/?niveau=4) (dépôt `materiautheque`) | 8 | CT 4.5 | Choisit le matériau de la turbine (critères, tri, procédé) et enregistre sa justification en PDF |
-| `energie-grise.html` | 8 | CT 4.5 | Calcule la masse et l'énergie grise de sa turbine (matériau choisi dans la Matériauthèque) et d'une turbine en laiton ; valeurs identiques à `materiautheque/data/materiaux.json` (contrôlé par `outils/controle-donnees.mjs`) |
+| `tableur-facture.html` | 2 | Décrire et caractériser l’organisation interne (données, tableur) | Retrouve les formules de calcul d'une facture d'eau |
+| `bete-a-cornes.html` | 3 | Décrire les interactions OST / environnement / utilisateurs | Exprime le besoin auquel répond le robinet automatique |
+| `quiz-ip.html` | 4 | Décrire les interactions OST / environnement / utilisateurs | Vérifie ses connaissances sur l'indice de protection |
+| `s5-pieuvre-cdcf/` | 5 | Décrire les interactions OST / environnement / utilisateurs | Pieuvre, cahier des charges et défi créatif (3 missions) |
+| `entrainement-tableur.html` | Avant l'éval. 1 | Décrire et caractériser l’organisation interne (données, tableur) | Entraînement non noté : lire une feuille, écrire et corriger des formules, recopier (club photo) |
+| `evaluation-1-tableur.html` | Éval. 1 | Décrire et caractériser l’organisation interne (données, tableur) | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
+| `robinet-3d.html` | 7 | Décrire et caractériser l’organisation interne (énergies, données) | Observe le robinet en 3D (vue éclatée, flux d'information, d'énergie et d'eau, pas à pas) puis nomme et classe ses composants dans les deux chaînes ; mode Correction pour la mise en commun, schéma 2D si la 3D est bloquée (`?no3d`). Termes alignés sur la fiche A7 V2 : `P11/P11_activite_7/_sources/verif_coherence.py` |
+| [Matériauthèque](https://blanchardromain-cyber.github.io/materiautheque/?niveau=4) (dépôt `materiautheque`) | 8 | Caractériser et choisir un OST selon différents critères | Choisit le matériau de la turbine (critères, tri, procédé) et enregistre sa justification en PDF |
+| `energie-grise.html` | 8 | Caractériser et choisir un OST selon différents critères | Calcule la masse et l'énergie grise de sa turbine (matériau choisi dans la Matériauthèque) et d'une turbine en laiton ; valeurs identiques à `materiautheque/data/materiaux.json` (contrôlé par `outils/controle-donnees.mjs`) |
 
 La séance 5 prolonge la fiche papier *P11 — S5 : Pieuvre et cahier des charges*.
 Elle reprend le même objet technique que la séance 3, le robinet automatique :
