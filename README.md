@@ -36,7 +36,7 @@ est gardée dans le navigateur du poste (bouton « Recommencer » pour l'effacer
 | Durée | Partie | Ce que font les élèves |
 |---|---|---|
 | 2 min | Lancement | Le professeur projette la page et lit la problématique. |
-| 4 min | 1 · Comprendre | Animation en 5 étapes, au bouton « Suivant » : pourquoi un FAST, lecture « Comment ? » (→), « Pourquoi ? » (←), « Quand ? » (le robinet fonctionne, les fonctions s'allument du haut vers le bas ; produire l'énergie reste allumée, en parallèle), verbes à l'infinitif. |
+| 4 min | 1 · Comprendre | Animation en 5 étapes, au bouton « Suivant » : pourquoi un FAST, lecture « Comment ? » (→) et « Pourquoi ? » (←) sur une ligne du scooter de l'exercice n°2, « Quand ? » (le robinet fonctionne, les fonctions s'allument du haut vers le bas ; produire l'énergie reste allumée, en parallèle), verbes à l'infinitif. Aucune solution du robinet n'est nommée dans cette partie : les composants du schéma s'allument sans leur nom. |
 | 5 min | 2 · Associer | Glisser (ou cliquer puis cliquer) les 4 solutions et écarter 2 pièges (pile, bouton poussoir). Consigne orale avant « Vérifier ». Indice en question au 1er essai faux, réponse au 2e. |
 | 3 min | 2 · Ranger | Ranger les 3 premières fonctions dans l'ordre où elles interviennent (glisser ou ↑ ↓) ; la 4ᵉ est fixe, « en parallèle ». |
 | 1 min | 3 · Retenir | « Nous validons », encadré à retenir, recopie du FAST sur la fiche papier. |
