@@ -105,6 +105,7 @@
   #rob .lbl{opacity:0;transition:opacity .3s;font:700 14px Inter,Arial,sans-serif;fill:var(--navy)}
   #rob.on-capteur #c-capteur,#rob.on-carte #c-carte,#rob.on-vanne #c-vanne,#rob.on-turbine #c-turbine{opacity:1}
   #rob.on-capteur #l-capteur,#rob.on-carte #l-carte,#rob.on-vanne #l-vanne,#rob.on-turbine #l-turbine{opacity:1}
+  #rob.anonyme .lbl{opacity:0 !important}   /* partie 1 : les composants s'allument sans leur nom, qui serait la réponse */
   #rob .glow{opacity:0;transition:opacity .3s}
   #rob.on-capteur #g-capteur,#rob.on-carte #g-carte,#rob.on-vanne #g-vanne,#rob.on-turbine #g-turbine{opacity:1}
   #rob #mains{transform:translateX(90px);opacity:0;transition:transform .7s ease,opacity .5s}
@@ -241,7 +242,7 @@
 
   <main class="card" id="ecran" aria-live="polite"></main>
 
-  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-10-23a</div>
+  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-10-23b</div>
 </div>
 
 <script>
@@ -293,7 +294,7 @@ function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 /* ═══ Le robinet schématique (SVG) ═══ */
 var ROBINET =
 '<figure class="schema"><svg id="rob" viewBox="0 0 320 300" role="img" aria-labelledby="rob-t">' +
-'<title id="rob-t">Schéma du robinet automatique : capteur infrarouge sous le bec, carte électronique, électrovanne et turbine avec générateur sur l’arrivée d’eau.</title>' +
+'<title id="rob-t">Schéma du robinet automatique vu en coupe : l’arrivée d’eau, le bec, la vasque et les composants qui s’allument quand ils agissent.</title>' +
 '<ellipse cx="216" cy="262" rx="88" ry="16" fill="#E3EEF5" stroke="#9FB4C3" stroke-width="2"/>' +
 '<path d="M58 296 V60 H216 V84" fill="none" stroke="#9CC9E3" stroke-width="13" stroke-linejoin="round"/>' +
 '<text x="8" y="292" font-size="11" fill="#5B6675" font-family="Inter,Arial">arrivée d’eau</text>' +
@@ -328,6 +329,7 @@ function robinet(classes, legende) {
   var r = document.getElementById("rob");
   if (!r) return;
   r.setAttribute("class", classes || "");
+  if (/\banonyme\b/.test(classes)) r.querySelectorAll(".lbl").forEach(function (t) { t.remove(); });   // ni visibles, ni dans le texte de la page
   if (legende) document.getElementById("rob-cap").textContent = legende;
 }
 
@@ -370,35 +372,47 @@ var FLECHE_G = '<svg viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden
 var PAS = [
   { etape:1, titre:"Pourquoi un FAST ?",
     recit:'<span class="q">Le besoin : « Distribuer de l’eau sans contact pour économiser l’eau ».</span>Mais quels composants faut-il acheter pour fabriquer ce robinet ? Le besoin ne le dit pas.<span class="rep">Le FAST fait le pont : fonction d’usage → fonctions techniques → solutions techniques (les composants réels).</span>',
-    rev:[], schema:false },
+    schema:false },
+  /* « Comment ? » et « Pourquoi ? » se montrent sur le scooter de l'exercice n°2 (déjà corrigé),
+     pour ne dévoiler aucune solution du robinet avant la partie 2. */
   { etape:2, titre:"Lire de gauche à droite : « Comment ? »",
-    recit:'<span class="q">Comment détecter la présence des mains ?</span>On suit la flèche de gauche à droite, de la fonction vers la solution.<span class="rep">→ Grâce au capteur infrarouge.</span>',
-    rev:["detecter"], vue:"detecter", sens:'<span>Comment ?</span>' + FLECHE_D, schema:false },
+    recit:'<span class="q">Exemple : le scooter de l’exercice n°2. Comment freiner le scooter ?</span>On suit la flèche de gauche à droite, de la fonction vers la solution.<span class="rep">→ Grâce aux poignées, câbles et freins à disque.</span>',
+    scooter:'<span>Comment ?</span>' + FLECHE_D, schema:false },
   { etape:3, titre:"Lire de droite à gauche : « Pourquoi ? »",
-    recit:'<span class="q">Pourquoi une électrovanne ?</span>On repart en sens inverse, de la solution vers la fonction.<span class="rep">← Pour ouvrir / fermer l’arrivée d’eau.</span>',
-    rev:["detecter","ouvrir"], vue:"ouvrir", sens:FLECHE_G + '<span>Pourquoi ?</span>', schema:false },
+    recit:'<span class="q">Pourquoi des freins à disque ?</span>On repart en sens inverse, de la solution vers la fonction.<span class="rep">← Pour freiner le scooter.</span>',
+    scooter:FLECHE_G + '<span>Pourquoi ?</span>', schema:false },
   { etape:4, titre:"À la verticale : « Quand ? »",
-    recit:'<span class="q">Que se passe-t-il d’abord ? Et ensuite ?</span>L’eau sous pression fait tourner la turbine : <b>produire l’énergie électrique</b> se fait en même temps que tout le reste, pendant tout le fonctionnement.',
-    rev:["detecter","ouvrir"], allume:["produire"], rob:"on-turbine", schema:true },
+    recit:'<span class="q">Que se passe-t-il d’abord ? Et ensuite ?</span>Sans pile, l’énergie vient de l’eau : <b>produire l’énergie électrique</b> se fait en même temps que tout le reste, pendant tout le fonctionnement.',
+    allume:["produire"], rob:"on-turbine", schema:true },
   { etape:4, titre:"À la verticale : « Quand ? »",
-    recit:'<span class="q">① Les mains approchent.</span>Le capteur infrarouge les détecte : c’est la première fonction qui intervient.',
-    rev:["detecter","ouvrir"], allume:["produire","detecter"], num:1, rob:"on-turbine on-capteur mains faisceau", schema:true },
+    recit:'<span class="q">① Les mains approchent.</span>Le robinet doit d’abord les repérer : <b>détecter la présence des mains</b> est la première fonction qui intervient.',
+    allume:["produire","detecter"], num:1, rob:"on-turbine on-capteur mains faisceau", schema:true },
   { etape:4, titre:"À la verticale : « Quand ? »",
-    recit:'<span class="q">② La carte électronique réfléchit.</span>Elle reçoit l’information du capteur, la traite et commande l’ouverture.',
-    rev:["detecter","ouvrir"], allume:["produire","detecter","traiter"], num:2, rob:"on-turbine on-capteur on-carte mains faisceau info cmd", schema:true },
+    recit:'<span class="q">② Le robinet décide.</span>L’information « des mains sont là » doit être <b>traitée</b>, puis l’ouverture <b>commandée</b>.',
+    allume:["produire","detecter","traiter"], num:2, rob:"on-turbine on-capteur on-carte mains faisceau info cmd", schema:true },
   { etape:4, titre:"À la verticale : « Quand ? »",
-    recit:'<span class="q">③ L’électrovanne s’ouvre : l’eau coule.</span>Les fonctions sont rangées <b>du haut vers le bas, dans l’ordre où elles interviennent</b>. « Produire l’énergie électrique » agit <b>en même temps</b> que les autres : elle est placée en bas.',
-    rev:["detecter","ouvrir"], allume:["produire","detecter","traiter","ouvrir"], num:3, rob:"on-turbine on-capteur on-carte on-vanne mains info cmd eau", schema:true },
+    recit:'<span class="q">③ L’arrivée d’eau s’ouvre : l’eau coule.</span>Les fonctions sont rangées <b>du haut vers le bas, dans l’ordre où elles interviennent</b>. « Produire l’énergie électrique » agit <b>en même temps</b> que les autres : elle est placée en bas.',
+    allume:["produire","detecter","traiter","ouvrir"], num:3, rob:"on-turbine on-capteur on-carte on-vanne mains info cmd eau", schema:true },
   { etape:5, titre:"Une fonction commence par un verbe à l’infinitif",
-    recit:'<span class="q">Regardez les mots surlignés.</span>Distribuer, Détecter, Traiter, commander, Ouvrir / fermer, Produire : chaque fonction commence par un <b>verbe à l’infinitif</b>.',
-    rev:["detecter","ouvrir"], verbes:true, schema:false }
+    recit:'<span class="q">Regardez les mots surlignés.</span>Distribuer, Détecter, Traiter, commander, Ouvrir / fermer, Produire : chaque fonction commence par un <b>verbe à l’infinitif</b>. Les solutions techniques du robinet, c’est à vous de les trouver !',
+    verbes:true, schema:false }
 ];
+function miniScooter(sens) {
+  return '<div class="fast" role="group" aria-label="Une ligne du FAST du scooter">' +
+    '<div class="sens" style="grid-row:1">' + sens + '</div>' +
+    '<div class="fh" style="grid-column:1;grid-row:2">Fonction d’usage</div><div class="fh" style="grid-column:3;grid-row:2">Fonction technique</div><div class="fh" style="grid-column:5;grid-row:2">Solution technique</div>' +
+    '<div class="fu" style="grid-row:3">Se déplacer : transporter une personne sur la route</div>' +
+    '<div class="lk2" style="grid-column:2;grid-row:3"></div>' +
+    '<div class="ft vue" style="grid-column:3;grid-row:3;padding-left:12px">Freiner le scooter</div>' +
+    '<div class="lk2" style="grid-column:4;grid-row:3"></div>' +
+    '<div class="stcell" style="grid-column:5;grid-row:3"><div class="st rev" style="box-shadow:0 0 0 4px #FFB38A">Poignées, câbles et freins à disque</div></div>' +
+    '</div><p class="sous" style="margin-top:12px">Sur le robinet, la colonne des solutions techniques reste cachée : vous la compléterez à l’étape 2.</p>';
+}
 function ecranComprendre() {
   var p = PAS[S.pas], numMax = p.num || 0;
   var lignes = ORDRE_REF.concat(["produire"]).map(function (id) {
     var k = ORDRE_REF.indexOf(id);
-    var L = { id:id, allume:(p.allume || []).indexOf(id) >= 0, vue:p.vue === id,
-              stHTML:stFixe(p.rev.indexOf(id) >= 0 ? ETQ[ft(id).sol].t : "", p.vue === id) };
+    var L = { id:id, allume:(p.allume || []).indexOf(id) >= 0, stHTML:stFixe("") };
     if (p.etape >= 4) {
       if (id === "produire") { L.numero = "≡"; L.badge = "en même temps · pendant tout le fonctionnement"; }
       else if (p.etape === 5 || k < numMax) L.numero = k + 1;
@@ -411,13 +425,13 @@ function ecranComprendre() {
     '<div class="points" aria-label="Étape ' + p.etape + ' sur 5">' + pts + '<span>Étape ' + p.etape + ' / 5</span></div>' +
     '<div class="anim' + (p.schema ? "" : " sans-schema") + '" style="margin-top:12px"><div>' +
     '<div class="recit">' + p.recit + '</div>' +
-    grilleFAST(lignes, { sens:p.sens, quand:p.etape === 4, verbes:p.verbes }) + '</div>' +
+    (p.scooter ? miniScooter(p.scooter) : grilleFAST(lignes, { quand:p.etape === 4, verbes:p.verbes })) + '</div>' +
     (p.schema ? '<div>' + ROBINET + '</div>' : "") + '</div>' +
     '<div class="barre"><button type="button" class="btn sec" id="b-prec"' + (S.pas === 0 ? " disabled" : "") + '>← Précédent</button>' +
     '<button type="button" class="btn" id="b-suiv">' + (S.pas === PAS.length - 1 ? "Je passe à l’activité →" : "Suivant →") + '</button>' +
     '<span class="esp"></span><button type="button" class="lien" id="b-passer">Passer l’animation</button></div>';
   afficher(h, 1);
-  if (p.schema) robinet(p.rob, "Le robinet, vu en coupe");
+  if (p.schema) robinet(p.rob + " anonyme", "Le robinet, vu en coupe : ce qui agit s’allume");
   document.getElementById("b-prec").onclick = function () { if (S.pas > 0) { S.pas--; garder(); ecranComprendre(); } };
   document.getElementById("b-suiv").onclick = function () {
     if (S.pas < PAS.length - 1) { S.pas++; garder(); ecranComprendre(); } else aller("associer");
