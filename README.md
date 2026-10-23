@@ -14,6 +14,7 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 | `bete-a-cornes.html` | 3 | Décrire les interactions OST / environnement / utilisateurs | Exprime le besoin auquel répond le robinet automatique |
 | `quiz-ip.html` | 4 | Décrire les interactions OST / environnement / utilisateurs | Vérifie ses connaissances sur l'indice de protection |
 | `s5-pieuvre-cdcf/` | 5 | Décrire les interactions OST / environnement / utilisateurs | Pieuvre, cahier des charges et défi créatif (3 missions) |
+| `fast-robinet.html` | 6 | Décrire et caractériser l’organisation interne (énergies, données) | Non noté : animation pas à pas (Comment ? Pourquoi ? Quand ?), associe les solutions aux fonctions du robinet, range les fonctions dans l'ordre du fonctionnement, puis recopie son FAST sur la fiche A6. Voir « L'activité 6 » plus bas |
 | `entrainement-tableur.html` | Avant l'éval. 1 | Décrire et caractériser l’organisation interne (données, tableur) | Entraînement non noté : lire une feuille, écrire et corriger des formules, recopier (club photo) |
 | `evaluation-1-tableur.html` | Éval. 1 | Décrire et caractériser l’organisation interne (données, tableur) | Partie C de l'évaluation n°1 : mini-tableur autoévalué, note reportée au classeur |
 | `robinet-3d.html` | 7 | Décrire et caractériser l’organisation interne (énergies, données) | Observe le robinet en 3D (vue éclatée, flux d'information, d'énergie et d'eau, pas à pas) puis nomme et classe ses composants dans les deux chaînes ; mode Correction pour la mise en commun, schéma 2D si la 3D est bloquée (`?no3d`). Termes alignés sur la fiche A7 V2 : `P11/P11_activite_7/_sources/verif_coherence.py` |
@@ -23,6 +24,40 @@ Site publié : <https://blanchardromain-cyber.github.io/techno-p11-eau/>
 La séance 5 prolonge la fiche papier *P11 — S5 : Pieuvre et cahier des charges*.
 Elle reprend le même objet technique que la séance 3, le robinet automatique :
 l'élève passe du besoin (bête à cornes) aux fonctions et à leurs exigences chiffrées.
+
+## L'activité 6 : le diagramme FAST du robinet (note professeur)
+
+`fast-robinet.html` prolonge la fiche *P11 - S6 Fiche élève - Diagramme FAST* (Drive, dossier A6).
+Outil d'entraînement : aucune note, aucun envoi, aucune donnée personnelle. La progression
+est gardée dans le navigateur du poste (bouton « Recommencer » pour l'effacer).
+
+**Déroulé (15 min, binômes, 1 poste pour 2)**
+
+| Durée | Partie | Ce que font les élèves |
+|---|---|---|
+| 2 min | Lancement | Le professeur projette la page et lit la problématique. |
+| 4 min | 1 · Comprendre | Animation en 5 étapes, au bouton « Suivant » : pourquoi un FAST, lecture « Comment ? » (→), « Pourquoi ? » (←), « Quand ? » (le robinet fonctionne, les fonctions s'allument du haut vers le bas ; produire l'énergie reste allumée, en parallèle), verbes à l'infinitif. |
+| 5 min | 2 · Associer | Glisser (ou cliquer puis cliquer) les 4 solutions et écarter 2 pièges (pile, bouton poussoir). Consigne orale avant « Vérifier ». Indice en question au 1er essai faux, réponse au 2e. |
+| 3 min | 2 · Ranger | Ranger les 3 premières fonctions dans l'ordre où elles interviennent (glisser ou ↑ ↓) ; la 4ᵉ est fixe, « en parallèle ». |
+| 1 min | 3 · Retenir | « Nous validons », encadré à retenir, recopie du FAST sur la fiche papier. |
+
+**Corrigé** (texte identique au corrigé A6)
+
+| Rang (« Quand ? ») | Fonction technique | Solution technique |
+|---|---|---|
+| 1 | Détecter la présence des mains | Capteur infrarouge |
+| 2 | Traiter l’information et commander | Carte électronique (microcontrôleur) |
+| 3 | Ouvrir / fermer l’arrivée d’eau | Électrovanne |
+| en parallèle | Produire l’énergie électrique (sans pile) | Turbine + générateur |
+
+Fonction d'usage : *Distribuer de l’eau sans contact pour économiser l’eau*.
+
+**Adresses utiles pour projeter** : `fast-robinet.html#comprendre-1` à `#comprendre-8` (une étape de
+l'animation), `#associer`, `#ordre`, `#retenir` (sur un poste où l'activité n'a pas été validée,
+`#retenir` affiche le FAST complété, pour la mise en commun).
+
+Un essai n'est compté que si la réponse a changé : cliquer deux fois sur « Vérifier » ne fait pas
+apparaître la réponse.
 
 ## L'évaluation n°1 : la partie C sur ordinateur
 
