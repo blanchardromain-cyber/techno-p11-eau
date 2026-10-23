@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Activité 6 · Le diagramme FAST du robinet automatique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --navy:#0B3C5D; --blue:#0A6EA8; --turq:#0B7A7C; --light:#D9EEF7; --lighter:#EEF7FB; --aqua:#BDE6EA;
+    --ok:#1E7B4C; --okbg:#E6F5EC; --warn:#8A5300; --warnbg:#FFF4DE; --grey:#5B6675; --tx:#1A2330;
+    --hl:#FFE27A;
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Inter',Arial,sans-serif;margin:0;background:#F1F7FB;color:var(--tx);line-height:1.5;font-size:17px}
+  body.dys{font-family:Verdana,Tahoma,sans-serif;letter-spacing:.04em;word-spacing:.14em;line-height:1.75}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 16px 50px}
+  button{font-family:inherit;font-size:inherit}
+  :focus-visible{outline:3px solid #F2A900;outline-offset:2px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------- En-tête et progression ---------- */
+  header.band{background:linear-gradient(120deg,var(--navy),var(--blue) 70%,var(--turq));color:#fff;border-radius:14px;padding:16px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  header.band .titres{flex:1;min-width:240px}
+  header.band .k{font-size:12.5px;letter-spacing:.04em;color:#CFE6F5;font-weight:600}
+  header.band h1{margin:4px 0 0;font-size:22px;font-weight:800}
+  header.band p{margin:4px 0 0;color:#E3F1FA;font-size:14.5px}
+  .outils{display:flex;gap:8px;flex-wrap:wrap}
+  .outil{background:rgba(255,255,255,.14);color:#fff;border:2px solid rgba(255,255,255,.55);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700;cursor:pointer}
+  .outil:hover{background:rgba(255,255,255,.26)}
+  .outil[aria-pressed="true"]{background:#fff;color:var(--navy)}
+
+  ol.prog{list-style:none;display:flex;gap:8px;margin:16px 0 0;padding:0}
+  ol.prog li{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #CFE0EA;border-radius:12px;padding:9px 12px;font-weight:700;color:var(--grey);font-size:15px}
+  ol.prog li .n{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#E3EDF3;color:var(--grey);font-weight:800}
+  ol.prog li.cur{border-color:var(--blue);color:var(--navy)}
+  ol.prog li.cur .n{background:var(--blue);color:#fff}
+  ol.prog li.fait{color:var(--ok)}
+  ol.prog li.fait .n{background:var(--ok);color:#fff}
+
+  .card{background:#fff;border:1px solid #DCE8F0;border-radius:14px;padding:20px 22px;margin-top:16px;box-shadow:0 2px 10px rgba(11,60,93,.06)}
+  h2{color:var(--navy);font-size:22px;margin:0 0 6px}
+  .sous{color:var(--grey);margin:0 0 14px;font-size:15.5px}
+  .consigne{background:var(--lighter);border-left:5px solid var(--blue);border-radius:10px;padding:12px 14px;margin:0 0 14px;font-size:16.5px}
+  .parle{display:flex;gap:10px;align-items:flex-start;background:#FFF8E6;border:2px dashed #E0A800;border-radius:12px;padding:11px 14px;margin:14px 0 4px;font-size:16px;color:#4A3500}
+  .parle .ic{font-size:22px;line-height:1}
+
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:11px;padding:13px 22px;font-size:17px;font-weight:700;cursor:pointer;min-height:48px}
+  .btn:hover{background:#085C8C}
+  .btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .btn.sec:hover{background:var(--lighter)}
+  .btn.go{background:var(--ok)}
+  .btn.go:hover{background:#17623C}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .barre{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .barre .esp{flex:1}
+  .lien{background:none;border:none;color:var(--blue);text-decoration:underline;cursor:pointer;padding:8px 4px;font-weight:600}
+
+  /* ---------- Le diagramme FAST (grille) ---------- */
+  .fast{display:grid;grid-template-columns:minmax(150px,1fr) 26px minmax(200px,1.25fr) 26px minmax(200px,1.25fr);align-items:stretch;row-gap:12px;position:relative}
+  .fast .fh{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--turq);text-align:center;align-self:end;padding-bottom:2px}
+  .fast .fu{grid-column:1;background:var(--navy);color:#fff;border-radius:12px;padding:16px 12px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .lk{position:relative}
+  .lk::before{content:"";position:absolute;left:0;top:-6px;bottom:-6px;border-left:3px solid var(--navy)}
+  .lk.first::before{top:50%}
+  .lk.last::before{bottom:50%}
+  .lk::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:3px solid var(--navy)}
+  .lk2{position:relative}
+  .lk2::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:3px solid var(--navy)}
+  .ft{background:#fff;border:3px solid var(--blue);border-radius:12px;padding:12px 12px 12px 48px;font-weight:700;color:var(--navy);position:relative;display:flex;align-items:center;min-height:62px;transition:background .25s,border-color .25s,box-shadow .25s}
+  .ft .num{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:#E3EDF3;color:var(--grey);display:grid;place-items:center;font-weight:800;font-size:15px}
+  .ft.allume{background:#FFF7D1;border-color:#C98F00;box-shadow:0 0 0 4px #FFE9A3}
+  .ft.allume .num{background:#C98F00;color:#fff}
+  .ft.trait{opacity:.5}
+  .badge{display:inline-block;margin-top:6px;background:var(--turq);color:#fff;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700;letter-spacing:.02em}
+  .ft .col{display:flex;flex-direction:column;align-items:flex-start}
+  .st{border:3px dashed #9FC3D8;border-radius:12px;min-height:62px;display:flex;align-items:center;justify-content:center;padding:8px 10px;color:var(--grey);font-weight:700;text-align:center;background:#FAFDFF}
+  .st.rev{border-style:solid;border-color:var(--turq);background:var(--lighter);color:var(--navy)}
+  .st.inc{font-size:22px;color:#9FB4C3}
+  .sens{grid-column:1 / -1;display:flex;align-items:center;gap:10px;font-weight:800;color:#B03A00;font-size:18px}
+  .sens svg{flex:1;height:22px}
+  .ft.vue{box-shadow:0 0 0 4px #FFB38A}
+  .verbe{background:var(--hl);color:#3A2B00;border-radius:4px;padding:0 3px;box-shadow:0 0 0 2px var(--hl)}
+  .fu .verbe{color:#3A2B00}
+
+  /* ---------- Partie 1 : texte de l'étape ---------- */
+  .anim{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+  .anim.sans-schema{grid-template-columns:minmax(0,1fr)}
+  .recit{font-size:18px;background:var(--lighter);border-radius:12px;padding:14px 16px;margin-bottom:14px;min-height:96px}
+  .recit .q{font-weight:800;color:var(--navy);font-size:19px;display:block;margin-bottom:4px}
+  .recit .rep{display:block;margin-top:6px;font-weight:700;color:#B03A00}
+  .points{display:flex;gap:6px;align-items:center;color:var(--grey);font-size:14px;font-weight:600}
+  .points i{width:10px;height:10px;border-radius:50%;background:#C9D9E3;display:inline-block}
+  .points i.on{background:var(--blue)}
+
+  /* ---------- Le robinet schématique ---------- */
+  .schema{background:#F7FBFE;border:1px solid #DCE8F0;border-radius:12px;padding:8px;margin:0}
+  h2[tabindex="-1"]:focus{outline:none}
+  .schema svg{display:block;width:100%;height:auto}
+  .schema figcaption{font-size:13.5px;color:var(--grey);text-align:center;margin-top:4px}
+  #rob .comp{opacity:.35;transition:opacity .3s}
+  #rob .lbl{opacity:0;transition:opacity .3s;font:700 14px Inter,Arial,sans-serif;fill:var(--navy)}
+  #rob.on-capteur #c-capteur,#rob.on-carte #c-carte,#rob.on-vanne #c-vanne,#rob.on-turbine #c-turbine{opacity:1}
+  #rob.on-capteur #l-capteur,#rob.on-carte #l-carte,#rob.on-vanne #l-vanne,#rob.on-turbine #l-turbine{opacity:1}
+  #rob .glow{opacity:0;transition:opacity .3s}
+  #rob.on-capteur #g-capteur,#rob.on-carte #g-carte,#rob.on-vanne #g-vanne,#rob.on-turbine #g-turbine{opacity:1}
+  #rob #mains{transform:translateX(90px);opacity:0;transition:transform .7s ease,opacity .5s}
+  #rob.mains #mains{transform:none;opacity:1}
+  #rob #faisceau{opacity:0;transition:opacity .3s}
+  #rob.faisceau #faisceau{opacity:.55}
+  #rob #jet{opacity:0;transition:opacity .3s}
+  #rob.eau #jet{opacity:1;animation:coule .6s linear infinite}
+  #rob #pales{transform-origin:58px 252px}
+  #rob.eau #pales{animation:tourne 1.2s linear infinite}
+  #rob #info{opacity:0;transition:opacity .3s}
+  #rob.info #info{opacity:1}
+  #rob #cmd{opacity:0;transition:opacity .3s}
+  #rob.cmd #cmd{opacity:1}
+  @keyframes coule{to{stroke-dashoffset:-20}}
+  @keyframes tourne{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){
+    #rob.eau #jet,#rob.eau #pales{animation:none}
+    #rob #mains,.ft{transition:none}
+  }
+
+  /* ---------- Partie 2 : étiquettes et cases ---------- */
+  .assoc{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:18px;align-items:start}
+  .banque{display:flex;flex-wrap:wrap;gap:10px;background:var(--lighter);border:2px dashed #9FC3D8;border-radius:12px;padding:12px;min-height:72px;margin-bottom:16px}
+  .banque .vide{color:var(--grey);font-style:italic;align-self:center}
+  .etq{background:#fff;color:var(--navy);border:3px solid var(--turq);border-radius:12px;padding:11px 14px;font-weight:700;cursor:grab;min-height:50px;box-shadow:0 2px 6px rgba(11,60,93,.12);display:inline-flex;align-items:center;gap:8px;text-align:left}
+  .etq::before{content:"⠿";color:#7FA9BD;font-size:16px}
+  .etq[aria-pressed="true"]{background:var(--turq);color:#fff;box-shadow:0 0 0 4px #A8E0E2}
+  .etq[aria-pressed="true"]::before{color:#fff}
+  .etq.juste{cursor:default;border-color:var(--ok)}
+  .etq.juste::before{content:"✔";color:var(--ok)}
+  .zone{width:100%;border:3px dashed #9FC3D8;border-radius:12px;min-height:62px;background:#FAFDFF;display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:6px;cursor:pointer;color:var(--grey);font-weight:600}
+  .zone.cible{border-color:var(--turq);background:#E8F7F7}
+  .zone.survol{border-color:#C98F00;background:#FFF7D1}
+  .zone .etq{width:100%}
+  .zone.ok{border:3px solid var(--ok);background:var(--okbg);cursor:default}
+  .zone.ko{border:3px solid var(--warn);background:var(--warnbg)}
+  .zone .ph{text-align:center}
+  .verdict{font-size:14.5px;font-weight:700;margin-top:6px;padding:6px 8px;border-radius:8px;text-align:left}
+  .verdict.ok{color:var(--ok)}
+  .verdict.ko{color:#6B4000;background:#FFF0CC}
+  .verdict .ind{display:block;font-weight:600;margin-top:3px}
+  .verdict .rep{display:block;margin-top:3px;color:var(--navy)}
+  .stcell{display:flex;flex-direction:column}
+
+  .bilan{margin-top:14px;padding:12px 14px;border-radius:10px;font-weight:700;font-size:16.5px}
+  .bilan.ok{background:var(--okbg);color:#145233;border-left:6px solid var(--ok)}
+  .bilan.ko{background:var(--warnbg);color:#5A3700;border-left:6px solid var(--warn)}
+
+  /* ---------- Partie 2 : ranger ---------- */
+  .ordre{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+  .rang{display:grid;grid-template-columns:46px minmax(0,1fr) minmax(0,.9fr) auto;gap:10px;align-items:center;background:#fff;border:3px solid var(--blue);border-radius:12px;padding:10px 12px}
+  .rang .poignee{cursor:grab;font-size:22px;color:#7FA9BD;text-align:center;user-select:none}
+  .rang .n{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800}
+  .rang .f{font-weight:700;color:var(--navy)}
+  .rang .s{color:var(--turq);font-weight:700}
+  .rang .fl{display:flex;gap:6px}
+  .fleche{width:48px;height:48px;border-radius:10px;border:2px solid var(--blue);background:#fff;color:var(--blue);font-size:22px;font-weight:800;cursor:pointer}
+  .fleche:hover{background:var(--lighter)}
+  .fleche[disabled]{opacity:.3;cursor:not-allowed}
+  .rang.glisse{opacity:.5}
+  .rang.survol{box-shadow:0 0 0 4px #FFE9A3}
+  .rang.ok{border-color:var(--ok);background:var(--okbg)}
+  .rang.ko{border-color:var(--warn);background:var(--warnbg)}
+  .rang .etat{grid-column:2 / -1;font-size:14.5px;font-weight:700}
+  .rang.ok .etat{color:var(--ok)}
+  .rang.ko .etat{color:#6B4000}
+  .rang.fixe{border-style:dashed;border-color:var(--turq);background:#F2FAFA}
+  .rang.fixe .n{background:var(--turq)}
+  .quand{display:flex;align-items:center;gap:8px;color:var(--turq);font-weight:800;margin:0 0 8px}
+
+  /* ---------- Partie 3 ---------- */
+  .retenir{border:3px solid var(--navy);border-radius:14px;padding:18px 20px;background:#FFFDF3;font-size:19px}
+  .retenir .t{font-weight:800;color:var(--navy);font-size:21px;margin-bottom:8px}
+  .recopie{display:flex;gap:12px;align-items:center;background:var(--okbg);border-left:6px solid var(--ok);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:18px;font-weight:700;color:#145233}
+  table.recap{width:100%;border-collapse:collapse;font-size:17px}
+  table.recap th{background:var(--navy);color:#fff;padding:10px;text-align:center;border:2px solid var(--navy)}
+  table.recap td{border:2px solid #9FB4C3;padding:10px 12px;vertical-align:middle}
+  table.recap td.fu{font-weight:800;text-align:center;background:var(--lighter)}
+  table.recap td.sol{font-weight:800;color:var(--navy)}
+  table.recap .par{display:block;font-size:13.5px;font-weight:700;color:var(--turq)}
+  .note-corr{background:#FFF4DE;border-left:6px solid var(--warn);border-radius:10px;padding:10px 14px;font-weight:700;color:#5A3700;margin-bottom:12px}
+
+  .footer{color:var(--grey);font-size:12px;text-align:center;margin-top:26px}
+  .footer a{color:var(--grey)}
+
+  @media (max-width:860px){
+    .anim,.assoc{grid-template-columns:minmax(0,1fr)}
+    .schema{max-width:340px;margin:0 auto}
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    ol.prog li{font-size:0;padding:8px;justify-content:center}
+    ol.prog li .n{font-size:15px}
+    .fast{grid-template-columns:minmax(0,1fr);row-gap:8px}
+    .fast .lk,.fast .lk2{display:none}
+    .fast .fh{text-align:left}
+    .fast > *{grid-column:1 !important;grid-row:auto !important}
+    .fast .ft{margin-top:8px}
+    .rang{grid-template-columns:40px minmax(0,1fr) auto}
+    .rang .s{grid-column:2}
+    .rang .fl{grid-column:3;grid-row:1 / span 2}
+    table.recap{font-size:14px}
+    table.recap th,table.recap td{padding:6px 7px}
+    table.recap td{overflow-wrap:anywhere}
+  }
+  @media print{
+    body{background:#fff;font-size:13pt}
+    header.band,ol.prog,.barre,.outils,.footer,.noprint{display:none !important}
+    .card{box-shadow:none;border:none;padding:0}
+    .wrap{max-width:none;padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="band">
+    <div class="titres">
+      <div class="k">TECHNOLOGIE · Cycle 4 · 4ᵉ · P11 — L’eau, ressource essentielle · Activité 6</div>
+      <h1>Le diagramme FAST du robinet automatique</h1>
+      <p>Quelles solutions techniques réalisent les fonctions du robinet automatique ?</p>
+    </div>
+    <div class="outils">
+      <button type="button" class="outil" id="b-dys" aria-pressed="false">Police DYS</button>
+      <button type="button" class="outil" id="b-reset">Recommencer</button>
+    </div>
+  </header>
+
+  <ol class="prog" id="prog" aria-label="Progression">
+    <li data-p="1"><span class="n">1</span>Comprendre</li>
+    <li data-p="2"><span class="n">2</span>Compléter</li>
+    <li data-p="3"><span class="n">3</span>Retenir</li>
+  </ol>
+
+  <main class="card" id="ecran" aria-live="polite"></main>
+
+  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-10-23a</div>
+</div>
+
+<script>
+/* ═══ CORRIGÉ — vocabulaire de la fiche « P11 - S6 Fiche élève - Diagramme FAST » et de son corrigé ═══ */
+var FU = "Distribuer de l’eau sans contact pour économiser l’eau";
+var FT = [
+  { id:"detecter", txt:"Détecter la présence des mains",            verbe:"Détecter",        sol:"capteur",
+    comment:"Comment le robinet sait-il que des mains sont là, sans qu’on le touche ?" },
+  { id:"traiter",  txt:"Traiter l’information et commander",        verbe:"Traiter",         verbe2:"commander", sol:"carte",
+    comment:"Comment le robinet décide-t-il d’ouvrir l’eau ? Quel composant exécute un programme ?" },
+  { id:"ouvrir",   txt:"Ouvrir / fermer l’arrivée d’eau",           verbe:"Ouvrir / fermer", sol:"vanne",
+    comment:"Comment laisser passer ou bloquer l’eau quand la carte en donne l’ordre ?" },
+  { id:"produire", txt:"Produire l’énergie électrique (sans pile)", verbe:"Produire",        sol:"turbine",
+    comment:"Comment fabriquer de l’électricité sans pile, avec l’eau qui coule ?" }
+];
+var ETQ = {
+  capteur:{ t:"Capteur infrarouge" },
+  carte:  { t:"Carte électronique (microcontrôleur)" },
+  vanne:  { t:"Électrovanne" },
+  turbine:{ t:"Turbine + générateur" },
+  pile:   { t:"Pile", pourquoiPas:"Une pile ne convient pas ici : la fonction dit « sans pile ». L’énergie vient de l’eau qui coule." },
+  bouton: { t:"Bouton poussoir", pourquoiPas:"Un bouton poussoir ne convient pas ici : il faudrait toucher le robinet, alors qu’il distribue l’eau sans contact." }
+};
+var ORDRE_REF = ["detecter", "traiter", "ouvrir"];   // « Quand ? » ; « produire » reste en bas, en parallèle
+var INDICE_ORDRE = "Racontez ce qui se passe quand on approche les mains : qu’est-ce qui arrive en premier ?";
+var CLE = "p11-a6-fast-v1";
+
+/* ═══ État, gardé dans le navigateur pour reprendre après un rechargement ═══ */
+var S;
+function etatNeuf() {
+  var ordre;
+  do { ordre = melange(ORDRE_REF); } while (ordre.join() === ORDRE_REF.join());
+  return { ecran:"comprendre", pas:0, ordre:ordre, banque:melange(Object.keys(ETQ)),
+           place:{}, ok:{}, essais:{}, verdicts:{}, ordreEssais:0, ordreOk:false, ordreVerdict:null, valide:false, dys:false };
+}
+function melange(t) {
+  var a = t.slice();
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; }
+  return a;
+}
+function charger() {
+  try { var s = JSON.parse(localStorage.getItem(CLE)); if (s && s.ordre && s.place) return s; } catch (e) {}
+  return etatNeuf();
+}
+function garder() { try { localStorage.setItem(CLE, JSON.stringify(S)); } catch (e) {} }
+function ft(id) { for (var i = 0; i < FT.length; i++) if (FT[i].id === id) return FT[i]; }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+/* ═══ Le robinet schématique (SVG) ═══ */
+var ROBINET =
+'<figure class="schema"><svg id="rob" viewBox="0 0 320 300" role="img" aria-labelledby="rob-t">' +
+'<title id="rob-t">Schéma du robinet automatique : capteur infrarouge sous le bec, carte électronique, électrovanne et turbine avec générateur sur l’arrivée d’eau.</title>' +
+'<ellipse cx="216" cy="262" rx="88" ry="16" fill="#E3EEF5" stroke="#9FB4C3" stroke-width="2"/>' +
+'<path d="M58 296 V60 H216 V84" fill="none" stroke="#9CC9E3" stroke-width="13" stroke-linejoin="round"/>' +
+'<text x="8" y="292" font-size="11" fill="#5B6675" font-family="Inter,Arial">arrivée d’eau</text>' +
+'<line id="jet" x1="216" y1="90" x2="216" y2="252" stroke="#2E9BD6" stroke-width="6" stroke-dasharray="12 8" stroke-linecap="round"/>' +
+/* capteur */
+'<g id="c-capteur" class="comp"><circle id="g-capteur" class="glow" cx="196" cy="90" r="14" fill="#FFE27A"/><rect x="186" y="82" width="20" height="12" rx="3" fill="#33414F"/><circle cx="196" cy="90" r="3.5" fill="#E2483D"/></g>' +
+'<polygon id="faisceau" points="190,96 202,96 250,178 168,178" fill="#E2483D"/>' +
+'<text id="l-capteur" class="lbl" x="222" y="54">Capteur IR</text>' +
+/* mains */
+'<g id="mains"><ellipse cx="240" cy="190" rx="34" ry="13" fill="#F2C7A5" stroke="#B9835C" stroke-width="2"/>' +
+'<rect x="262" y="178" width="34" height="10" rx="5" fill="#F2C7A5" stroke="#B9835C" stroke-width="2"/></g>' +
+/* carte */
+'<g id="c-carte" class="comp"><rect id="g-carte" class="glow" x="104" y="126" width="80" height="54" rx="8" fill="#FFE27A"/>' +
+'<rect x="110" y="132" width="68" height="42" rx="4" fill="#2F7D4F"/><rect x="132" y="143" width="24" height="20" fill="#1C2A35"/>' +
+'<path d="M128 147h4M128 153h4M128 159h4M156 147h4M156 153h4M156 159h4" stroke="#C9D2D9" stroke-width="2"/></g>' +
+'<text id="l-carte" class="lbl" x="112" y="120">Carte</text>' +
+'<path id="info" d="M196 96 C196 118 178 128 172 132" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="5 4"/>' +
+'<path id="cmd" d="M110 168 C96 176 86 184 84 190" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="5 4"/>' +
+/* vanne */
+'<g id="c-vanne" class="comp"><circle id="g-vanne" class="glow" cx="66" cy="200" r="24" fill="#FFE27A"/>' +
+'<polygon points="46,190 70,210 70,190 46,210" fill="#fff" stroke="#33414F" stroke-width="2.5"/><rect x="70" y="190" width="18" height="20" rx="3" fill="#33414F"/></g>' +
+'<text id="l-vanne" class="lbl" x="94" y="216">Électrovanne</text>' +
+/* turbine */
+'<g id="c-turbine" class="comp"><circle id="g-turbine" class="glow" cx="72" cy="252" r="30" fill="#FFE27A"/>' +
+'<circle cx="58" cy="252" r="17" fill="#fff" stroke="#33414F" stroke-width="2.5"/>' +
+'<g id="pales"><path d="M58 237 V267 M43 252 H73 M47 241 L69 263 M69 241 L47 263" stroke="#33414F" stroke-width="2.5"/></g>' +
+'<rect x="80" y="240" width="26" height="24" rx="4" fill="#E08A1E"/><text x="88" y="257" font-size="13" font-weight="700" fill="#fff" font-family="Inter,Arial">G</text></g>' +
+'<text id="l-turbine" class="lbl" x="112" y="256">Turbine + générateur</text>' +
+'</svg><figcaption id="rob-cap">Le robinet, vu en coupe</figcaption></figure>';
+
+function robinet(classes, legende) {
+  var r = document.getElementById("rob");
+  if (!r) return;
+  r.setAttribute("class", classes || "");
+  if (legende) document.getElementById("rob-cap").textContent = legende;
+}
+
+/* ═══ Le diagramme FAST ═══
+   lignes : [{ id, stHTML, stCls, numero, badge, allume, vue }] dans l'ordre d'affichage */
+function grilleFAST(lignes, o) {
+  o = o || {};
+  var h = '<div class="fast" role="group" aria-label="Diagramme FAST du robinet automatique">';
+  if (o.sens) h += '<div class="sens" style="grid-row:1">' + o.sens + '</div>';
+  var r0 = o.sens ? 2 : 1;
+  h += '<div class="fh" style="grid-column:1;grid-row:' + r0 + '">Fonction d’usage</div>' +
+       '<div class="fh" style="grid-column:3;grid-row:' + r0 + '">' + (o.quand ? "↓ Quand ? · " : "") + 'Fonctions techniques</div>' +
+       '<div class="fh" style="grid-column:5;grid-row:' + r0 + '">Solutions techniques</div>';
+  var r1 = r0 + 1, n = lignes.length;
+  h += '<div class="fu" style="grid-row:' + r1 + ' / span ' + n + '">' + (o.verbes ? '<span><span class="verbe">Distribuer</span> de l’eau sans contact pour économiser l’eau</span>' : FU) + '</div>';
+  for (var i = 0; i < n; i++) {
+    var L = lignes[i], f = ft(L.id), row = r1 + i;
+    var txt = esc(f.txt);
+    if (o.verbes) {
+      txt = txt.replace(f.verbe, '<span class="verbe">' + f.verbe + '</span>');
+      if (f.verbe2) txt = txt.replace(f.verbe2, '<span class="verbe">' + f.verbe2 + '</span>');
+    }
+    h += '<div class="lk' + (i === 0 ? " first" : "") + (i === n - 1 ? " last" : "") + '" style="grid-column:2;grid-row:' + row + '"></div>';
+    h += '<div class="ft' + (L.allume ? " allume" : "") + (L.trait ? " trait" : "") + (L.vue ? " vue" : "") + '" style="grid-column:3;grid-row:' + row + '"' + (L.vue ? ' data-vue="1"' : "") + '>' +
+         (L.numero ? '<span class="num" aria-hidden="true">' + L.numero + '</span>' : "") +
+         '<span class="col"><span>' + (L.numero ? '<span class="sr">' + (L.numero === "≡" ? "En parallèle : " : "Rang " + L.numero + " : ") + '</span>' : "") + txt + '</span>' +
+         (L.badge ? '<span class="badge">' + L.badge + '</span>' : "") + '</span></div>';
+    h += '<div class="lk2" style="grid-column:4;grid-row:' + row + '"></div>';
+    h += '<div class="stcell" style="grid-column:5;grid-row:' + row + '">' + L.stHTML + '</div>';
+  }
+  return h + '</div>';
+}
+function stFixe(texte, vue) {
+  return texte ? '<div class="st rev"' + (vue ? ' style="box-shadow:0 0 0 4px #FFB38A"' : "") + '>' + texte + '</div>' : '<div class="st inc" aria-label="solution inconnue">?</div>';
+}
+var FLECHE_D = '<svg viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><line x1="4" y1="11" x2="380" y2="11" stroke="#B03A00" stroke-width="4"/><polygon points="380,2 398,11 380,20" fill="#B03A00"/></svg>';
+var FLECHE_G = '<svg viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><line x1="20" y1="11" x2="396" y2="11" stroke="#B03A00" stroke-width="4"/><polygon points="20,2 2,11 20,20" fill="#B03A00"/></svg>';
+
+/* ═══ Partie 1 — Comprendre (animation pas à pas) ═══ */
+var PAS = [
+  { etape:1, titre:"Pourquoi un FAST ?",
+    recit:'<span class="q">Le besoin : « Distribuer de l’eau sans contact pour économiser l’eau ».</span>Mais quels composants faut-il acheter pour fabriquer ce robinet ? Le besoin ne le dit pas.<span class="rep">Le FAST fait le pont : fonction d’usage → fonctions techniques → solutions techniques (les composants réels).</span>',
+    rev:[], schema:false },
+  { etape:2, titre:"Lire de gauche à droite : « Comment ? »",
+    recit:'<span class="q">Comment détecter la présence des mains ?</span>On suit la flèche de gauche à droite, de la fonction vers la solution.<span class="rep">→ Grâce au capteur infrarouge.</span>',
+    rev:["detecter"], vue:"detecter", sens:'<span>Comment ?</span>' + FLECHE_D, schema:false },
+  { etape:3, titre:"Lire de droite à gauche : « Pourquoi ? »",
+    recit:'<span class="q">Pourquoi une électrovanne ?</span>On repart en sens inverse, de la solution vers la fonction.<span class="rep">← Pour ouvrir / fermer l’arrivée d’eau.</span>',
+    rev:["detecter","ouvrir"], vue:"ouvrir", sens:FLECHE_G + '<span>Pourquoi ?</span>', schema:false },
+  { etape:4, titre:"À la verticale : « Quand ? »",
+    recit:'<span class="q">Que se passe-t-il d’abord ? Et ensuite ?</span>L’eau sous pression fait tourner la turbine : <b>produire l’énergie électrique</b> se fait en même temps que tout le reste, pendant tout le fonctionnement.',
+    rev:["detecter","ouvrir"], allume:["produire"], rob:"on-turbine", schema:true },
+  { etape:4, titre:"À la verticale : « Quand ? »",
+    recit:'<span class="q">① Les mains approchent.</span>Le capteur infrarouge les détecte : c’est la première fonction qui intervient.',
+    rev:["detecter","ouvrir"], allume:["produire","detecter"], num:1, rob:"on-turbine on-capteur mains faisceau", schema:true },
+  { etape:4, titre:"À la verticale : « Quand ? »",
+    recit:'<span class="q">② La carte électronique réfléchit.</span>Elle reçoit l’information du capteur, la traite et commande l’ouverture.',
+    rev:["detecter","ouvrir"], allume:["produire","detecter","traiter"], num:2, rob:"on-turbine on-capteur on-carte mains faisceau info cmd", schema:true },
+  { etape:4, titre:"À la verticale : « Quand ? »",
+    recit:'<span class="q">③ L’électrovanne s’ouvre : l’eau coule.</span>Les fonctions sont rangées <b>du haut vers le bas, dans l’ordre où elles interviennent</b>. « Produire l’énergie électrique » agit <b>en même temps</b> que les autres : elle est placée en bas.',
+    rev:["detecter","ouvrir"], allume:["produire","detecter","traiter","ouvrir"], num:3, rob:"on-turbine on-capteur on-carte on-vanne mains info cmd eau", schema:true },
+  { etape:5, titre:"Une fonction commence par un verbe à l’infinitif",
+    recit:'<span class="q">Regardez les mots surlignés.</span>Distribuer, Détecter, Traiter, commander, Ouvrir / fermer, Produire : chaque fonction commence par un <b>verbe à l’infinitif</b>.',
+    rev:["detecter","ouvrir"], verbes:true, schema:false }
+];
+function ecranComprendre() {
+  var p = PAS[S.pas], numMax = p.num || 0;
+  var lignes = ORDRE_REF.concat(["produire"]).map(function (id) {
+    var k = ORDRE_REF.indexOf(id);
+    var L = { id:id, allume:(p.allume || []).indexOf(id) >= 0, vue:p.vue === id,
+              stHTML:stFixe(p.rev.indexOf(id) >= 0 ? ETQ[ft(id).sol].t : "", p.vue === id) };
+    if (p.etape >= 4) {
+      if (id === "produire") { L.numero = "≡"; L.badge = "en même temps · pendant tout le fonctionnement"; }
+      else if (p.etape === 5 || k < numMax) L.numero = k + 1;
+    }
+    return L;
+  });
+  var pts = "";
+  for (var e = 1; e <= 5; e++) pts += '<i class="' + (e <= p.etape ? "on" : "") + '"></i>';
+  var h = '<h2>' + p.titre + '</h2>' +
+    '<div class="points" aria-label="Étape ' + p.etape + ' sur 5">' + pts + '<span>Étape ' + p.etape + ' / 5</span></div>' +
+    '<div class="anim' + (p.schema ? "" : " sans-schema") + '" style="margin-top:12px"><div>' +
+    '<div class="recit">' + p.recit + '</div>' +
+    grilleFAST(lignes, { sens:p.sens, quand:p.etape === 4, verbes:p.verbes }) + '</div>' +
+    (p.schema ? '<div>' + ROBINET + '</div>' : "") + '</div>' +
+    '<div class="barre"><button type="button" class="btn sec" id="b-prec"' + (S.pas === 0 ? " disabled" : "") + '>← Précédent</button>' +
+    '<button type="button" class="btn" id="b-suiv">' + (S.pas === PAS.length - 1 ? "Je passe à l’activité →" : "Suivant →") + '</button>' +
+    '<span class="esp"></span><button type="button" class="lien" id="b-passer">Passer l’animation</button></div>';
+  afficher(h, 1);
+  if (p.schema) robinet(p.rob, "Le robinet, vu en coupe");
+  document.getElementById("b-prec").onclick = function () { if (S.pas > 0) { S.pas--; garder(); ecranComprendre(); } };
+  document.getElementById("b-suiv").onclick = function () {
+    if (S.pas < PAS.length - 1) { S.pas++; garder(); ecranComprendre(); } else aller("associer");
+  };
+  document.getElementById("b-passer").onclick = function () { aller("associer"); };
+}
+
+/* ═══ Partie 2a — Associer chaque fonction à sa solution ═══ */
+var choisie = null;   // étiquette sélectionnée au clic (alternative au glisser-déposer)
+function lignesAffichees() { return S.ordre.concat(["produire"]); }
+function ecranAssocier() {
+  var lignes = lignesAffichees().map(function (id) {
+    var t = S.place[id], v = S.verdicts[id], cls = S.ok[id] ? " ok" : (v ? " ko" : "");
+    var z = '<div class="zone' + cls + '" data-zone="' + id + '" role="button" tabindex="' + (S.ok[id] ? "-1" : "0") + '" aria-label="Solution de la fonction : ' + esc(ft(id).txt) + (t ? ", contient " + ETQ[t].t : ", vide") + '">';
+    z += t ? etiquette(t, S.ok[id]) : '<span class="ph">Déposez une étiquette ici</span>';
+    z += '</div>';
+    if (S.ok[id]) z += '<div class="verdict ok">✔ Juste</div>';
+    else if (v) z += '<div class="verdict ko">' + v + '</div>';
+    return { id:id, stHTML:z, badge:id === "produire" ? "en parallèle" : "" };
+  });
+  var dansBanque = S.banque.filter(function (k) { return !estPlacee(k); });
+  var nbOk = Object.keys(S.ok).length;
+  var h = '<h2>Compléter le FAST : associer les solutions</h2>' +
+    '<p class="consigne">Glissez chaque solution technique dans la case de sa fonction. Sans glisser : cliquez sur une étiquette, puis sur une case. Deux étiquettes sont des pièges.</p>' +
+    '<div class="assoc"><div>' +
+    '<div class="banque" data-zone="banque" aria-label="Étiquettes à placer">' +
+    (dansBanque.length ? dansBanque.map(function (k) { return etiquette(k, false); }).join("") : '<span class="vide">Toutes les étiquettes sont placées.</span>') + '</div>' +
+    grilleFAST(lignes) +
+    '<p class="sous" style="margin-top:10px">Les fonctions techniques sont encore dans le désordre : vous les rangerez à l’étape suivante.</p>' +
+    '</div><div>' + ROBINET + '</div></div>' +
+    (nbOk < 4 ? '<div class="parle"><span class="ic" aria-hidden="true">💬</span><span><b>Avant de vérifier, mettez-vous d’accord à voix haute :</b> comment chaque fonction est-elle réalisée ?</span></div>' : "") +
+    '<div id="bilan"></div>' +
+    '<div class="barre"><button type="button" class="btn sec" id="b-ret">← Revoir l’animation</button><span class="esp"></span>' +
+    (nbOk < 4 ? '<button type="button" class="btn" id="b-verif">Vérifier</button>'
+              : '<button type="button" class="btn go" id="b-suite">Ranger les fonctions →</button>') + '</div>';
+  afficher(h, 2);
+  var on = Object.keys(S.ok).map(function (id) { return "on-" + ft(id).sol; }).join(" ");
+  robinet(on, nbOk ? "Chaque composant s’allume quand son association est juste" : "Les composants s’allument quand l’association est juste");
+  if (nbOk === 4) bilan("ok", "Bravo : les 4 associations sont justes. Passez à l’étape suivante.");
+  brancherGlisser();
+  document.getElementById("b-ret").onclick = function () { S.pas = 0; aller("comprendre"); };
+  var bv = document.getElementById("b-verif");
+  if (bv) bv.onclick = verifierAssoc;
+  var bs = document.getElementById("b-suite");
+  if (bs) bs.onclick = function () { aller("ordre"); };
+}
+function estPlacee(k) { for (var id in S.place) if (S.place[id] === k) return true; return false; }
+function etiquette(k, juste) {
+  return '<button type="button" class="etq' + (juste ? " juste" : "") + '" data-etq="' + k + '"' +
+         (juste ? ' disabled' : ' draggable="true" aria-pressed="' + (choisie === k) + '"') + '>' + ETQ[k].t + '</button>';
+}
+function poser(k, zone) {
+  if (zone !== "banque" && S.ok[zone]) return;
+  for (var id in S.place) if (S.place[id] === k) delete S.place[id];   // retire l'étiquette de son ancienne case
+  if (zone !== "banque") { S.place[zone] = k; delete S.verdicts[zone]; }
+  choisie = null; garder(); ecranAssocier();
+}
+function brancherGlisser() {
+  var ecran = document.getElementById("ecran");
+  ecran.querySelectorAll(".etq[draggable]").forEach(function (b) {
+    b.addEventListener("dragstart", function (e) { e.dataTransfer.setData("text/plain", b.dataset.etq); e.dataTransfer.effectAllowed = "move"; marquerCibles(true); });
+    b.addEventListener("dragend", function () { marquerCibles(false); });
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      choisie = choisie === b.dataset.etq ? null : b.dataset.etq;
+      ecran.querySelectorAll(".etq[draggable]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.etq === choisie)); });
+      marquerCibles(!!choisie);
+    });
+  });
+  ecran.querySelectorAll("[data-zone]").forEach(function (z) {
+    var id = z.dataset.zone;
+    if (id !== "banque" && S.ok[id]) return;
+    z.addEventListener("dragover", function (e) { e.preventDefault(); z.classList.add("survol"); });
+    z.addEventListener("dragleave", function () { z.classList.remove("survol"); });
+    z.addEventListener("drop", function (e) { e.preventDefault(); var k = e.dataTransfer.getData("text/plain"); if (ETQ[k]) poser(k, id); });
+    z.addEventListener("click", function () { if (choisie) poser(choisie, id); });
+    z.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target === z && choisie) { e.preventDefault(); poser(choisie, id); } });
+  });
+}
+function marquerCibles(oui) {
+  document.querySelectorAll(".zone[data-zone]").forEach(function (z) { if (!S.ok[z.dataset.zone]) z.classList.toggle("cible", oui); });
+}
+function verifierAssoc() {
+  var vides = 0, faux = 0;
+  lignesAffichees().forEach(function (id) {
+    if (S.ok[id]) return;
+    var k = S.place[id], f = ft(id);
+    if (!k) { vides++; S.verdicts[id] = "Case vide : choisissez une étiquette."; return; }
+    if (k === f.sol) { S.ok[id] = true; delete S.verdicts[id]; return; }
+    faux++;
+    S.vus = S.vus || {};
+    if (S.vus[id] !== k) S.essais[id] = (S.essais[id] || 0) + 1;   // revérifier la même étiquette ne compte pas un essai de plus
+    S.vus[id] = k;
+    var v = "⚠ À revoir";
+    if (ETQ[k].pourquoiPas) v += '<span class="ind">' + ETQ[k].pourquoiPas + '</span>';
+    if (S.essais[id] >= 2) v += '<span class="rep">Réponse : ' + ETQ[f.sol].t + '. Placez-la dans cette case.</span>';
+    else v += '<span class="ind">' + (ETQ[k].pourquoiPas ? "" : "Pourquoi " + article(k) + " ? Pour faire quoi ? Est-ce la fonction de cette ligne ? ") + f.comment + '</span>';
+    S.verdicts[id] = v;
+  });
+  garder(); ecranAssocier();
+  var n = Object.keys(S.ok).length;
+  if (n < 4) bilan("ko", n + " association" + (n > 1 ? "s" : "") + " juste" + (n > 1 ? "s" : "") + " sur 4." +
+    (faux ? " Lisez l’indice sous chaque case « À revoir », discutez, puis vérifiez de nouveau." : "") +
+    (vides ? " Il reste " + vides + " case" + (vides > 1 ? "s" : "") + " vide" + (vides > 1 ? "s" : "") + "." : ""));
+}
+function article(k) {
+  return { capteur:"un capteur infrarouge", carte:"une carte électronique", vanne:"une électrovanne", turbine:"une turbine + générateur" }[k];
+}
+function bilan(cls, txt) { var b = document.getElementById("bilan"); if (b) b.innerHTML = '<div class="bilan ' + cls + '" role="status">' + txt + '</div>'; }
+
+/* ═══ Partie 2b — Ranger les fonctions (« Quand ? ») ═══ */
+var glisse = null;
+function ecranOrdre() {
+  var h = '<h2>Compléter le FAST : ranger les fonctions</h2>' +
+    '<p class="consigne">Rangez les trois premières fonctions techniques <b>dans l’ordre où elles interviennent</b> quand le robinet fonctionne. Glissez une ligne, ou utilisez les flèches ↑ ↓.</p>' +
+    '<p class="quand">↓ Quand ? <span style="color:var(--grey);font-weight:600">du haut (en premier) vers le bas</span></p><ol class="ordre" id="liste">';
+  S.ordre.forEach(function (id, i) {
+    var f = ft(id), v = S.ordreVerdict ? S.ordreVerdict[i] : null, cls = S.ordreOk ? " ok" : (v === false ? " ko" : (v ? " ok" : ""));
+    h += '<li class="rang' + cls + '" data-i="' + i + '"' + (S.ordreOk ? "" : ' draggable="true"') + '>' +
+      '<span class="poignee" aria-hidden="true">' + (S.ordreOk ? "" : "⠿") + '</span>' +
+      '<span><span class="n" aria-hidden="true">' + (i + 1) + '</span></span>' +
+      '<span class="f"><span class="sr">Rang ' + (i + 1) + ' : </span>' + f.txt + '<br><span class="s">→ ' + ETQ[f.sol].t + '</span></span>' +
+      (S.ordreOk ? '<span></span>' : '<span class="fl"><button type="button" class="fleche" data-m="-1" data-i="' + i + '" aria-label="Monter : ' + esc(f.txt) + '"' + (i === 0 ? " disabled" : "") + '>↑</button>' +
+      '<button type="button" class="fleche" data-m="1" data-i="' + i + '" aria-label="Descendre : ' + esc(f.txt) + '"' + (i === S.ordre.length - 1 ? " disabled" : "") + '>↓</button></span>') +
+      (v === true || S.ordreOk ? '<span class="etat">✔ Bien placée</span>' : (v === false ? '<span class="etat">⚠ À revoir</span>' : "")) +
+      '</li>';
+  });
+  h += '<li class="rang fixe"><span></span><span><span class="n" aria-hidden="true">≡</span></span><span class="f"><span class="sr">En parallèle : </span>Produire l’énergie électrique (sans pile)<br><span class="s">→ Turbine + générateur</span><br><span class="badge">en parallèle · en même temps que les autres</span></span><span></span></li></ol>' +
+    (S.ordreOk ? "" : '<div class="parle"><span class="ic" aria-hidden="true">💬</span><span><b>Avant de vérifier, racontez à voix haute</b> ce qui se passe quand on approche les mains du robinet.</span></div>') +
+    '<div id="bilan"></div>' +
+    '<div class="barre"><button type="button" class="btn sec" id="b-ret">← Associations</button><span class="esp"></span>' +
+    (S.ordreOk ? '<button type="button" class="btn go" id="b-valide">Nous validons ✔</button>' : '<button type="button" class="btn" id="b-verif">Vérifier</button>') + '</div>';
+  afficher(h, 2);
+  if (S.ordreOk) bilan("ok", "Bravo : c’est l’ordre du fonctionnement. Le capteur détecte, la carte traite et commande, l’électrovanne ouvre ; la turbine produit l’énergie pendant tout ce temps. Cliquez sur « Nous validons ».");
+  else if (S.ordreVerdict) bilan("ko", S.ordreEssais >= 2
+      ? "Réponse : 1. Détecter la présence des mains — 2. Traiter l’information et commander — 3. Ouvrir / fermer l’arrivée d’eau. Rangez les lignes ainsi, puis vérifiez."
+      : INDICE_ORDRE);
+  document.getElementById("b-ret").onclick = function () { aller("associer"); };
+  var bv = document.getElementById("b-verif");
+  if (bv) bv.onclick = function () {
+    S.ordreVerdict = S.ordre.map(function (id, i) { return id === ORDRE_REF[i]; });
+    S.ordreOk = S.ordreVerdict.every(Boolean);
+    if (!S.ordreOk && S.ordre.join() !== S.ordreVu) S.ordreEssais++;   // même ordre revérifié : pas un essai de plus
+    S.ordreVu = S.ordre.join();
+    garder(); ecranOrdre();
+  };
+  var bva = document.getElementById("b-valide");
+  if (bva) bva.onclick = function () { S.valide = true; aller("retenir"); };
+  document.querySelectorAll(".fleche").forEach(function (b) {
+    b.onclick = function () { deplacer(+b.dataset.i, +b.dataset.i + +b.dataset.m, b.dataset.m); };
+  });
+  document.querySelectorAll(".rang[draggable]").forEach(function (li) {
+    li.addEventListener("dragstart", function (e) { glisse = +li.dataset.i; e.dataTransfer.setData("text/plain", li.dataset.i); li.classList.add("glisse"); });
+    li.addEventListener("dragend", function () { li.classList.remove("glisse"); });
+    li.addEventListener("dragover", function (e) { e.preventDefault(); li.classList.add("survol"); });
+    li.addEventListener("dragleave", function () { li.classList.remove("survol"); });
+    li.addEventListener("drop", function (e) { e.preventDefault(); if (glisse !== null) deplacer(glisse, +li.dataset.i); glisse = null; });
+  });
+}
+function deplacer(de, vers, m) {
+  if (vers < 0 || vers >= S.ordre.length || de === vers) { ecranOrdre(); return; }
+  var x = S.ordre.splice(de, 1)[0];
+  S.ordre.splice(vers, 0, x);
+  S.ordreVerdict = null;
+  garder(); ecranOrdre();
+  if (m) { var b = document.querySelector('.fleche[data-i="' + vers + '"][data-m="' + m + '"]') || document.querySelector('.fleche[data-i="' + vers + '"]:not([disabled])'); if (b) b.focus(); }
+}
+
+/* ═══ Partie 3 — Retenir ═══ */
+function ecranRetenir() {
+  var corrige = !S.valide;
+  var lignes = ORDRE_REF.concat(["produire"]);
+  var h = '<h2>' + (corrige ? "Le FAST du robinet automatique" : "Bravo ! Retenez et recopiez") + '</h2>' +
+    (corrige ? '<p class="note-corr">Mise en commun : FAST complété du robinet automatique.</p>' : "") +
+    '<div class="retenir"><div class="t">★ Ce que je dois retenir</div><b>Diagramme FAST :</b> il relie la <b>fonction d’usage</b> aux <b>fonctions techniques</b> puis aux <b>solutions techniques</b> (les composants réels). Une fonction commence par un verbe à l’infinitif.</div>' +
+    (corrige ? "" : '<div class="recopie"><span aria-hidden="true" style="font-size:26px">✍</span><span>Recopie maintenant ton FAST sur la fiche papier.</span></div>') +
+    '<table class="recap" style="margin-top:' + (corrige ? "16px" : "0") + '"><caption class="sr">FAST du robinet automatique</caption><thead><tr><th scope="col">Fonction d’usage</th><th scope="col">Fonction technique</th><th scope="col">Solution technique</th></tr></thead><tbody>';
+  lignes.forEach(function (id, i) {
+    var f = ft(id);
+    h += '<tr>' + (i === 0 ? '<td class="fu" rowspan="4">' + FU + '</td>' : "") +
+      '<td>' + f.txt + (id === "produire" ? '<span class="par">en parallèle (en même temps que les autres)</span>' : "") + '</td>' +
+      '<td class="sol">' + ETQ[f.sol].t + '</td></tr>';
+  });
+  h += '</tbody></table>' +
+    '<p class="sous" style="margin-top:10px">Lecture : « Comment détecter la présence des mains ? → grâce au capteur infrarouge. » / « Pourquoi une électrovanne ? → pour ouvrir et fermer l’arrivée d’eau. » À la verticale (« Quand ? ») : les fonctions sont dans l’ordre où elles interviennent.</p>' +
+    '<div class="barre"><button type="button" class="btn sec" id="b-ret">← Revenir</button><span class="esp"></span><button type="button" class="btn" id="b-print">Imprimer</button></div>';
+  afficher(h, 3);
+  document.getElementById("b-ret").onclick = function () { aller(S.valide ? "ordre" : "comprendre"); };
+  document.getElementById("b-print").onclick = function () { window.print(); };
+}
+
+/* ═══ Navigation ═══ */
+var ECRANS = { comprendre:ecranComprendre, associer:ecranAssocier, ordre:ecranOrdre, retenir:ecranRetenir };
+function aller(nom) {
+  if (nom === "ordre" && Object.keys(S.ok).length < 4) nom = "associer";
+  S.ecran = nom; garder();
+  try { history.replaceState(null, "", "#" + nom); } catch (e) {}
+  ECRANS[nom]();
+  window.scrollTo(0, 0);
+  var h2 = document.querySelector("#ecran h2"); if (h2) { h2.setAttribute("tabindex", "-1"); h2.focus({ preventScroll:true }); }
+}
+function afficher(html, partie) {
+  document.getElementById("ecran").innerHTML = html;
+  document.querySelectorAll("#prog li").forEach(function (li) {
+    var p = +li.dataset.p;
+    li.className = p === partie ? "cur" : (p < partie ? "fait" : "");
+    if (p === partie) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+  });
+}
+function appliquerDys() {
+  document.body.classList.toggle("dys", !!S.dys);
+  document.getElementById("b-dys").setAttribute("aria-pressed", String(!!S.dys));
+}
+document.getElementById("b-dys").onclick = function () { S.dys = !S.dys; garder(); appliquerDys(); };
+document.getElementById("b-reset").onclick = function () {
+  if (!confirm("Tout recommencer depuis le début ?")) return;
+  var dys = S.dys; S = etatNeuf(); S.dys = dys; choisie = null; garder(); aller("comprendre");
+};
+
+S = charger();
+appliquerDys();
+var h0 = (location.hash || "").slice(1), m0 = /^comprendre-([1-8])$/.exec(h0);   // #comprendre-5 : étape de l'animation (projection)
+if (m0) { S.pas = +m0[1] - 1; h0 = "comprendre"; }
+aller(ECRANS[h0] ? h0 : S.ecran);
+</script>
+</body>
+</html>
