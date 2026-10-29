@@ -13,7 +13,7 @@
 
    Barème (8 points) : 2 points par niveau. Le repère n'est pas noté : il
    dépend de l'ordre de tracé de chaque élève, il est seulement contrôlé
-   contre SA pieuvre. Note fixée au 2e essai, comme les missions 1 et 2.
+   contre SA pieuvre et SON tableau d'analyse : les trois doivent concorder. Note fixée au 2e essai, comme les missions 1 et 2.
    ========================================================================== */
 
 var CDCR = (function(){
@@ -122,6 +122,12 @@ var CDCR = (function(){
     return '';
   }
 
+  /** Repère choisi par l'élève pour la fonction `fid` dans son tableau d'analyse, ou ''. */
+  function repereDuTableau(fid){
+    var lid = P11.state.m1.repere[fid];
+    return lid ? (reperesTraces().parLien[lid] || '') : '';
+  }
+
   /** Options du menu Repère : les traits tracés, plus un numéro FC libre. */
   function options(){
     var nb = reperesTraces().nb, out = [];
@@ -136,15 +142,24 @@ var CDCR = (function(){
     if (!rep) return { ok:false, motif:"Repère non choisi." };
     if (!P11.state.m1.liens.length) return { ok:false, motif:"Trace d'abord ta pieuvre (étape 2) : les repères viennent d'elle." };
     if (l.via){
-      var att = repereAttendu(l.via);
+      // Les numéros suivent l'ordre de tracé : deux binômes justes n'ont pas
+      // les mêmes. Ce qui compte, c'est la correspondance entre le trait de la
+      // pieuvre, le repère du tableau d'analyse (étape 3) et celui-ci.
+      var att = repereAttendu(l.via), tab = repereDuTableau(l.via);
       if (!att) return { ok:false, motif:"Le trait de cette fonction manque sur ta pieuvre : trace-le d'abord." };
-      return rep === att ? { ok:true, motif:'' }
-        : { ok:false, motif:"Sur ta pieuvre, " + rep + " ne désigne pas le trait de cette fonction. Remonte à ton schéma." };
+      if (rep === att && tab === att) return { ok:true, motif:"cohérent avec ta pieuvre et ton tableau d'analyse." };
+      if (rep === att) return { ok:false, motif: tab
+        ? "Juste d'après ta pieuvre, mais ton tableau d'analyse (étape 3) donne " + tab + " à cette fonction : les deux doivent porter le même repère. Corrige ton tableau."
+        : "Juste d'après ta pieuvre, mais cette fonction n'a pas encore de repère dans ton tableau d'analyse (étape 3) : complète-le avec le même." };
+      if (rep === tab) return { ok:false, motif:"C'est bien le repère de ton tableau d'analyse, mais sur ta pieuvre " + rep +
+        " ne désigne pas le trait de cette fonction : ton tableau est à corriger aussi." };
+      return { ok:false, motif:"Ni ta pieuvre ni ton tableau d'analyse ne donnent " + rep + " à cette fonction. Remonte à ton schéma." };
     }
     // Fonction absente de la pieuvre : elle prend un numéro FC encore libre.
     var parLien = reperesTraces().parLien;
     var pris = Object.keys(parLien).map(function(k){ return parLien[k]; });
-    if (/^FC/.test(rep) && pris.indexOf(rep) === -1) return { ok:true, motif:'' };
+    if (/^FC/.test(rep) && pris.indexOf(rep) === -1)
+      return { ok:true, motif:"juste : une nouvelle fonction contrainte, après celles de ta pieuvre." };
     return { ok:false, motif:"Cette fonction ne relie l'objet à aucun élément de ta pieuvre : ce n'est aucun des traits déjà tracés." };
   }
 
@@ -233,7 +248,7 @@ var CDCR = (function(){
       var li = '<li>' + (ev.pts === 2 ? '✔ ' : '→ ') + '<b>' + P11.esc(l.fonction) + '</b> — niveau ' + ev.pts + '/2';
       if (ev.motif) li += '<br><span class="why">' + P11.esc(ev.motif) + '</span>';
       if (ev.pts < 2) li += '<br><span class="why">' + P11.esc(montrer ? 'Corrigé : ' + l.corrige + '.' : 'Aide : ' + l.aide) + '</span>';
-      li += '<br><span class="why">Repère ' + P11.esc(r.rep) + (rp.ok ? ' : cohérent avec ta pieuvre.' : ' : ' + rp.motif) +
+      li += '<br><span class="why">Repère ' + P11.esc(r.rep) + ' : ' + rp.motif +
             (!rp.ok && montrer ? ' ' + corrigeRepere(l) : '') + '</span>';
       items += li + '</li>';
     });
