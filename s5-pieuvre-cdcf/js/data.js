@@ -438,14 +438,56 @@ var P11DATA = (function(){
   /* ---------------------------------------------------------------------
      5. Barème et grille de compétence
 
-     Total 60 points, converti sur 20 dans le dossier. Le découpage est
+     Total 68 points (60 + 8 pour le cahier des charges du robinet), converti
+     sur 20 dans le dossier. Le découpage est
      volontairement lisible par l'élève : il voit d'où viennent ses points.
      --------------------------------------------------------------------- */
   var BAREME = {
     m1:{ liens:8, typage:12, total:20 },   // module 1 : tracé des liens + typage FP/FC
     m2:{ total:20 },                       // module 2 : 4 lignes × 5 points
     m3:{ auto:12, prof:8, total:20 },      // module 3 : formalisme auto + pertinence prof
-    total:60
+    // Mission 1, partie 5 : cahier des charges du robinet (fiche papier, partie 2).
+    // Ajoutée le 29/10/2026, après le début de la séance : comptée à part, et
+    // seulement une fois vérifiée, pour ne changer aucune note déjà obtenue.
+    cdc:{ total:8 },                       // 4 niveaux × 2 points
+    total:68
+  };
+
+  /* --- Mission 1, partie 5 : le cahier des charges du robinet --------------
+     La fiche papier (partie 2) donne la fonction et le critère ; l'élève écrit
+     le repère et le niveau. Les valeurs sont celles du « modèle D-15 » de
+     l'activité 5-6 du site Technologie et du corrigé papier. Elles ne sont
+     écrites nulle part en clair : la notice du fabricant les dit avec ses mots
+     (« deux litres », « une quinzaine de centimètres »), entourées de valeurs
+     pièges (robinet classique, pression, garantie).
+       via    : identifiant de la fonction de la pieuvre (FONCTIONS) dont le
+                trait porte le repère ; null = fonction absente de la pieuvre.
+     --------------------------------------------------------------------- */
+  var CDC_ROBINET = {
+    notice:{
+      de:"Notice du fabricant — robinet à détection, modèle D-15",
+      corps:[
+        "Merci d'avoir choisi le D-15. Son économiseur intégré limite le débit à deux litres par minute, quand un robinet de lavabo classique en laisse couler une dizaine.",
+        "Son capteur infrarouge repère les mains présentées sous le bec, du contact jusqu'à une quinzaine de centimètres. Plus loin, il ne réagit pas : on peut passer devant le lavabo sans le déclencher.",
+        "Le boîtier est classé IP65 : totalement protégé contre les poussières et contre les jets d'eau. Il supporte le nettoyage des sanitaires à grande eau.",
+        "Dès que les mains s'éloignent, l'écoulement s'arrête aussitôt, sans le moindre délai : pas une goutte ne coule pour rien.",
+        "Le D-15 fonctionne avec une pression d'eau comprise entre 1 et 5 bar. Il produit lui-même son électricité grâce à une petite turbine placée dans l'arrivée d'eau : aucune pile à changer. Corps en laiton chromé, garanti 5 ans."
+      ]
+    },
+    lignes:[
+      { id:'c1', via:'f1', fonction:"Distribuer de l'eau pour se laver les mains", critere:"Débit",
+        corrige:"≈ 2 L/min",
+        aide:"Le débit est une quantité d'eau par minute. Relis la première phrase : laquelle des deux valeurs concerne le D-15 ?" },
+      { id:'c2', via:'f2', fonction:"Détecter la présence des mains", critere:"Distance",
+        corrige:"de 0 à ≈ 15 cm",
+        aide:"Cherche jusqu'où le capteur « voit » les mains. Écris le nombre en chiffres, avec son unité." },
+      { id:'c3', via:'f3', fonction:"Résister à l'environnement humide", critere:"Indice IP",
+        corrige:"IP65",
+        aide:"Un indice de protection s'écrit IP suivi de deux chiffres. Tu l'as rencontré dans le quiz de l'activité 4." },
+      { id:'c4', via:null, fonction:"Limiter la consommation d'eau", critere:"Volume / temps",
+        corrige:"Écoulement coupé dès le retrait des mains (0 s)",
+        aide:"Que se passe-t-il quand les mains s'éloignent, et au bout de combien de temps ?" }
+    ]
   };
 
   // Les quatre niveaux de maîtrise du cycle 4. `min` est le seuil en % du total.
@@ -601,6 +643,7 @@ var P11DATA = (function(){
   return {
     EME:EME, FONCTIONS:FONCTIONS, HOTSPOTS:HOTSPOTS,
     OST:OST, PISTES:PISTES, KIT3D:KIT3D, KIT_FAMILLES:KIT_FAMILLES,
+    CDC_ROBINET:CDC_ROBINET,
     BAREME:BAREME, NIVEAUX:NIVEAUX, BRIEF:BRIEF, MEMO:MEMO, VERBES:VERBES,
     CLASSES:CLASSES, COUPS_DE_POUCE:COUPS_DE_POUCE, CLOUD:CLOUD
   };
