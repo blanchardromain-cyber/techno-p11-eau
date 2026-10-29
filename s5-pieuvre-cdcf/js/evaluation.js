@@ -4,7 +4,7 @@
    Rassemble les trois missions en un document unique :
 
      · le récapitulatif de ce que l'équipe a produit (pieuvre, CDCF, solution) ;
-     · la note sur 20, obtenue à partir des 60 points du barème ;
+     · la note sur 20, obtenue à partir des 68 points du barème ;
      · le positionnement sur les quatre niveaux de maîtrise du cycle 4 ;
      · la part réservée au professeur, qui complète les 8 points d'appréciation.
 
@@ -27,8 +27,9 @@ var EVAL = (function(){
     var s = P11.state;
     var m1 = s.m1.score, m2 = s.m2.score, m3a = s.m3.score;
     var m3p = s.m3.prof.points;
+    var cdc = s.cdc.score;      // mission 1, partie 5 (ajoutée le 29/10/2026)
 
-    var obtenu = (m1 || 0) + (m2 || 0) + (m3a || 0) + (m3p || 0);
+    var obtenu = (m1 || 0) + (cdc || 0) + (m2 || 0) + (m3a || 0) + (m3p || 0);
 
     /* Le dénominateur ne compte QUE ce qui a été rendu.
        Une mission jamais vérifiée en est exclue : sans cela, un élève qui vient
@@ -38,6 +39,7 @@ var EVAL = (function(){
        52/60 avant correction. */
     var rendu = function(v){ return v !== null && v !== undefined; };
     var maxi = (rendu(m1)  ? P11DATA.BAREME.m1.total : 0)
+             + (rendu(cdc) ? P11DATA.BAREME.cdc.total : 0)
              + (rendu(m2)  ? P11DATA.BAREME.m2.total : 0)
              + (rendu(m3a) ? P11DATA.BAREME.m3.auto  : 0)
              + (rendu(m3p) ? P11DATA.BAREME.m3.prof  : 0);
@@ -49,7 +51,7 @@ var EVAL = (function(){
     P11DATA.NIVEAUX.forEach(function(n){ if (pct >= n.min) niveau = n; });
 
     return {
-      m1:m1, m2:m2, m3a:m3a, m3p:m3p,
+      m1:m1, cdc:cdc, m2:m2, m3a:m3a, m3p:m3p,
       obtenu:obtenu, maxi:maxi, pct:Math.round(pct), note:note, niveau:niveau,
       rendues: [m1,m2,m3a].filter(rendu).length
     };
@@ -75,7 +77,7 @@ var EVAL = (function(){
     if (!b.rendues) return ['Aucune mission vérifiée pour le moment.'];
 
     var rendu = function(v){ return v !== null && v !== undefined; };
-    var provisoire = b.rendues < 3 || !rendu(b.m3p);
+    var provisoire = b.rendues < 3 || !rendu(b.m3p) || !rendu(b.cdc);
     var p = [b.niveau.nom + ' (' + P11.fmt(b.note) + '/20' + (provisoire ? ', note provisoire' : '') + ').'];
 
     // Le niveau porte sur l'ensemble : une mission faible peut s'y noyer.
@@ -98,6 +100,14 @@ var EVAL = (function(){
         ', ' + (d1.typage === B.m1.typage ? "tableau d'analyse juste"
                                           : "tableau d'analyse à revoir (" + P11.fmt(d1.typage) + '/' + B.m1.typage + ')')
       : '') + '.');
+
+    /* --- Mission 1, partie 5 : cahier des charges du robinet ------------- */
+    if (!rendu(b.cdc)) p.push('Cahier des charges du robinet (mission 1, partie 5) non vérifié.');
+    else {
+      var nivFaux = niveauxFaux();
+      p.push('Cahier des charges du robinet (' + P11.fmt(b.cdc) + '/' + B.cdc.total + ') : ' +
+             (nivFaux.length ? 'niveaux à reprendre : ' + nivFaux.join(', ') : 'niveaux justes') + '.');
+    }
 
     /* --- Mission 2 ------------------------------------------------------ */
     if (!rendu(b.m2)) p.push('Mission 2 non vérifiée.');
@@ -138,6 +148,13 @@ var EVAL = (function(){
 
   function appreciation(){ return phrasesAppreciation().join(' '); }
 
+  /** Critères des lignes du CDCF du robinet notées moins de 2 points. */
+  function niveauxFaux(){
+    var d = P11.state.cdc.detail || {};
+    return P11DATA.CDC_ROBINET.lignes.filter(function(l){ return (d[l.id] || 0) < 2; })
+                                     .map(function(l){ return l.critere.toLowerCase(); });
+  }
+
   /**
    * Remarques pour le classeur des classes : « Réussi · À revoir · Conseil ».
    *
@@ -162,6 +179,15 @@ var EVAL = (function(){
       if (d1.typage === B.m1.typage) ok.push("tableau d'analyse");
       else manque('correspondance fonctions / repères',
         'relire sa pieuvre avant de choisir un repère : chaque trait correspond à une seule fonction');
+    }
+
+    /* Mission 1, partie 5 : cahier des charges du robinet */
+    if (!rendu(s.cdc.score)) absent.push('cahier des charges du robinet');
+    else {
+      var nf = niveauxFaux();
+      if (!nf.length) ok.push('niveaux du cahier des charges du robinet');
+      else manque('niveaux du cahier des charges du robinet (' + nf.join(', ') + ')',
+        'lire la notice en cherchant la valeur qui répond au critère, puis l\'écrire en chiffres avec son unité');
     }
 
     /* Mission 2 : quel champ fait défaut, et sur quelles lignes */
@@ -267,6 +293,9 @@ var EVAL = (function(){
          ligneMission('1 — Décryptage de la pieuvre',
             'Tracé des liens (FP / FC) et classement des six fonctions',
             b.m1, P11DATA.BAREME.m1.total) +
+         ligneMission('1 — Cahier des charges du robinet',
+            'Niveaux lus dans la notice du fabricant, avec leur unité (fiche papier, partie 2)',
+            b.cdc, P11DATA.BAREME.cdc.total) +
          ligneMission('2 — Cahier des charges',
             (P11.ostParId(s.m2.ost) ? P11.ostParId(s.m2.ost).nom + ' — critères, niveaux et unités' : 'Aucun objet technique choisi'),
             b.m2, P11DATA.BAREME.m2.total) +
@@ -317,6 +346,24 @@ var EVAL = (function(){
         h += '<tr><td>' + P11.esc(f.texte) + '</td>' +
              '<td class="lv' + (juste ? ' on' : '') + '">' + (lien ? repDuLien[lien.lid] : '—') + '</td>' +
              '<td class="lv">' + (attendu ? repDuLien[attendu.lid] : '<em style="font-weight:600">trait absent</em>') + '</td></tr>';
+      });
+      h += '</tbody></table>';
+    }
+    h += '</section>';
+
+    /* --- Mission 1, partie 5 : le cahier des charges du robinet ---------- */
+    h += '<section><h2>Mission 1 — Le cahier des charges du robinet</h2>';
+    var rc = s.cdc.reponses, dc = s.cdc.detail;
+    if (!Object.keys(rc).length){
+      h += '<p class="hint">Rien n\'a été produit pour cette partie.</p>';
+    } else {
+      h += '<table class="grille"><thead><tr><th style="width:60px">Rep.</th><th>Fonction</th><th>Critère</th>' +
+           '<th>Niveau écrit</th><th style="width:90px">Points (fixés au 2ᵉ essai)</th></tr></thead><tbody>';
+      P11DATA.CDC_ROBINET.lignes.forEach(function(l){
+        var r = rc[l.id] || {}, pts = dc ? dc[l.id] : null;
+        h += '<tr><td class="lv">' + P11.esc(r.rep || '—') + '</td><td>' + P11.esc(l.fonction) + '</td>' +
+             '<td>' + P11.esc(l.critere) + '</td><td>' + P11.esc(r.niveau || '—') + '</td>' +
+             '<td class="lv' + (pts === 2 ? ' on' : '') + '">' + (pts === null || pts === undefined ? '—' : pts + ' / 2') + '</td></tr>';
       });
       h += '</tbody></table>';
     }
