@@ -58,6 +58,10 @@ var COLONNES = [
   // fonctions (FP1 puis les cinq contraintes de la fiche).
   'm1', 'm1_liens', 'm1_analyse', 'm1_reperes',
 
+  // Mission 1, partie 5 (ajoutee le 29/10/2026) : cahier des charges du robinet,
+  // note sur 8, puis reperes et niveaux saisis, dans l'ordre de la fiche papier.
+  'm1_cdcf', 'm1_cdcf_reperes', 'm1_cdcf_niveaux',
+
   // Mission 2 : note, objet choisi, puis les quatre lignes du cahier des
   // charges telles que l'eleve les a saisies.
   'm2', 'm2_objet',
