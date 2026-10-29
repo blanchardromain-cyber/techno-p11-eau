@@ -134,8 +134,12 @@ sur la fiche ; l'élève choisit le repère et écrit le niveau.
 - **Une seule valeur par ligne** : une case qui cite plusieurs grandeurs (recopie
   de toute la notice) vaut 0. Copies de référence : tout juste 8, tout faux 0,
   la même réponse partout 2, la notice recopiée partout 0.
-- **Le repère n'est pas noté.** Il suit l'ordre de tracé de chaque élève : il est
-  seulement contrôlé contre *sa* pieuvre, avec un retour à chaque essai.
+- **Le repère n'est pas noté.** Il suit l'ordre de tracé de chaque élève : deux
+  binômes justes peuvent écrire FC1 et FC2 pour la même fonction. Ce qui est
+  contrôlé, avec un retour à chaque essai, c'est la **correspondance** : le
+  repère du CDCF doit être celui du trait sur *sa* pieuvre ET celui que *son*
+  tableau d'analyse (étape 3) donne à la même fonction. Le retour dit lequel
+  des deux ne concorde pas.
   « Limiter la consommation d'eau » ne relie l'objet à aucun élément de la
   pieuvre : elle prend un numéro libre, FC6 (le corrigé V2 l'explique).
 - **Note fixée au 2ᵉ essai**, comme les missions 1 et 2. « Vérifier » exige les
