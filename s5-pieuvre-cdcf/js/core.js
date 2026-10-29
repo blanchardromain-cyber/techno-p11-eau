@@ -48,6 +48,13 @@ var P11 = (function(){
         score: null,      // rempli à la vérification
         detail: null
       },
+      // Mission 1, partie 5 : cahier des charges du robinet (fiche papier, partie 2)
+      cdc: {
+        reponses: {},     // id de ligne -> { rep, niveau }
+        essais: 0,
+        score: null,      // fixé au 2e essai, comme les missions 1 et 2
+        detail: null      // id de ligne -> points
+      },
       m2: {
         ost: '',          // identifiant de l'objet technique choisi
         reponses: {},     // 'rep' -> {critere, valeur, unite}
