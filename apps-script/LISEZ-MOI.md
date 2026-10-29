@@ -128,6 +128,8 @@ colonnes J à M**, juste après l'identité, sans avoir à faire défiler.
 | `total`, `sur` | d'où vient la note sur 20 |
 | `m1`, `m1_liens`, `m1_analyse` | mission 1 sur 20, et son détail |
 | `m1_reperes` | les repères attribués aux six fonctions, dans l'ordre de la fiche |
+| `m1_cdcf` | mission 1, partie 5 — cahier des charges du robinet, sur 8 (vide tant qu'il n'est pas vérifié) |
+| `m1_cdcf_reperes`, `m1_cdcf_niveaux` | les quatre repères et les quatre niveaux saisis, dans l'ordre de la fiche papier (partie 2) |
 | `m2`, `m2_objet` | mission 2 sur 20, et l'objet technique choisi |
 | `m2_1_rep` … `m2_4_unite` | les quatre lignes du cahier des charges : repère, critère, niveau et unité **tels que l'élève les a saisis** |
 | `m3_auto`, `m3_prof` | mission 3 : 12 points automatiques, 8 points professeur |
