@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2026-09-28j">
+<link rel="stylesheet" href="css/style.css?v=2026-10-29a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐙</text></svg>">
 </head>
 <body>
@@ -251,6 +251,34 @@
       <button class="btn" id="m1-verif" type="button">Vérifier la mission 1</button>
       <button class="btn sec" id="m1-memo" type="button">Voir le mémo</button>
       <div id="m1-sortie"></div>
+    </section>
+
+    <!-- Partie 2 de la fiche papier : le CDCF du robinet (js/cdcrobinet.js) -->
+    <section class="card" id="cdc-carte">
+      <h2>5 · Le cahier des charges du robinet <span class="pill todo">Nouveau</span></h2>
+      <p class="lead">C'est la <b>partie 2 de ta fiche papier</b>. Pour chaque fonction, la fiche donne
+        déjà le <b>critère</b> : la grandeur que l'on mesure. À toi de trouver le <b>niveau</b> — la valeur
+        à atteindre, en chiffres, avec son unité — dans la notice du fabricant ci-dessous. Attention :
+        la notice contient aussi des valeurs qui ne répondent à aucun de ces critères.</p>
+
+      <div class="demande" id="cdc-notice"></div>
+
+      <p class="lead" style="margin-top:16px">Le <b>repère</b> vient de ta pieuvre (étape 2) : choisis celui
+        du trait qui correspond à la fonction. Une fonction qui ne relie l'objet à aucun élément de ta
+        pieuvre prend un numéro encore libre.</p>
+      <div class="table-scroll">
+        <table class="cdcf">
+          <thead><tr>
+            <th style="width:92px">Rep.</th><th>Fonction</th><th>Critère</th>
+            <th>Niveau</th><th style="width:52px">Retour</th>
+          </tr></thead>
+          <tbody id="cdc-lignes"></tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px">
+        <button class="btn" id="cdc-verif" type="button">Vérifier le cahier des charges</button>
+      </p>
+      <div id="cdc-sortie"></div>
       <p style="margin-top:16px">
         <button class="btn sec small" type="button" onclick="P11.aller('m2')">Passer à la mission 2 →</button>
       </p>
@@ -261,10 +289,16 @@
        ÉCRAN 2 — MISSION 2 : LE CAHIER DES CHARGES
        ==================================================================== -->
   <div class="screen" id="ecran-m2">
+    <div class="fb info cdc-rappel" style="display:none;margin-top:0">
+      <b class="t">ℹ Nouveau dans la mission 1</b>
+      Une partie a été ajoutée : <b>5 · Le cahier des charges du robinet</b>. C'est elle qui te permet
+      de compléter la partie 2 de ta fiche papier, et elle compte dans ta note.
+      <p style="margin:10px 0 0"><button class="btn small cdc-aller" type="button">Y aller</button></p>
+    </div>
 
     <section class="card">
       <h2>1 · Choisis l'objet technique de ton appel d'offres</h2>
-      <p class="lead">Quatre commandes sont sur la table du bureau d'études.
+      <p class="lead">Trois commandes sont sur la table du bureau d'études.
         Choisis celle que ton équipe traitera : tu en rédigeras le cahier des charges fonctionnel.</p>
       <div class="ost-picker" id="m2-picker"></div>
     </section>
@@ -330,6 +364,12 @@
        ÉCRAN 3 — MISSION 3 : LE DÉFI CRÉATIF
        ==================================================================== -->
   <div class="screen" id="ecran-m3">
+    <div class="fb info cdc-rappel" style="display:none;margin-top:0">
+      <b class="t">ℹ Nouveau dans la mission 1</b>
+      Une partie a été ajoutée : <b>5 · Le cahier des charges du robinet</b>. C'est elle qui te permet
+      de compléter la partie 2 de ta fiche papier, et elle compte dans ta note.
+      <p style="margin:10px 0 0"><button class="btn small cdc-aller" type="button">Y aller</button></p>
+    </div>
 
     <section class="card">
       <h2>1 · Ta solution pour économiser l'eau au collège</h2>
@@ -477,7 +517,7 @@
   <div class="footer no-print">
     Collège Saint Pierre – Les Essarts · Séquence P11 · Séance 3 —
     <a href="../index.html">retour aux outils de la séquence</a>
-    <br><span style="opacity:.7">build 2026-09-28j</span>
+    <br><span style="opacity:.7">build 2026-10-29a</span>
   </div>
 </div>
 
@@ -505,16 +545,17 @@
 -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js" crossorigin="anonymous"></script>
 
-<script src="js/data.js?v=2026-09-28j"></script>
-<script src="js/core.js?v=2026-09-28j"></script>
-<script src="js/badge.js?v=2026-09-28j"></script>
-<script src="js/scene3d.js?v=2026-09-28j"></script>
-<script src="js/module1.js?v=2026-09-28j"></script>
-<script src="js/module2.js?v=2026-09-28j"></script>
-<script src="js/module3.js?v=2026-09-28j"></script>
-<script src="js/evaluation.js?v=2026-09-28j"></script>
-<script src="js/cloud.js?v=2026-09-28j"></script>
-<script src="js/presentation.js?v=2026-09-28j"></script>
+<script src="js/data.js?v=2026-10-29a"></script>
+<script src="js/core.js?v=2026-10-29a"></script>
+<script src="js/badge.js?v=2026-10-29a"></script>
+<script src="js/scene3d.js?v=2026-10-29a"></script>
+<script src="js/module1.js?v=2026-10-29a"></script>
+<script src="js/cdcrobinet.js?v=2026-10-29a"></script>
+<script src="js/module2.js?v=2026-10-29a"></script>
+<script src="js/module3.js?v=2026-10-29a"></script>
+<script src="js/evaluation.js?v=2026-10-29a"></script>
+<script src="js/cloud.js?v=2026-10-29a"></script>
+<script src="js/presentation.js?v=2026-10-29a"></script>
 <script>
   // Démarrage une fois le document et tous les scripts en place.
   if (document.readyState === 'loading'){
