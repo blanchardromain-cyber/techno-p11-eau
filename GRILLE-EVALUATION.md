@@ -15,9 +15,10 @@ cadrage pour une correction manuelle sur copie papier.
 | Mission | Attendu | Points | Correction |
 |---|---|---:|---|
 | **1 — Décryptage de la pieuvre** | Distinguer fonction principale et fonction contrainte à partir des liens avec le milieu extérieur | **20** | automatique |
+| **1, partie 5 — Cahier des charges du robinet** | Lire dans un document le niveau qui répond à un critère, et l'écrire avec son unité (fiche papier, partie 2) | **8** | automatique |
 | **2 — Cahier des charges** | Traduire une fonction en critère mesurable et en niveau chiffré | **20** | automatique |
 | **3 — Défi créatif** | Rédiger le cahier des charges d'un objet qu'on invente | **20** | 12 automatiques + 8 professeur |
-| | | **60** | → note sur 20 |
+| | | **68** | → note sur 20 |
 
 La note sur 20 est calculée au demi-point : `20 × points obtenus / points possibles`.
 **Une mission jamais vérifiée est exclue du dénominateur** et signalée « non
@@ -110,10 +111,53 @@ reliés à travers l'objet, ou un seul élément auquel l'objet doit s'adapter.
 
 ---
 
+## 2 bis. Mission 1, partie 5 — Cahier des charges du robinet (8 points)
+
+**Ajoutée le 29/10/2026**, alors que les classes avaient commencé : la partie 2
+de la fiche papier (le CDCF du robinet) n'était traitée dans aucune mission, et
+les élèves ne pouvaient pas la compléter. La fiche, déjà imprimée, ne change pas.
+
+L'élève lit la **notice du fabricant du modèle D-15** — le même robinet fictif
+que l'activité 5-6 du site Technologie, avec les mêmes valeurs que le corrigé
+papier. La notice dit les niveaux avec ses mots (« deux litres par minute »,
+« une quinzaine de centimètres ») et les entoure de **valeurs pièges** : le débit
+d'un robinet classique, la pression, la garantie. Le critère est donné, comme
+sur la fiche ; l'élève choisit le repère et écrit le niveau.
+
+| Rep. (exemple) | Fonction | Critère | Niveau attendu | 2 pts | 1 pt |
+|---|---|---|---|---|---|
+| FP1 | Distribuer de l'eau pour se laver les mains | Débit | ≈ 2 L/min | 2 + L/min | 2 sans unité valable |
+| FC… | Détecter la présence des mains | Distance | 0 à ≈ 15 cm | 15 cm (ou 150 mm) | 15 sans unité, « quinzaine » |
+| FC… | Résister à l'environnement humide | Indice IP | IP65 | IP65 | 65 sans « IP » |
+| FC6 | Limiter la consommation d'eau | Volume / temps | écoulement coupé dès le retrait des mains (0 s) | immédiat, aussitôt, dès que…, 0 s | « l'eau se coupe » sans dire quand |
+
+- **Une seule valeur par ligne** : une case qui cite plusieurs grandeurs (recopie
+  de toute la notice) vaut 0. Copies de référence : tout juste 8, tout faux 0,
+  la même réponse partout 2, la notice recopiée partout 0.
+- **Le repère n'est pas noté.** Il suit l'ordre de tracé de chaque élève : il est
+  seulement contrôlé contre *sa* pieuvre, avec un retour à chaque essai.
+  « Limiter la consommation d'eau » ne relie l'objet à aucun élément de la
+  pieuvre : elle prend un numéro libre, FC6 (le corrigé V2 l'explique).
+- **Note fixée au 2ᵉ essai**, comme les missions 1 et 2. « Vérifier » exige les
+  quatre lignes remplies : un oubli ne fait pas perdre un essai.
+- **Aucune note déjà obtenue ne change** : la partie est exclue du calcul tant
+  qu'elle n'est pas vérifiée. Les équipes qui ont vérifié la mission 1 sans la
+  faire voient un bandeau « Nouveau dans la mission 1 » en tête des missions 2
+  et 3, avec un bouton qui y mène.
+
+---
+
 ## 3. Mission 2 — Cahier des charges fonctionnel (20 points)
 
-L'équipe choisit un objet technique parmi quatre. Le barème est ramené à 20
-points quel que soit l'objet, afin que les quatre sujets soient équivalents.
+L'équipe choisit un objet technique parmi trois. Le barème est ramené à 20
+points quel que soit l'objet, afin que les sujets soient équivalents.
+
+> **Le robinet n'est plus proposé depuis le 29/10/2026.** Son cahier des charges
+> se fait désormais en mission 1 (partie 5), avec les valeurs de la fiche papier
+> (modèle D-15 : 2 L/min, 15 cm). Le courrier ci-dessous décrivait un autre
+> robinet (5 L/min, 10 cm) : le traiter deux fois avec deux jeux de valeurs
+> aurait semé le doute. Les équipes qui l'avaient déjà choisi le gardent, avec
+> leur travail et leur note ; la carte reste cachée pour toutes les autres.
 
 ### La demande du client
 
@@ -143,7 +187,7 @@ l'exemple ne fait jamais partie des quatre à compléter.
 L'unité est notée séparément parce que c'est elle qui trahit une confusion de
 grandeur : un élève qui écrit « débit : 5 cm » a compris le mot, pas la notion.
 
-### Niveaux de référence — le robinet automatique
+### Niveaux de référence — le robinet automatique (équipes l'ayant choisi avant le 29/10)
 
 | Rep. | Fonction | Critère attendu | Niveau attendu | Plage acceptée |
 |---|---|---|---|---|
