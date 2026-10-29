@@ -262,6 +262,7 @@ var M1 = (function(){
     // Les repères du tableau d'analyse viennent des traits : ils suivent.
     majChoixReperes();
     rafraichirAnalyse();
+    if (window.CDCR) CDCR.majReperes();   // partie 5 : mêmes repères
     dessinerLiens();
     majCompteurs();
     P11.sauver();
@@ -773,6 +774,7 @@ var M1 = (function(){
 
     document.getElementById('m1-sortie').innerHTML = html;
     document.getElementById('m1-sortie').scrollIntoView({ behavior:'smooth', block:'start' });
+    if (window.CDCR) CDCR.majRappels();
     P11.sauver(true);
     CLOUD.envoyer('m1');
     P11.majEnTete();
@@ -865,6 +867,7 @@ var M1 = (function(){
 
     dire("Choisis le type de fonction à tracer.");
     majCompteurs();
+    if (window.CDCR) CDCR.init();          // partie 5 : cahier des charges du robinet
   }
 
   /** Appelé à chaque affichage de l'écran : la 3D a besoin d'une taille réelle. */
@@ -915,6 +918,7 @@ var M1 = (function(){
       document.getElementById('m1-hs-compte').textContent =
         'Éléments repérés : ' + st.hotspots.length + ' / ' + P11DATA.HOTSPOTS.length;
     }
+    if (window.CDCR) CDCR.refletEtat();
     replacerBientot();
   }
 
