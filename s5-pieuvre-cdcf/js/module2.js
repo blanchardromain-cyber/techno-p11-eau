@@ -34,6 +34,7 @@ var M2 = (function(){
       b.innerHTML = '<span class="emoji" aria-hidden="true">' + o.emoji + '</span>' +
                     '<span><h4>' + P11.esc(o.nom) + '</h4><p>' + P11.esc(o.resume) + '</p></span>';
       b.addEventListener('click', function(){ choisir(o.id); });
+      if (o.id === 'robinet' && P11.state.m2.ost !== 'robinet') b.style.display = 'none';   // voir refletEtat
       box.appendChild(b);
     });
   }
@@ -422,6 +423,11 @@ var M2 = (function(){
     var cartes = document.querySelectorAll('.ost-card');
     for (var i=0;i<cartes.length;i++){
       cartes[i].setAttribute('aria-pressed', cartes[i].dataset.ost === st.ost ? 'true' : 'false');
+      // Le robinet a désormais son cahier des charges en mission 1 (partie 5),
+      // avec les valeurs de la fiche papier. Il ne reste proposé ici qu'aux
+      // équipes qui l'avaient déjà choisi : leur travail et leur note restent.
+      if (cartes[i].dataset.ost === 'robinet')
+        cartes[i].style.display = st.ost === 'robinet' ? '' : 'none';
     }
     construireTable();
   }
