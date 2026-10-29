@@ -145,6 +145,7 @@ s5-pieuvre-cdcf/
     ├── badge.js          identification de l'équipe, reprise d'un dossier
     ├── scene3d.js        les deux scènes 3D, et leur repli sans 3D
     ├── module1.js        mission 1 — la pieuvre et le tableau d'analyse
+    ├── cdcrobinet.js     mission 1, partie 5 — le cahier des charges du robinet (fiche papier, partie 2)
     ├── module2.js        mission 2 — le cahier des charges et les coups de pouce
     ├── module3.js        mission 3 — le défi créatif et l'atelier de maquette
     ├── evaluation.js     dossier final, note sur 20, exports
@@ -155,7 +156,8 @@ s5-pieuvre-cdcf/
 **Pour modifier le contenu d'une année sur l'autre, `js/data.js` suffit.** Il
 contient les éléments du milieu extérieur, les six fonctions à classer, les
 quatre objets techniques proposés avec leurs critères, niveaux et plages de
-tolérance, le barème et les quatre niveaux de maîtrise. Le reste du code ne
+tolérance (le robinet n'est plus montré qu'aux équipes qui l'avaient déjà
+choisi), la notice du modèle D-15 de la partie 5, le barème et les quatre niveaux de maîtrise. Le reste du code ne
 contient aucune connaissance métier.
 
 ### Le kit de la maquette (mission 3)
@@ -282,9 +284,10 @@ Les flèches ◀ ▶ (ou les touches ← →) passent d'une équipe retenue à l
 
 ### Ce qui est corrigé automatiquement, et ce qui ne l'est pas
 
-Sur 60 points :
+Sur 68 points :
 
-- **mission 1 (20 pts)** et **mission 2 (20 pts)** sont entièrement automatiques ;
+- **mission 1 (20 pts)**, son **cahier des charges du robinet (8 pts, partie 5,
+  ajoutée le 29/10/2026)** et **mission 2 (20 pts)** sont entièrement automatiques ;
 - **mission 3** est séparée en **12 points automatiques** (structure de la pieuvre,
   verbe à l'infinitif, critères mesurables, niveaux chiffrés avec unité, maquette)
   et **8 points attribués par le professeur** (pertinence du besoin, originalité,
