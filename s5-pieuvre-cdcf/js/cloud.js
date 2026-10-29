@@ -98,6 +98,12 @@ var CLOUD = (function(){
       m1_liens:    s.m1.detail ? s.m1.detail.liens  : null,
       m1_analyse:  s.m1.detail ? s.m1.detail.typage : null,
       m1_reperes:  reperes.join(' / '),
+      // Mission 1, partie 5 : cahier des charges du robinet (fiche papier, partie 2)
+      m1_cdcf:         s.cdc.score,
+      m1_cdcf_reperes: P11DATA.CDC_ROBINET.lignes.map(function(l){
+                         return (s.cdc.reponses[l.id] || {}).rep || '—'; }).join(' / '),
+      m1_cdcf_niveaux: P11DATA.CDC_ROBINET.lignes.map(function(l){
+                         return String((s.cdc.reponses[l.id] || {}).niveau || '—').trim(); }).join(' | '),
       m2:          s.m2.score,
       m2_objet:    ost ? ost.nom : '',
       m3_auto:     s.m3.score,
