@@ -42,7 +42,7 @@ var CDCR = (function(){
 
   /* Nombre de grandeurs différentes citées : débit, distance, indice IP, arrêt. */
   var GRANDEURS = [
-    /l(itres?)?( ?\/ ?| par | )?min/,
+    /l(itres?)?( ?[\/.] ?| par | )?(min|mn)/,
     /(^|[^a-z])(cm|mm|centimetres?|millimetres?)( |$)/,
     /(^|[^a-z])ip ?\d/,
     /(immediat|instantan|aussitot|sans (le moindre )?delai|(^|[^0-9.])0 ?(s|sec|secondes?)( |$))/
@@ -67,7 +67,8 @@ var CDCR = (function(){
     if (grandeurs(t) > 1) return { pts:0, motif:"Une seule valeur par ligne : choisis celle qui répond à ce critère." };
 
     if (id === 'c1'){
-      var unite = /l(itres?)?( ?\/ ?| par | )?min/.test(t);
+      // L/min, l/mn, L.min-1, litres par minute…
+      var unite = /l(itres?)?( ?[\/.] ?| par | )?(min|mn)/.test(t);
       if (v.indexOf(10) !== -1 && v.indexOf(2) === -1)
         return { pts:0, motif:"Dix litres par minute, c'est le robinet classique, pas le D-15." };
       if (v.indexOf(2) === -1) return { pts:0, motif:"Ce n'est pas le débit annoncé pour le D-15." };
@@ -76,7 +77,8 @@ var CDCR = (function(){
     }
     if (id === 'c2'){
       var cm = /(^|[^a-z])(cm|centimetres?)( |$)/.test(t), mm = /(^|[^a-z])(mm|millimetres?)( |$)/.test(t);
-      if ((cm && v.indexOf(15) !== -1) || (mm && v.indexOf(150) !== -1)) return { pts:2, motif:'' };
+      var m = /(^|[^a-z])(m|metres?)( |$)/.test(t);
+      if ((cm && v.indexOf(15) !== -1) || (mm && v.indexOf(150) !== -1) || (m && v.indexOf(0.15) !== -1)) return { pts:2, motif:'' };
       if (v.indexOf(15) !== -1) return { pts:1, motif:"Bonne valeur, mais l'unité manque ou ne convient pas : une distance de détection s'exprime ici en centimètres (cm)." };
       if (/quinzaine/.test(t)) return { pts:1, motif:"C'est la bonne idée, mais un niveau s'écrit en chiffres, avec son unité." };
       return { pts:0, motif:"Ce n'est pas la distance de détection annoncée pour le D-15." };
