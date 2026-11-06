@@ -633,7 +633,9 @@ var P11DATA = (function(){
   var CLOUD = {
     // L'URL doit être entre apostrophes : sans elles, tout le fichier cesse
     // d'être lu et l'activité ne démarre plus.
-    url: 'https://script.google.com/macros/s/AKfycbya8mVXAI-NppqQg97sDwp61Ubum3La-USkRwXLIyE-oTbkSp_OAWjDPqS7kOf4JHJh/exec',
+    // Script attaché au classeur de détail (onglet P11-S5), celui que le
+    // professeur ouvre et met à jour ; il écrit aussi dans le classeur des classes.
+    url: 'https://script.google.com/macros/s/AKfycbxeRCsQG0sMFp07OaAflAD_H6aJ3aH9g--lS6P37PUl8m4OkzIL62Hi_jjsTcurS4eC/exec',
     secret: 'P11-S5-RB-2026',
     // Nom de la séquence écrit dans la feuille, pour distinguer les activités
     // si d'autres viennent s'y ajouter plus tard.
