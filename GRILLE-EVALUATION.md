@@ -34,6 +34,13 @@ compte comme un essai : une ligne est notée au moment où son corrigé s'affich
 pour la première fois (🔒 dans le tableau), et changer d'objet puis revenir ne
 la remet pas à zéro.
 
+**Le dossier et le classeur montrent les réponses notées** : celles de la
+vérification qui a donné la note, et non les corrections recopiées ensuite.
+
+**Un nouveau badge ne fait pas perdre une note.** Un élève qui recrée un badge
+repart de zéro avec un autre code ; le classeur des classes garde alors la
+meilleure de ses notes (le classeur `P11-S5` garde les deux lignes).
+
 ---
 
 ## 2. Mission 1 — Décryptage de la pieuvre (20 points)
