@@ -53,7 +53,11 @@ var EVAL = (function(){
     return {
       m1:m1, cdc:cdc, m2:m2, m3a:m3a, m3p:m3p,
       obtenu:obtenu, maxi:maxi, pct:Math.round(pct), note:note, niveau:niveau,
-      rendues: [m1,m2,m3a].filter(rendu).length
+      rendues: [m1,m2,m3a].filter(rendu).length,
+      // Tout ce qui compte dans la note, partie 5 comprise. Sans elle, une
+      // équipe qui vérifiait la partie 5 avant la mission 1 avait une note
+      // mais aucune observation (« Aucune mission vérifiée »).
+      verifiees: [m1,cdc,m2,m3a].filter(rendu).length
     };
   }
 
@@ -74,7 +78,7 @@ var EVAL = (function(){
    */
   function phrasesAppreciation(){
     var s = P11.state, b = bilan(), B = P11DATA.BAREME;
-    if (!b.rendues) return ['Aucune mission vérifiée pour le moment.'];
+    if (!b.verifiees) return ['Aucune mission vérifiée pour le moment.'];
 
     var rendu = function(v){ return v !== null && v !== undefined; };
     var provisoire = b.rendues < 3 || !rendu(b.m3p) || !rendu(b.cdc);
