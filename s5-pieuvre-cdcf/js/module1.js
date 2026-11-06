@@ -749,6 +749,7 @@ var M1 = (function(){
     if (!entrainement){
       st.score = total;
       st.detail = { liens:ptsLiens, typage:ptsType };
+      st.notees = JSON.parse(JSON.stringify({ liens:st.liens, repere:st.repere }));
     }
 
     var appreciation =
