@@ -152,6 +152,21 @@ var EVAL = (function(){
 
   function appreciation(){ return phrasesAppreciation().join(' '); }
 
+  /**
+   * Réponses notées : celles de la vérification qui a donné la note de chaque
+   * partie (voir m1.notees dans core.js). Sans copie (dossier ancien, jamais
+   * vérifié), les réponses actuelles. Le dossier et le classeur lisent ici.
+   */
+  function reponsesNotees(){
+    var s = P11.state;
+    var m2n = (s.m2.notees || {})[s.m2.ost] || {};
+    return {
+      m1:  s.m1.notees || { liens:s.m1.liens, repere:s.m1.repere },
+      cdc: s.cdc.notees || s.cdc.reponses,
+      m2:  function(rep){ return m2n[rep] || s.m2.reponses[rep] || {}; }
+    };
+  }
+
   /** Critères des lignes du CDCF du robinet notées moins de 2 points. */
   function niveauxFaux(){
     var d = P11.state.cdc.detail || {};
@@ -313,18 +328,20 @@ var EVAL = (function(){
 
     /* --- Mission 1 : la pieuvre produite --------------------------------- */
     h += '<section><h2>Mission 1 — La pieuvre du robinet automatique</h2>';
-    if (!s.m1.liens.length && !Object.keys(s.m1.repere).length){
+    var rn = reponsesNotees(), m1n = rn.m1;
+    if (s.m1.notees) h += '<p class="hint" style="margin:0 0 8px">Réponses notées : telles qu\'elles étaient à la vérification qui a donné la note.</p>';
+    if (!m1n.liens.length && !Object.keys(m1n.repere).length){
       h += '<p class="hint">Rien n\'a été produit pour cette mission.</p>';
     } else {
       // Repère de chaque trait, tel qu'il a été attribué au tracé.
       var repDuLien = {};
       ['FP','FC'].forEach(function(t){
-        s.m1.liens.filter(function(l){ return l.type === t; })
+        m1n.liens.filter(function(l){ return l.type === t; })
                   .forEach(function(l, i){ repDuLien[l.lid] = t + (i+1); });
       });
 
       h += '<p style="margin:0 0 8px"><b>Liens tracés</b></p><ul style="margin-top:0">';
-      s.m1.liens.forEach(function(l){
+      m1n.liens.forEach(function(l){
         h += '<li><span class="pill ' + l.type.toLowerCase() + '">' + (repDuLien[l.lid] || l.type) + '</span> ' +
              (l.type === 'FP'
                ? P11.esc(nomEME(l.de)) + ' ↔ ' + P11.esc(nomEME(l.a)) + ' <em>(à travers l\'objet)</em>'
@@ -335,12 +352,12 @@ var EVAL = (function(){
            '<table class="grille"><thead><tr><th>Fonction</th><th style="width:90px">Repère choisi</th>' +
            '<th style="width:110px">Attendu</th></tr></thead><tbody>';
       P11DATA.FONCTIONS.forEach(function(f){
-        var lid = s.m1.repere[f.id];
+        var lid = m1n.repere[f.id];
         var lien = null;
-        s.m1.liens.forEach(function(l){ if (l.lid === lid) lien = l; });
+        m1n.liens.forEach(function(l){ if (l.lid === lid) lien = l; });
         // Le trait qui aurait dû être désigné, avec la numérotation de l'élève.
         var attendu = null;
-        s.m1.liens.forEach(function(l){
+        m1n.liens.forEach(function(l){
           if (attendu) return;
           if (f.type === 'FP'){
             if (l.type === 'FP' && f.via.indexOf(l.de) !== -1 && f.via.indexOf(l.a) !== -1) attendu = l;
@@ -357,7 +374,8 @@ var EVAL = (function(){
 
     /* --- Mission 1, partie 5 : le cahier des charges du robinet ---------- */
     h += '<section><h2>Mission 1 — Le cahier des charges du robinet</h2>';
-    var rc = s.cdc.reponses, dc = s.cdc.detail;
+    var rc = rn.cdc, dc = s.cdc.detail;
+    if (s.cdc.notees) h += '<p class="hint" style="margin:0 0 8px">Réponses notées : telles qu\'elles étaient à la vérification qui a donné la note.</p>';
     if (!Object.keys(rc).length){
       h += '<p class="hint">Rien n\'a été produit pour cette partie.</p>';
     } else {
@@ -383,7 +401,7 @@ var EVAL = (function(){
            '<table class="grille"><thead><tr><th style="width:56px">Rep.</th><th>Fonction</th>' +
            '<th>Critère</th><th>Niveau</th></tr></thead><tbody>';
       ost.lignes.forEach(function(l){
-        var r = s.m2.reponses[l.rep] || {};
+        var r = rn.m2(l.rep);
         h += '<tr><td><b>' + l.rep + '</b></td><td>' + P11.esc(l.fonction) + '</td>' +
              '<td>' + (P11.esc(r.critere) || '<em style="color:#9aa7b4">non renseigné</em>') + '</td>' +
              '<td>' + (String(r.valeur||'').trim()
@@ -571,6 +589,6 @@ var EVAL = (function(){
   }
 
   return { init:init, construireDossier:construireDossier, bilan:bilan,
-           appreciation:appreciation, remarques:remarques,
+           appreciation:appreciation, remarques:remarques, reponsesNotees:reponsesNotees,
            exporterJSON:exporterJSON, imprimer:imprimer };
 })();
