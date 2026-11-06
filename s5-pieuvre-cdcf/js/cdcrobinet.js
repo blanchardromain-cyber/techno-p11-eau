@@ -256,7 +256,10 @@ var CDCR = (function(){
     });
 
     var entrainement = st.essais > 2 && st.score !== null && st.score !== undefined;
-    if (!entrainement){ st.score = total; st.detail = detail; }
+    if (!entrainement){
+      st.score = total; st.detail = detail;
+      st.notees = JSON.parse(JSON.stringify(st.reponses));   // réponses notées
+    }
 
     var html = '<div class="fb ' + (total === B.total ? 'ok' : (total >= 4 ? 'partial' : 'ko')) + '">' +
                '<b class="t">Les niveaux — ' + total + ' / ' + B.total + ' points</b><ul>' + items + '</ul></div>';
