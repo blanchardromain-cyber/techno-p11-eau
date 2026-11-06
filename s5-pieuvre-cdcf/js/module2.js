@@ -252,7 +252,10 @@ var M2 = (function(){
     // corrigé et commenté, pour s'entraîner, mais ne compte plus.
     st.figees = st.figees || {};
     var fig = st.figees[st.ost] || (st.figees[st.ost] = {});
-    if (montrer && fig[l.rep] === undefined) fig[l.rep] = res.pts;
+    if (montrer && fig[l.rep] === undefined){
+      fig[l.rep] = res.pts;
+      noter(l);                 // la réponse qui a valu ces points
+    }
     var fixe = fig[l.rep] !== undefined;
     res.note = fixe ? fig[l.rep] : res.pts;
 
@@ -295,6 +298,14 @@ var M2 = (function(){
 
   function etatChamp(n, max){ return n === max ? 'ok' : (n > 0 ? 'partial' : 'ko'); }
 
+  /** Garde la réponse de la ligne telle qu'elle est notée (voir m2.notees). */
+  function noter(l){
+    var st = P11.state.m2;
+    st.notees = st.notees || {};
+    var n = st.notees[st.ost] || (st.notees[st.ost] = {});
+    n[l.rep] = JSON.parse(JSON.stringify(st.reponses[l.rep] || {}));
+  }
+
   /* ==================== Vérification d'ensemble =========================== */
 
   function verifierTout(){
@@ -310,6 +321,8 @@ var M2 = (function(){
     // Au 2e essai, toutes les lignes le sont : la note ne bouge plus.
     ost.lignes.forEach(function(l){
       var res = verifierLigne(l, false);
+      // Ligne pas encore fixée : sa réponse notée est celle de cette vérification.
+      if (st.figees[st.ost][l.rep] === undefined) noter(l);
       total += res.note; max += res.max;
       detail.push({ rep:l.rep, pts:res.note, max:res.max });
     });
