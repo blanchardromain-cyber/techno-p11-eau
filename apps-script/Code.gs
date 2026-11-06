@@ -270,6 +270,13 @@ function _reporterDansClasse(l, date) {
     var ligne = onglet ? _trouverEleve(onglet, e[0], e[1]) : 0;
     if (ligne) {
       var entetes = _entetesClasse(onglet);
+      // Un eleve qui recree un badge revient avec un autre code d'equipe : on
+      // garde alors la meilleure des deux notes. Le meme code, lui, met
+      // toujours a jour (c'est la progression de la meme equipe).
+      var equipe = String(onglet.getRange(ligne, entetes['Équipe']).getValue() || '');
+      var avant = _nombre(onglet.getRange(ligne, entetes['Note /20']).getValue());
+      var apres = _nombre(valeurs['Note /20']);
+      if (equipe && equipe !== String(l.code) && avant !== null && (apres === null || apres < avant)) return;
       Object.keys(valeurs).forEach(function (nom) {
         onglet.getRange(ligne, entetes[nom]).setValue(valeurs[nom]);
       });
@@ -277,6 +284,13 @@ function _reporterDansClasse(l, date) {
       _aRapprocher(ss, l, e, valeurs);
     }
   });
+}
+
+/** Note lue dans une cellule (14,5 ou 14.5 ou nombre), null si vide. */
+function _nombre(v) {
+  if (v === '' || v === null || v === undefined) return null;
+  var n = parseFloat(String(v).replace(',', '.'));
+  return isNaN(n) ? null : n;
 }
 
 /** Numéro de ligne de l'élève (NOM en A, Prénom en B), 0 s'il n'y est pas. */
