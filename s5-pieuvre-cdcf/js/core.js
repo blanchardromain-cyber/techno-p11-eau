@@ -46,14 +46,19 @@ var P11 = (function(){
         hotspots: [],     // identifiants des points chauds déjà ouverts
         essais: 0,
         score: null,      // rempli à la vérification
-        detail: null
+        detail: null,
+        // Réponses notées : copie des traits et du tableau au moment où la note
+        // est calculée. Le dossier et le classeur les montrent, et non les
+        // réponses corrigées ensuite, pour que réponses et note concordent.
+        notees: null      // { liens, repere }
       },
       // Mission 1, partie 5 : cahier des charges du robinet (fiche papier, partie 2)
       cdc: {
         reponses: {},     // id de ligne -> { rep, niveau }
         essais: 0,
         score: null,      // fixé au 2e essai, comme les missions 1 et 2
-        detail: null      // id de ligne -> points
+        detail: null,     // id de ligne -> points
+        notees: null      // réponses notées (copie de `reponses`), voir m1.notees
       },
       m2: {
         ost: '',          // identifiant de l'objet technique choisi
@@ -66,7 +71,10 @@ var P11 = (function(){
         // première fois : 'objet' -> { 'rep' -> points }. Rangés par objet et
         // conservés quand on change d'objet, sinon changer puis revenir
         // remettrait les lignes à zéro après avoir vu le corrigé.
-        figees: {}
+        figees: {},
+        // Réponses notées de chaque ligne, rangées comme `figees` :
+        // 'objet' -> { 'rep' -> {critere, valeur, unite} }. Voir m1.notees.
+        notees: {}
       },
       m3: {
         nom:'', probleme:'', principe:'',
