@@ -111,9 +111,9 @@ var CLOUD = (function(){
       // Observation sur les trois missions, identique à celle du dossier.
       // La clé garde son ancien nom : la renommer obligerait à redéployer le
       // script du classeur.
-      m3_appreciation: b.rendues ? EVAL.appreciation() : '',
+      m3_appreciation: b.verifiees ? EVAL.appreciation() : '',
       // Remarques sans note, pour le classeur des classes de 4e.
-      remarques_classe: b.rendues ? EVAL.remarques() : '',
+      remarques_classe: b.verifiees ? EVAL.remarques() : '',
 
       total:   b.obtenu,
       sur:     b.maxi,
