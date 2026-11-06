@@ -65,12 +65,16 @@ var CLOUD = (function(){
        Les repères sont propres à chaque élève, puisqu'ils suivent l'ordre de
        son tracé. On les liste dans l'ordre de référence des fonctions, ce qui
        permet au professeur de lire une colonne d'un coup d'œil. */
+    // Réponses notées : celles qui ont donné la note, pas les corrections faites
+    // après coup (sinon la feuille montrait des réponses justes à côté d'une
+    // note basse).
+    var rn = EVAL.reponsesNotees(), m1n = rn.m1;
     var reperes = P11DATA.FONCTIONS.map(function(f){
-      var lid = s.m1.repere[f.id];
+      var lid = m1n.repere[f.id];
       var lien = null;
-      for (var i=0;i<s.m1.liens.length;i++){ if (s.m1.liens[i].lid === lid) lien = s.m1.liens[i]; }
+      for (var i=0;i<m1n.liens.length;i++){ if (m1n.liens[i].lid === lid) lien = m1n.liens[i]; }
       if (!lien) return '—';
-      var memeType = s.m1.liens.filter(function(l){ return l.type === lien.type; });
+      var memeType = m1n.liens.filter(function(l){ return l.type === lien.type; });
       return lien.type + (memeType.indexOf(lien) + 1);
     });
 
@@ -78,7 +82,7 @@ var CLOUD = (function(){
     var m2 = {};
     for (var n = 1; n <= 4; n++){
       var l = ost && ost.lignes[n-1];
-      var r = l ? (s.m2.reponses[l.rep] || {}) : {};
+      var r = l ? rn.m2(l.rep) : {};
       m2['m2_' + n + '_rep']     = l ? l.rep : '';
       m2['m2_' + n + '_critere'] = r.critere || '';
       m2['m2_' + n + '_niveau']  = r.valeur  || '';
@@ -101,9 +105,9 @@ var CLOUD = (function(){
       // Mission 1, partie 5 : cahier des charges du robinet (fiche papier, partie 2)
       m1_cdcf:         s.cdc.score,
       m1_cdcf_reperes: P11DATA.CDC_ROBINET.lignes.map(function(l){
-                         return (s.cdc.reponses[l.id] || {}).rep || '—'; }).join(' / '),
+                         return (rn.cdc[l.id] || {}).rep || '—'; }).join(' / '),
       m1_cdcf_niveaux: P11DATA.CDC_ROBINET.lignes.map(function(l){
-                         return String((s.cdc.reponses[l.id] || {}).niveau || '—').trim(); }).join(' | '),
+                         return String((rn.cdc[l.id] || {}).niveau || '—').trim(); }).join(' | '),
       m2:          s.m2.score,
       m2_objet:    ost ? ost.nom : '',
       m3_auto:     s.m3.score,
