@@ -131,7 +131,14 @@ colonnes J à M**, juste après l'identité, sans avoir à faire défiler.
 | `m1_cdcf` | mission 1, partie 5 — cahier des charges du robinet, sur 8 (vide tant qu'il n'est pas vérifié) |
 | `m1_cdcf_reperes`, `m1_cdcf_niveaux` | les quatre repères et les quatre niveaux saisis, dans l'ordre de la fiche papier (partie 2) |
 | `m2`, `m2_objet` | mission 2 sur 20, et l'objet technique choisi |
-| `m2_1_rep` … `m2_4_unite` | les quatre lignes du cahier des charges : repère, critère, niveau et unité **tels que l'élève les a saisis** |
+| `m2_1_rep` … `m2_4_unite` | les quatre lignes du cahier des charges : repère, critère, niveau et unité **tels qu'ils ont été notés** |
+
+**Réponses notées (depuis le 06/11/2026).** `m1_reperes`, `m1_cdcf_reperes`,
+`m1_cdcf_niveaux` et les colonnes `m2_…` montrent les réponses **au moment où la
+note a été calculée**, et non les corrections faites ensuite. Avant, un élève
+qui recopiait le corrigé après le 2ᵉ essai affichait des réponses justes à côté
+d'une note plus basse. Les dossiers vérifiés avant cette date montrent encore
+les réponses du dernier envoi.
 | `m3_auto`, `m3_prof` | mission 3 : 12 points automatiques, 8 points professeur |
 | `solution`, `probleme` | l'idée proposée en mission 3 |
 | `presentation` | `oui` si l'équipe a été retenue pour la projection |
@@ -199,6 +206,12 @@ Un binôme remplit les deux lignes. Un élève introuvable dans son onglet (faut
 de frappe, nom absent) part dans l'onglet **« À rapprocher »** : il suffit de
 corriger le nom dans la liste, le prochain envoi remplira la bonne ligne.
 Accents et majuscules sont ignorés dans la comparaison.
+
+**Un élève, deux dossiers : la meilleure note reste.** Un élève qui recrée un
+badge revient avec un autre code d'équipe. Si sa ligne porte déjà la note d'un
+autre code, elle n'est remplacée que par une note égale ou meilleure ; une note
+plus basse est ignorée ici (elle reste visible dans `P11-S5`). Le même code
+d'équipe, lui, met toujours la ligne à jour.
 
 **Mise en place, une seule fois :**
 
