@@ -40,6 +40,7 @@
   ol.prog li.cur .n{background:var(--blue);color:#fff}
   ol.prog li.fait{color:var(--ok)}
   ol.prog li.fait .n{background:var(--ok);color:#fff}
+  ol.prog li button{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;padding:0;color:inherit;font-weight:inherit;cursor:pointer;text-decoration:underline}
 
   .card{background:#fff;border:1px solid #DCE8F0;border-radius:14px;padding:20px 22px;margin-top:16px;box-shadow:0 2px 10px rgba(11,60,93,.06)}
   h2{color:var(--navy);font-size:22px;margin:0 0 6px}
@@ -200,6 +201,7 @@
     body{font-size:16px}
     ol.prog li{font-size:0;padding:8px;justify-content:center}
     ol.prog li .n{font-size:15px}
+    ol.prog li button{justify-content:center}
     .fast{grid-template-columns:minmax(0,1fr);row-gap:8px}
     .fast .lk,.fast .lk2{display:none}
     .fast .fh{text-align:left}
@@ -235,14 +237,14 @@
   </header>
 
   <ol class="prog" id="prog" aria-label="Progression">
-    <li data-p="1"><span class="n">1</span>Comprendre</li>
+    <li data-p="1"><button type="button" id="b-anim" title="Revoir l’animation depuis le début"><span class="n">1</span>Comprendre</button></li>
     <li data-p="2"><span class="n">2</span>Compléter</li>
     <li data-p="3"><span class="n">3</span>Retenir</li>
   </ol>
 
   <main class="card" id="ecran" aria-live="polite"></main>
 
-  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-10-23b</div>
+  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-11-09a</div>
 </div>
 
 <script>
@@ -270,7 +272,8 @@ var ORDRE_REF = ["detecter", "traiter", "ouvrir"];   // « Quand ? » ; « produ
 var INDICE_ORDRE = "Racontez ce qui se passe quand on approche les mains : qu’est-ce qui arrive en premier ?";
 var CLE = "p11-a6-fast-v1";
 
-/* ═══ État, gardé dans le navigateur pour reprendre après un rechargement ═══ */
+/* ═══ État, gardé le temps de l'onglet (sessionStorage) pour reprendre après un rechargement :
+   le binôme suivant, sur le même poste, repart de l'animation et non du dernier écran ═══ */
 var S;
 function etatNeuf() {
   var ordre;
@@ -284,10 +287,10 @@ function melange(t) {
   return a;
 }
 function charger() {
-  try { var s = JSON.parse(localStorage.getItem(CLE)); if (s && s.ordre && s.place) return s; } catch (e) {}
+  try { var s = JSON.parse(sessionStorage.getItem(CLE)); if (s && s.ordre && s.place) return s; } catch (e) {}
   return etatNeuf();
 }
-function garder() { try { localStorage.setItem(CLE, JSON.stringify(S)); } catch (e) {} }
+function garder() { try { sessionStorage.setItem(CLE, JSON.stringify(S)); } catch (e) {} }
 function ft(id) { for (var i = 0; i < FT.length; i++) if (FT[i].id === id) return FT[i]; }
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
@@ -646,6 +649,7 @@ function appliquerDys() {
   document.getElementById("b-dys").setAttribute("aria-pressed", String(!!S.dys));
 }
 document.getElementById("b-dys").onclick = function () { S.dys = !S.dys; garder(); appliquerDys(); };
+document.getElementById("b-anim").onclick = function () { S.pas = 0; aller("comprendre"); };
 document.getElementById("b-reset").onclick = function () {
   if (!confirm("Tout recommencer depuis le début ?")) return;
   var dys = S.dys; S = etatNeuf(); S.dys = dys; choisie = null; garder(); aller("comprendre");
