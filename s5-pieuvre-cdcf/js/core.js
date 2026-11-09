@@ -64,7 +64,10 @@ var P11 = (function(){
         ost: '',          // identifiant de l'objet technique choisi
         reponses: {},     // 'rep' -> {critere, valeur, unite}
         aides: [],        // coups de pouce ouverts, pour information du professeur
-        essais: 0,
+        // Vérifications de chaque ligne, rangées comme `figees` :
+        // 'objet' -> { 'rep' -> nombre }. Une vérification d'ensemble compte
+        // pour une vérification de chaque ligne.
+        essaisLignes: {},
         score: null,
         detail: null,
         // Points de chaque ligne, fixés quand son corrigé s'affiche pour la

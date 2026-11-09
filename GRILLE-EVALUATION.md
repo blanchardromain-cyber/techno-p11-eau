@@ -30,7 +30,7 @@ signale les erreurs ; la deuxième affiche le corrigé et fixe la note. Les
 vérifications suivantes restent possibles pour s'entraîner, mais ne changent plus
 rien : sans cette règle, un élève recopiait le corrigé et revérifiait pour
 obtenir 20/20. En mission 2, chaque ligne a aussi son bouton « Vérifier », qui
-compte comme un essai : une ligne est notée au moment où son corrigé s'affiche
+compte comme un essai de cette ligne seulement : une ligne est notée au moment où son corrigé s'affiche
 pour la première fois (🔒 dans le tableau), et changer d'objet puis revenir ne
 la remet pas à zéro.
 

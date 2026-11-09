@@ -43,7 +43,7 @@ var M2 = (function(){
     var st = P11.state.m2;
     if (st.ost && st.ost !== id && Object.keys(st.reponses).length){
       if (!window.confirm("Changer d'objet technique effacera le cahier des charges déjà commencé. Continuer ?")) return;
-      st.reponses = {}; st.essais = 0; st.score = null; st.detail = null;
+      st.reponses = {}; st.score = null; st.detail = null;
     }
     st.ost = id;
     P11.sauver();
@@ -156,7 +156,7 @@ var M2 = (function(){
       uni.addEventListener('change', noter);
 
       tr.querySelector('.btn-ligne').addEventListener('click', function(){
-        verifierLigne(l, true);
+        verifierLigne(l);
       });
     });
 
@@ -238,11 +238,29 @@ var M2 = (function(){
     return { n:0, msg:"Le second chiffre vaut " + eau + " : il ne protège pas des projections d'eau. Dans des sanitaires, il faut au moins 4." };
   }
 
+  /**
+   * Compteurs d'essais de l'objet en cours.
+   * Un dossier commencé avant ces compteurs (build 2026-11-06c et antérieurs) et
+   * déjà vérifié dans son ensemble a utilisé le premier essai de chaque ligne.
+   */
+  function essaisDeLObjet(st){
+    st.essaisLignes = st.essaisLignes || {};
+    var ancien = !Object.keys(st.essaisLignes).length && st.score !== null && st.score !== undefined;
+    var c = st.essaisLignes[st.ost] || (st.essaisLignes[st.ost] = {});
+    if (ancien){
+      P11.ostParId(st.ost).lignes.forEach(function(l){ c[l.rep] = 1; });
+    }
+    return c;
+  }
+
   /** Affiche le retour d'une ligne et met à jour sa pastille de statut. */
-  function verifierLigne(l, compterEssai){
+  function verifierLigne(l){
     var st = P11.state.m2;
-    if (compterEssai) st.essais++;
-    var montrer = st.essais >= 2;
+    // Chaque ligne a ses propres essais : vérifier FC2 ne doit pas consommer
+    // le premier essai de FP1.
+    var essais = essaisDeLObjet(st);
+    essais[l.rep] = (essais[l.rep] || 0) + 1;
+    var montrer = essais[l.rep] >= 2;
 
     var res = evaluerLigne(l);
 
@@ -313,14 +331,12 @@ var M2 = (function(){
     if (!ost){ P11.signaler("Choisis d'abord un objet technique."); return; }
 
     var st = P11.state.m2;
-    st.essais++;
-    var montrer = st.essais >= 2;
 
     var total = 0, max = 0, detail = [];
     // res.note : les points de la ligne, fixés dès que son corrigé a été vu.
-    // Au 2e essai, toutes les lignes le sont : la note ne bouge plus.
+    // Au 2e essai d'une ligne, elle l'est : sa note ne bouge plus.
     ost.lignes.forEach(function(l){
-      var res = verifierLigne(l, false);
+      var res = verifierLigne(l);
       // Ligne pas encore fixée : sa réponse notée est celle de cette vérification.
       if (st.figees[st.ost][l.rep] === undefined) noter(l);
       total += res.note; max += res.max;
@@ -332,6 +348,7 @@ var M2 = (function(){
     var note = Math.round((total / max) * P11DATA.BAREME.m2.total * 10) / 10;
     st.score = note;
     st.detail = detail;
+    var montrer = ost.lignes.every(function(l){ return st.figees[st.ost][l.rep] !== undefined; });
 
     var cls = note >= max*0.9 ? 'ok' : (note >= P11DATA.BAREME.m2.total/2 ? 'partial' : 'ko');
     var appreciation =
