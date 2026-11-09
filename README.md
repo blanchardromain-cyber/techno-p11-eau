@@ -29,7 +29,8 @@ l'élève passe du besoin (bête à cornes) aux fonctions et à leurs exigences 
 
 `fast-robinet.html` prolonge la fiche *P11 - S6 Fiche élève - Diagramme FAST* (Drive, dossier A6).
 Outil d'entraînement : aucune note, aucun envoi, aucune donnée personnelle. La progression
-est gardée dans le navigateur du poste (bouton « Recommencer » pour l'effacer).
+est gardée le temps de l'onglet : un rechargement la conserve, un nouvel onglet repart de l'animation.
+L'étape « 1 Comprendre » de la barre de progression ramène à l'animation depuis n'importe quel écran.
 
 **Déroulé (15 min, binômes, 1 poste pour 2)**
 
