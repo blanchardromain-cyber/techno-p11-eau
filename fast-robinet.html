@@ -158,7 +158,7 @@
 
   /* ---------- Partie 2 : ranger ---------- */
   .ordre{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-  .rang{display:grid;grid-template-columns:46px minmax(0,1fr) minmax(0,.9fr) auto;gap:10px;align-items:center;background:#fff;border:3px solid var(--blue);border-radius:12px;padding:10px 12px}
+  .rang{display:grid;grid-template-columns:46px 40px minmax(0,1fr) auto;gap:10px;align-items:center;background:#fff;border:3px solid var(--blue);border-radius:12px;padding:10px 12px}
   .rang .poignee{cursor:grab;font-size:22px;color:#7FA9BD;text-align:center;user-select:none}
   .rang .n{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800}
   .rang .f{font-weight:700;color:var(--navy)}
@@ -189,6 +189,29 @@
   table.recap td.sol{font-weight:800;color:var(--navy)}
   table.recap .par{display:block;font-size:13.5px;font-weight:700;color:var(--turq)}
   .note-corr{background:#FFF4DE;border-left:6px solid var(--warn);border-radius:10px;padding:10px 14px;font-weight:700;color:#5A3700;margin-bottom:12px}
+
+  /* ---------- CUA : options d'accessibilité ---------- */
+  body.grand .wrap{zoom:1.18}
+  body.grand{line-height:1.7}
+  .ecoute{float:right;margin:-2px 0 4px 10px;background:#fff;border:2px solid var(--blue);color:var(--blue);border-radius:999px;width:40px;height:40px;font-size:18px;cursor:pointer;line-height:1}
+  .ecoute:hover{background:var(--lighter)}
+  .ecoute.joue{background:var(--blue);color:#fff}
+  body.no-tts .ecoute{display:none}
+  .lexique{background:#fff;border:2px solid var(--turq);border-radius:14px;padding:14px 18px;margin-top:12px}
+  .lexique[hidden]{display:none}
+  .lexique dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+  .lexique dt{font-weight:800;color:var(--navy)}
+  .lexique dd{margin:0}
+  .etq img{width:34px;height:34px;object-fit:contain;flex:none;background:#fff;border-radius:6px}
+  .etq svg.pic{width:34px;height:34px;flex:none}
+  .niveaux{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 6px;font-weight:700;color:var(--navy)}
+  .niveaux button{background:#fff;border:2px solid var(--blue);color:var(--blue);border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;min-height:40px}
+  .niveaux button[aria-pressed="true"]{background:var(--blue);color:#fff}
+  .niveau-txt{color:var(--grey);font-size:15px;margin:0 0 14px}
+  .roles{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+  .roles .r{flex:1;min-width:220px;background:#F4F0FF;border:2px solid #7A5CC4;border-radius:12px;padding:9px 12px;font-size:15.5px;color:#2E1F5C}
+  .roles .r b{display:block;font-size:16px}
+  .roles.swap .r{background:#FFF0F7;border-color:#C2417F;color:#5C1236}
 
   .footer{color:var(--grey);font-size:12px;text-align:center;margin-top:26px}
   .footer a{color:var(--grey)}
@@ -232,9 +255,21 @@
     </div>
     <div class="outils">
       <button type="button" class="outil" id="b-dys" aria-pressed="false">Police DYS</button>
+      <button type="button" class="outil" id="b-grand" aria-pressed="false">A+ Texte agrandi</button>
+      <button type="button" class="outil" id="b-lex" aria-expanded="false" aria-controls="lexique">📖 Lexique</button>
       <button type="button" class="outil" id="b-reset">Recommencer</button>
     </div>
   </header>
+
+  <section class="lexique" id="lexique" hidden aria-label="Lexique">
+    <button type="button" class="ecoute" aria-label="Écouter le lexique">🔊</button>
+    <dl>
+      <dt>Fonction d’usage</dt><dd>Ce à quoi sert l’objet pour son utilisateur : le besoin auquel il répond.</dd>
+      <dt>Fonction technique</dt><dd>Une action que l’objet doit réaliser pour remplir sa fonction d’usage. Elle commence par un verbe à l’infinitif.</dd>
+      <dt>Solution technique</dt><dd>Le composant réel, que l’on peut acheter et monter, qui réalise une fonction technique.</dd>
+      <dt>En parallèle</dt><dd>En même temps que les autres fonctions, pendant tout le fonctionnement.</dd>
+    </dl>
+  </section>
 
   <ol class="prog" id="prog" aria-label="Progression">
     <li data-p="1"><button type="button" id="b-anim" title="Revoir l’animation depuis le début"><span class="n">1</span>Comprendre</button></li>
@@ -244,7 +279,7 @@
 
   <main class="card" id="ecran" aria-live="polite"></main>
 
-  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-11-09a</div>
+  <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 6 · outil d’entraînement, sans note · <a href="./">accueil de la séquence</a> · build 2026-11-12-cua</div>
 </div>
 
 <script>
@@ -271,6 +306,51 @@ var ETQ = {
 var ORDRE_REF = ["detecter", "traiter", "ouvrir"];   // « Quand ? » ; « produire » reste en bas, en parallèle
 var INDICE_ORDRE = "Racontez ce qui se passe quand on approche les mains : qu’est-ce qui arrive en premier ?";
 var CLE = "p11-a6-fast-v1";
+var KIT = "s5-pieuvre-cdcf/img/kit/";
+var PICTO = { capteur:"capteur.png", carte:"carte.png", vanne:"electrovanne.png", pile:"batterie.png", bouton:"bouton.png" };
+var PICTO_TURBINE = '<svg class="pic" viewBox="0 0 34 34" aria-hidden="true"><circle cx="13" cy="17" r="10" fill="#fff" stroke="#33414F" stroke-width="2"/><path d="M13 8V26M4 17H22M7 11L19 23M19 11L7 23" stroke="#33414F" stroke-width="2"/><rect x="23" y="11" width="10" height="12" rx="2" fill="#E08A1E"/></svg>';
+var PIEGES = ["pile", "bouton"];
+
+/* ═══ CUA — niveaux d'aide : même objectif pour tous, seul l'échafaudage change ═══ */
+var NIVEAUX = {
+  autonome:   { nom:"Autonome",   txt:"6 étiquettes, dont 2 pièges." },
+  guide:      { nom:"Guidé",      txt:"Les 2 étiquettes pièges sont retirées : 4 étiquettes pour 4 cases." },
+  accompagne: { nom:"Accompagné", txt:"Sans pièges, et la première association est donnée en exemple. À vous les 3 autres !" }
+};
+function actif(k) { return (S.niveau || "autonome") === "autonome" || PIEGES.indexOf(k) < 0; }
+function choisirNiveau(n) { S.niveau = n; appliquerNiveau(); choisie = null; garder(); ecranAssocier(); }
+function appliquerNiveau() {
+  var n = S.niveau || "autonome";
+  if (n !== "autonome") for (var id in S.place) if (PIEGES.indexOf(S.place[id]) >= 0) { delete S.place[id]; delete S.verdicts[id]; }
+  if (n === "accompagne" && !S.ok.detecter) {
+    for (var z in S.place) if (S.place[z] === "capteur") delete S.place[z];
+    S.place.detecter = "capteur"; S.ok.detecter = true; S.exemple = true; delete S.verdicts.detecter;
+  }
+}
+
+/* ═══ CUA — lecture à voix haute (synthèse vocale du navigateur, hors ligne, gratuite) ═══ */
+var ECOUTE = '<button type="button" class="ecoute" aria-label="Écouter ce texte">🔊</button>';
+var voixFr = null;
+function chercherVoix() {
+  if (!("speechSynthesis" in window)) return;
+  var v = speechSynthesis.getVoices().filter(function (x) { return /^fr/i.test(x.lang); });
+  voixFr = v.filter(function (x) { return /fr-FR/i.test(x.lang); })[0] || v[0] || null;
+}
+function lire(bouton) {
+  if (!("speechSynthesis" in window)) return;
+  var dejaEnCours = bouton.classList.contains("joue");
+  speechSynthesis.cancel();
+  document.querySelectorAll(".ecoute.joue").forEach(function (b) { b.classList.remove("joue"); });
+  if (dejaEnCours) return;   // 2e clic : arrêter
+  var bloc = bouton.parentNode.cloneNode(true);
+  bloc.querySelectorAll(".ecoute, .sr, [aria-hidden=true]").forEach(function (x) { x.remove(); });
+  var texte = bloc.textContent.replace(/[←→↓↑⚠✔①②③★✍💬]/g, " ").replace(/\s+/g, " ").trim();
+  var u = new SpeechSynthesisUtterance(texte);
+  u.lang = "fr-FR"; u.rate = 0.92; if (voixFr) u.voice = voixFr;
+  u.onend = u.onerror = function () { bouton.classList.remove("joue"); };
+  bouton.classList.add("joue");
+  speechSynthesis.speak(u);
+}
 
 /* ═══ État, gardé le temps de l'onglet (sessionStorage) pour reprendre après un rechargement :
    le binôme suivant, sur le même poste, repart de l'animation et non du dernier écran ═══ */
@@ -427,7 +507,7 @@ function ecranComprendre() {
   var h = '<h2>' + p.titre + '</h2>' +
     '<div class="points" aria-label="Étape ' + p.etape + ' sur 5">' + pts + '<span>Étape ' + p.etape + ' / 5</span></div>' +
     '<div class="anim' + (p.schema ? "" : " sans-schema") + '" style="margin-top:12px"><div>' +
-    '<div class="recit">' + p.recit + '</div>' +
+    '<div class="recit">' + ECOUTE + p.recit + '</div>' +
     (p.scooter ? miniScooter(p.scooter) : grilleFAST(lignes, { quand:p.etape === 4, verbes:p.verbes })) + '</div>' +
     (p.schema ? '<div>' + ROBINET + '</div>' : "") + '</div>' +
     '<div class="barre"><button type="button" class="btn sec" id="b-prec"' + (S.pas === 0 ? " disabled" : "") + '>← Précédent</button>' +
@@ -446,19 +526,26 @@ function ecranComprendre() {
 var choisie = null;   // étiquette sélectionnée au clic (alternative au glisser-déposer)
 function lignesAffichees() { return S.ordre.concat(["produire"]); }
 function ecranAssocier() {
+  appliquerNiveau();
   var lignes = lignesAffichees().map(function (id) {
     var t = S.place[id], v = S.verdicts[id], cls = S.ok[id] ? " ok" : (v ? " ko" : "");
     var z = '<div class="zone' + cls + '" data-zone="' + id + '" role="button" tabindex="' + (S.ok[id] ? "-1" : "0") + '" aria-label="Solution de la fonction : ' + esc(ft(id).txt) + (t ? ", contient " + ETQ[t].t : ", vide") + '">';
     z += t ? etiquette(t, S.ok[id]) : '<span class="ph">Déposez une étiquette ici</span>';
     z += '</div>';
-    if (S.ok[id]) z += '<div class="verdict ok">✔ Juste</div>';
-    else if (v) z += '<div class="verdict ko">' + v + '</div>';
+    if (S.ok[id]) z += '<div class="verdict ok">' + (id === "detecter" && S.exemple ? "✔ Exemple donné" : "✔ Juste") + '</div>';
+    else if (v) z += '<div class="verdict ko">' + ECOUTE + v + '</div>';
     return { id:id, stHTML:z, badge:id === "produire" ? "en parallèle" : "" };
   });
-  var dansBanque = S.banque.filter(function (k) { return !estPlacee(k); });
+  var dansBanque = S.banque.filter(function (k) { return actif(k) && !estPlacee(k); });
+  var niv = S.niveau || "autonome";
   var nbOk = Object.keys(S.ok).length;
   var h = '<h2>Compléter le FAST : associer les solutions</h2>' +
-    '<p class="consigne">Glissez chaque solution technique dans la case de sa fonction. Sans glisser : cliquez sur une étiquette, puis sur une case. Deux étiquettes sont des pièges.</p>' +
+    '<div class="roles"><div class="r"><b>🖱 Pilote</b>tient la souris et place les étiquettes.</div>' +
+    '<div class="r"><b>🔎 Vérificateur</b>lit la consigne et les indices à voix haute, et dit « d’accord » avant chaque vérification.</div></div>' +
+    '<div class="niveaux" role="group" aria-label="Niveau d’aide">Niveau d’aide :' +
+    Object.keys(NIVEAUX).map(function (n) { return ' <button type="button" data-niveau="' + n + '" aria-pressed="' + (n === niv) + '">' + NIVEAUX[n].nom + '</button>'; }).join("") +
+    '</div><p class="niveau-txt">' + NIVEAUX[niv].txt + ' Vous pouvez changer de niveau à tout moment.</p>' +
+    '<p class="consigne">' + ECOUTE + 'Glissez chaque solution technique dans la case de sa fonction. Sans glisser : cliquez sur une étiquette, puis sur une case.' + (niv === "autonome" ? ' Deux étiquettes sont des pièges.' : '') + '</p>' +
     '<div class="assoc"><div>' +
     '<div class="banque" data-zone="banque" aria-label="Étiquettes à placer">' +
     (dansBanque.length ? dansBanque.map(function (k) { return etiquette(k, false); }).join("") : '<span class="vide">Toutes les étiquettes sont placées.</span>') + '</div>' +
@@ -475,6 +562,7 @@ function ecranAssocier() {
   robinet(on, nbOk ? "Chaque composant s’allume quand son association est juste" : "Les composants s’allument quand l’association est juste");
   if (nbOk === 4) bilan("ok", "Bravo : les 4 associations sont justes. Passez à l’étape suivante.");
   brancherGlisser();
+  document.querySelectorAll("[data-niveau]").forEach(function (b) { b.onclick = function () { choisirNiveau(b.dataset.niveau); }; });
   document.getElementById("b-ret").onclick = function () { S.pas = 0; aller("comprendre"); };
   var bv = document.getElementById("b-verif");
   if (bv) bv.onclick = verifierAssoc;
@@ -484,7 +572,8 @@ function ecranAssocier() {
 function estPlacee(k) { for (var id in S.place) if (S.place[id] === k) return true; return false; }
 function etiquette(k, juste) {
   return '<button type="button" class="etq' + (juste ? " juste" : "") + '" data-etq="' + k + '"' +
-         (juste ? ' disabled' : ' draggable="true" aria-pressed="' + (choisie === k) + '"') + '>' + ETQ[k].t + '</button>';
+         (juste ? ' disabled' : ' draggable="true" aria-pressed="' + (choisie === k) + '"') + '>' +
+         (k === "turbine" ? PICTO_TURBINE : '<img src="' + KIT + PICTO[k] + '" alt="">') + ETQ[k].t + '</button>';
 }
 function poser(k, zone) {
   if (zone !== "banque" && S.ok[zone]) return;
@@ -543,13 +632,14 @@ function verifierAssoc() {
 function article(k) {
   return { capteur:"un capteur infrarouge", carte:"une carte électronique", vanne:"une électrovanne", turbine:"une turbine + générateur" }[k];
 }
-function bilan(cls, txt) { var b = document.getElementById("bilan"); if (b) b.innerHTML = '<div class="bilan ' + cls + '" role="status">' + txt + '</div>'; }
+function bilan(cls, txt) { var b = document.getElementById("bilan"); if (b) b.innerHTML = '<div class="bilan ' + cls + '" role="status">' + ECOUTE + txt + '</div>'; }
 
 /* ═══ Partie 2b — Ranger les fonctions (« Quand ? ») ═══ */
 var glisse = null;
 function ecranOrdre() {
   var h = '<h2>Compléter le FAST : ranger les fonctions</h2>' +
-    '<p class="consigne">Rangez les trois premières fonctions techniques <b>dans l’ordre où elles interviennent</b> quand le robinet fonctionne. Glissez une ligne, ou utilisez les flèches ↑ ↓.</p>' +
+    (S.ordreOk ? "" : '<div class="roles swap"><div class="r"><b>🔄 Changez de rôle !</b>Celui qui lisait prend la souris, celui qui pilotait devient vérificateur.</div></div>') +
+    '<p class="consigne">' + ECOUTE + 'Rangez les trois premières fonctions techniques <b>dans l’ordre où elles interviennent</b> quand le robinet fonctionne. Glissez une ligne, ou utilisez les flèches ↑ ↓.</p>' +
     '<p class="quand">↓ Quand ? <span style="color:var(--grey);font-weight:600">du haut (en premier) vers le bas</span></p><ol class="ordre" id="liste">';
   S.ordre.forEach(function (id, i) {
     var f = ft(id), v = S.ordreVerdict ? S.ordreVerdict[i] : null, cls = S.ordreOk ? " ok" : (v === false ? " ko" : (v ? " ok" : ""));
@@ -609,7 +699,7 @@ function ecranRetenir() {
   var lignes = ORDRE_REF.concat(["produire"]);
   var h = '<h2>' + (corrige ? "Le FAST du robinet automatique" : "Bravo ! Retenez et recopiez") + '</h2>' +
     (corrige ? '<p class="note-corr">Mise en commun : FAST complété du robinet automatique.</p>' : "") +
-    '<div class="retenir"><div class="t">★ Ce que je dois retenir</div><b>Diagramme FAST :</b> il relie la <b>fonction d’usage</b> aux <b>fonctions techniques</b> puis aux <b>solutions techniques</b> (les composants réels). Une fonction commence par un verbe à l’infinitif.</div>' +
+    '<div class="retenir">' + ECOUTE + '<div class="t">★ Ce que je dois retenir</div><b>Diagramme FAST :</b> il relie la <b>fonction d’usage</b> aux <b>fonctions techniques</b> puis aux <b>solutions techniques</b> (les composants réels). Une fonction commence par un verbe à l’infinitif.</div>' +
     (corrige ? "" : '<div class="recopie"><span aria-hidden="true" style="font-size:26px">✍</span><span>Recopie maintenant ton FAST sur la fiche papier.</span></div>') +
     '<table class="recap" style="margin-top:' + (corrige ? "16px" : "0") + '"><caption class="sr">FAST du robinet automatique</caption><thead><tr><th scope="col">Fonction d’usage</th><th scope="col">Fonction technique</th><th scope="col">Solution technique</th></tr></thead><tbody>';
   lignes.forEach(function (id, i) {
@@ -647,12 +737,26 @@ function afficher(html, partie) {
 function appliquerDys() {
   document.body.classList.toggle("dys", !!S.dys);
   document.getElementById("b-dys").setAttribute("aria-pressed", String(!!S.dys));
+  document.body.classList.toggle("grand", !!S.grand);
+  document.getElementById("b-grand").setAttribute("aria-pressed", String(!!S.grand));
 }
 document.getElementById("b-dys").onclick = function () { S.dys = !S.dys; garder(); appliquerDys(); };
+document.getElementById("b-grand").onclick = function () { S.grand = !S.grand; garder(); appliquerDys(); };
+document.getElementById("b-lex").onclick = function () {
+  var l = document.getElementById("lexique"), ouvert = l.hidden;
+  l.hidden = !ouvert; this.setAttribute("aria-expanded", String(ouvert));
+};
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest(".ecoute");
+  if (b) { e.stopPropagation(); lire(b); }
+}, true);
+if ("speechSynthesis" in window) { chercherVoix(); speechSynthesis.onvoiceschanged = chercherVoix; }
+else document.body.classList.add("no-tts");
 document.getElementById("b-anim").onclick = function () { S.pas = 0; aller("comprendre"); };
 document.getElementById("b-reset").onclick = function () {
   if (!confirm("Tout recommencer depuis le début ?")) return;
-  var dys = S.dys; S = etatNeuf(); S.dys = dys; choisie = null; garder(); aller("comprendre");
+  var dys = S.dys, grand = S.grand, niveau = S.niveau; S = etatNeuf(); S.dys = dys; S.grand = grand; choisie = null; garder(); aller("comprendre");
+  if (niveau && niveau !== "autonome") S.niveau = niveau, garder();   // le niveau s'appliquera en arrivant à l'étape 2
 };
 
 S = charger();
