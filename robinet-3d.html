@@ -93,6 +93,13 @@
   .fiche-el .titre{font-weight:800;color:var(--navy);font-size:17px;margin-bottom:4px}
   .fiche-el .verbe{display:inline-block;background:#d9d9d9;color:#000;border-radius:6px;padding:1px 8px;font-weight:700;letter-spacing:.03em}
   .fiche-el .vide{color:var(--grey);font-style:italic}
+  .banque{margin-top:12px;border-top:1px dashed #c4d0e0;padding-top:10px;font-size:14px}
+  .banque .t{font-weight:800;color:var(--navy);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin:8px 0 4px}
+  .banque .t:first-child{margin-top:0}
+  .banque .puces{display:flex;flex-wrap:wrap;gap:5px}
+  .banque .puces span{background:#eef3f9;border:1px solid #c4d0e0;border-radius:7px;padding:2px 8px;font-weight:600}
+  .banque .puces .vb{background:#d9d9d9;border-color:#bdbdbd;color:#000;font-weight:700;letter-spacing:.03em}
+  body.correction .banque{display:none}
   .note-prof{font-size:12.5px;color:var(--grey);margin-top:8px}
   .footer{color:var(--grey);font-size:12px;text-align:center;margin-top:18px}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -176,6 +183,18 @@
       </div>
 
       <div class="carte">
+        <h2>Élément observé</h2>
+        <div class="fiche-el" id="ficheEl"><span class="vide">Clique sur un numéro de la maquette.</span></div>
+        <div class="banque" id="banque" aria-label="Mots à utiliser pour nommer et classer">
+          <div class="t">Les 8 noms, dans le désordre</div>
+          <div class="puces" id="banqueNoms"></div>
+          <div class="t">Les chaînes</div>
+          <div class="puces"><span>information</span><span>énergie</span><span>aucune</span></div>
+          <div class="t">Les verbes</div>
+          <div class="puces"><span class="vb">ACQUÉRIR</span><span class="vb">TRAITER</span><span class="vb">COMMUNIQUER</span><span class="vb">ALIMENTER</span><span class="vb">DISTRIBUER</span><span class="vb">CONVERTIR</span><span class="vb">TRANSMETTRE</span></div>
+        </div>
+      </div>
+      <div class="carte">
         <h2>Calques</h2>
         <div class="calques">
           <button type="button" class="calque" id="cqInfo" aria-pressed="true">
@@ -197,10 +216,6 @@
         </div>
       </div>
 
-      <div class="carte">
-        <h2>Élément observé</h2>
-        <div class="fiche-el" id="ficheEl"><span class="vide">Clique sur un numéro de la maquette.</span></div>
-      </div>
     </aside>
   </div>
   <div class="footer">Collège Saint Pierre – Les Essarts · Séquence P11 · Activité 7 · Aucune donnée n'est enregistrée ni envoyée.</div>
@@ -333,7 +348,7 @@ function majFiche(){
   if (!etat.correction){
     f.innerHTML = '<div class="titre">Élément ' + cercle(etat.choisi) + '</div>' +
       '<div>' + c.indice + '</div>' +
-      '<div class="note-prof">Son nom et sa fonction s\'affichent en mode Correction.</div>';
+      '<div class="note-prof">Choisis son nom, sa chaîne et son verbe dans la liste ci-dessous. La réponse s\'affiche en mode Correction.</div>';
   } else {
     var ch = c.chaine === "aucune" ? "Bloc d'aucune chaîne (stockage)" :
              "Chaîne d'" + c.chaine + " · <span class=\"verbe\">" + c.verbe + "</span>";
@@ -369,6 +384,10 @@ function lecture(on){
 }
 
 function brancherInterface(){
+  // Banque de noms : ordre alphabétique, sans lien avec les numéros (l'élève associe lui-même).
+  Object.keys(COMPOSANTS).map(function(k){ return COMPOSANTS[k].nom; })
+    .sort(function(a, b){ return a.localeCompare(b, "fr"); })
+    .forEach(function(n){ var sp = document.createElement("span"); sp.textContent = n; $("banqueNoms").appendChild(sp); });
   for (var i = 0; i < NB_ETAPES; i++) $("points").appendChild(document.createElement("span"));
   $("btPrec").onclick = function(){ lecture(false); allerA(etat.etape - 1); };
   $("btSuiv").onclick = function(){
