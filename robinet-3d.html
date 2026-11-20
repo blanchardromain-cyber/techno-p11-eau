@@ -40,6 +40,14 @@
   .badge.choisi{background:var(--navy);color:#fff}
   .badge:focus-visible{outline:3px solid #F0B429;outline-offset:2px}
   .badge.cache{display:none}
+  .invite-eclate{position:absolute;left:10px;top:10px;z-index:3;max-width:min(330px,calc(100% - 230px));text-align:left;
+                 background:#FFF8E7;border:2px solid #F0B429;color:#5c3f00;border-radius:10px;padding:8px 12px;
+                 font:700 14px/1.3 Inter,Arial;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .invite-eclate:hover{background:#FFEFC2}
+  .invite-eclate:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+  .invite-eclate small{display:block;font-weight:600;font-size:12.5px;margin-top:2px}
+  .confirm-cor{margin-top:10px;background:#FFF8E7;border:1px solid #F0D089;border-radius:10px;padding:10px 12px;font-size:14.5px;color:#4a3500}
+  .confirm-cor .ligne{margin-top:8px}
   .aide-geste{position:absolute;left:12px;bottom:10px;font-size:13px;color:var(--grey);background:rgba(255,255,255,.85);
               padding:4px 10px;border-radius:8px;pointer-events:none}
   .outils-scene{position:absolute;right:10px;top:10px;display:flex;gap:6px;z-index:3}
@@ -126,6 +134,8 @@
         <button class="mini" id="btRecadrer" type="button" title="Revenir à la vue de départ">⟲ Vue</button>
         <button class="mini" id="btPleinEcran" type="button" title="Plein écran (vidéoprojection)">⛶ Plein écran</button>
       </div>
+      <button type="button" class="invite-eclate" id="inviteEclate">🔎 6 numéros sont cachés dans le robinet
+        <small>Clique ici pour ouvrir la vue éclatée et voir les 8 numéros.</small></button>
       <div class="aide-geste" id="aideGeste">Glisse pour tourner · molette ou pincement pour zoomer · clique sur un numéro</div>
     </section>
 
@@ -139,6 +149,14 @@
         <div class="seg" role="group" aria-label="Vue de la maquette" style="margin-top:8px">
           <button type="button" id="vueAssemble" aria-pressed="true">Robinet fermé</button>
           <button type="button" id="vueEclate" aria-pressed="false">Vue éclatée</button>
+        </div>
+        <div class="confirm-cor" id="confirmCor" role="alertdialog" aria-labelledby="confirmCorTxt" hidden>
+          <div id="confirmCorTxt">Le mode Correction affiche le <b>nom</b>, la <b>chaîne</b> et le <b>verbe</b> de chaque élément.
+            Il sert à la mise en commun : ta fiche est-elle complétée&nbsp;?</div>
+          <div class="ligne">
+            <button class="bt plein" id="confirmCorOui" type="button">Oui, afficher la correction</button>
+            <button class="bt" id="confirmCorNon" type="button">Pas encore</button>
+          </div>
         </div>
       </div>
 
@@ -294,6 +312,7 @@ function majInterface(){
   $("modeCorrection").setAttribute("aria-pressed", String(etat.correction));
   $("vueAssemble").setAttribute("aria-pressed", String(!etat.eclate));
   $("vueEclate").setAttribute("aria-pressed", String(etat.eclate));
+  var inv = $("inviteEclate"); if (inv) inv.hidden = etat.eclate;
   document.body.classList.toggle("correction", etat.correction);
   ["info","energie","eau"].forEach(function(c){
     var bt = $({info:"cqInfo", energie:"cqEnergie", eau:"cqEau"}[c]);
@@ -305,7 +324,11 @@ function majInterface(){
 
 function majFiche(){
   var f = $("ficheEl");
-  if (!etat.choisi){ f.innerHTML = '<span class="vide">Clique sur un numéro de la maquette.</span>'; return; }
+  if (!etat.choisi){
+    f.innerHTML = '<span class="vide">' + (etat.eclate || !$("inviteEclate") ? "Clique sur un numéro de la maquette."
+      : "Ouvre la <b>Vue éclatée</b> pour voir les 8 numéros, puis clique sur chacun.") + '</span>';
+    return;
+  }
   var c = COMPOSANTS[etat.choisi];
   if (!etat.correction){
     f.innerHTML = '<div class="titre">Élément ' + cercle(etat.choisi) + '</div>' +
@@ -320,6 +343,7 @@ function majFiche(){
 }
 
 function choisir(n){
+  if (!etat.eclate){ etat.eclate = true; dejaEclate = true; }
   etat.choisi = (etat.choisi === n) ? null : n;
   majInterface();
   $("annonce").textContent = etat.choisi ? ("Élément " + n + " sélectionné") : "";
@@ -355,13 +379,18 @@ function brancherInterface(){
   };
   $("btLecture").onclick = function(){ lecture(!etat.lecture); };
   $("btZero").onclick = function(){ lecture(false); allerA(0); };
-  $("modeEnquete").onclick = function(){ etat.correction = false; majInterface(); };
+  $("modeEnquete").onclick = function(){ $("confirmCor").hidden = true; etat.correction = false; majInterface(); };
+  // Confirmation dans la page : window.confirm figeait la page (pilotage du navigateur, vidéoprojection)
+  // et renvoie « non » sans rien afficher dans une iframe sans allow-modals.
+  function fermerConfirm(){ $("confirmCor").hidden = true; }
   $("modeCorrection").onclick = function(){
     if (etat.correction) return;
-    if (!window.confirm("Le mode Correction affiche le nom et la fonction de chaque élément.\n" +
-                        "Il sert à la mise en commun : ta fiche est-elle complétée ?")) return;
-    etat.correction = true; majInterface();
+    $("confirmCor").hidden = false; $("confirmCorOui").focus();
   };
+  $("confirmCorOui").onclick = function(){ fermerConfirm(); etat.correction = true; majInterface(); $("modeCorrection").focus(); };
+  $("confirmCorNon").onclick = function(){ fermerConfirm(); $("modeCorrection").focus(); };
+  $("confirmCor").addEventListener("keydown", function(e){ if (e.key === "Escape"){ e.stopPropagation(); $("confirmCorNon").onclick(); } });
+  $("inviteEclate").onclick = function(){ etat.eclate = true; dejaEclate = true; majInterface(); };
   $("vueAssemble").onclick = function(){ etat.eclate = false; majInterface(); };
   $("vueEclate").onclick = function(){ etat.eclate = true; majInterface(); };
   $("cqInfo").onclick = function(){ etat.calques.info = !etat.calques.info; majInterface(); };
@@ -888,6 +917,7 @@ function vue2D(holder, raison){
     g.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); choisir(+g.getAttribute("data-n")); } });
   });
   $("btRecadrer").style.display = "none";
+  var inv2 = $("inviteEclate"); if (inv2) inv2.parentNode.removeChild(inv2);
   $("aideGeste").textContent = "Clique sur un numéro pour l'observer";
   return {
     appliquer:function(e){
