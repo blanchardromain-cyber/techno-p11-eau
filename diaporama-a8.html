@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P11 — Activité 8 : diaporama de conduite</title>
+<!-- Page générée par ressources/a8-declencheur/outils/generer_diaporama.mjs : modifier le générateur, pas ce fichier. -->
+<style>
+/* Diaporama de conduite : scène 1600 × 900. Écrans des élèves repris de declencheur.html (texte ≥ 48 px) ;
+   notes du professeur (touche N) tirées de la même conduite que le déroulé PDF. Aucune dépendance externe. */
+
+@font-face{font-family:Luciole;src:url(ressources/a8-declencheur/fonts/Luciole-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Luciole;src:url(ressources/a8-declencheur/fonts/Luciole-Bold.woff2) format("woff2");font-weight:700}
+:root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--grey:#4d5562}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:#f4f7fb}
+body{font-family:Luciole,Arial,sans-serif;color:#14213d;line-height:1.3}
+.scene{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:#f4f7fb;overflow:hidden;display:flex;flex-direction:column}
+.band{height:64px;flex:none;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 40px;font-size:22px;font-weight:700;letter-spacing:.02em}
+.band .k{color:#bcd2ee}
+.ecrans{position:relative;flex:1;min-height:0}
+.ecran{position:absolute;inset:0;padding:24px 70px 16px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .25s}
+.ecran.on{opacity:1;visibility:visible}
+@media (prefers-reduced-motion:reduce){.ecran,.etiq,.consigne{transition:none!important}}
+.kicker{font-size:48px;font-weight:700;color:var(--blue);margin-bottom:8px;line-height:1.1}
+h2{margin:0 0 10px;font-size:72px;line-height:1.1;color:var(--navy)}
+p{margin:0}
+.picto{flex:none;color:var(--navy)}
+/* Lettre */
+.lettre{background:#fff;border:2px solid #dbe5f0;border-radius:18px;padding:18px 40px 20px;flex:1;min-height:0;display:flex;flex-direction:column;box-shadow:0 3px 10px rgba(31,56,100,.07)}
+.entete{display:flex;align-items:center;gap:18px;font-size:48px;font-weight:700;letter-spacing:.12em;color:var(--navy);border-bottom:3px solid var(--navy);padding-bottom:10px;margin-bottom:14px}
+.texte{font-size:52px;line-height:1.32}
+.texte p+p{margin-top:12px}
+.signe{font-weight:700;color:var(--navy)}
+.falc{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+.falc li{display:flex;align-items:center;gap:26px;font-size:56px;font-weight:700;line-height:1.15;color:var(--navy)}
+.outils{display:flex;gap:16px;margin-left:auto;letter-spacing:0}
+.bt-grand{display:inline-flex;align-items:center;gap:14px;border:3px solid var(--blue);background:#fff;color:var(--navy);border-radius:14px;padding:8px 24px;font:700 36px Luciole,Arial,sans-serif;cursor:pointer;text-decoration:none}
+.bt-grand:hover{background:var(--lighter)}
+.bt-grand[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.bt-grand[aria-pressed="true"] .picto{color:#fff}
+/* Défi */
+.duo{display:flex;justify-content:center;gap:200px;margin:4px 0 6px}
+.duo figure{margin:0;display:flex;flex-direction:column;align-items:center}
+.duo figcaption{font-size:96px;font-weight:700;color:var(--navy);line-height:1}
+.consigne{display:none;align-items:center;justify-content:center;gap:22px;font-size:52px;font-weight:700;color:var(--navy);text-align:left;background:var(--lighter);border-radius:16px;padding:14px 28px;margin-top:auto}
+.consigne.on{display:flex}
+/* Minuteurs */
+.deux{display:grid;grid-template-columns:1fr 520px;gap:40px;flex:1;min-height:0;align-items:start}
+.regles{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+.regles li{display:flex;align-items:center;gap:22px;font-size:54px;font-weight:700;line-height:1.12;color:var(--navy)}
+.regles li.petit{font-size:48px;font-weight:400;color:#14213d}
+.minuteur{background:#fff;border:3px solid var(--navy);border-radius:22px;padding:20px 24px;text-align:center}
+.chiffres{font-size:190px;font-weight:700;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+.jauge{height:30px;border:3px solid var(--navy);border-radius:15px;overflow:hidden;margin:16px 0 10px;background:repeating-linear-gradient(45deg,#fff 0 10px,#eef3f9 10px 20px)}
+.jauge div{height:100%;width:100%;background:var(--blue);transition:width .25s linear}
+.etat{font-size:48px;font-weight:700;color:var(--grey);min-height:62px}
+.minuteur.fini .chiffres{color:#8a1c1c}
+.minuteur.fini .etat{color:#8a1c1c}
+.bt-min{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.bt-min .bt-grand{justify-content:center;font-size:32px;padding:6px 16px}
+.roles{font-size:48px;margin-top:8px;color:var(--navy)}
+.roles b{display:inline-block;background:#FFF1C2;border:3px solid #8a6400;color:#5a3b00;border-radius:12px;padding:0 16px;margin-left:12px}
+.grand{font-size:56px;font-weight:700;line-height:1.2;color:var(--navy)}
+.zones-vides{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+.zones-vides div{height:150px;border:5px dashed #7d8a99;border-radius:16px;font-size:60px;font-weight:700;color:#5b6472;display:flex;align-items:flex-start;padding:6px 18px}
+/* Révélation */
+.etiquettes{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+.etiq{position:relative;border-radius:20px;overflow:hidden;border:4px solid var(--c);opacity:.0;transform:scale(.96);transition:opacity .35s,transform .35s}
+.etiq.on{opacity:1;transform:none}
+.etiq .motif{position:absolute;inset:0;width:100%;height:100%}
+.etiq-in{position:absolute;inset:22px;background:#fff;border-radius:12px;display:flex;align-items:center;gap:24px;padding:0 26px}
+.etiq .q{font-size:56px;font-weight:700;line-height:1.08;color:var(--navy);flex:1}
+.etiq .m{position:absolute;right:14px;bottom:6px;font-size:22px;color:var(--grey)}
+/* Problématique */
+.pb{margin:auto 0;background:var(--navy);color:#fff;border-radius:24px;padding:40px 54px 48px;font-size:64px;font-weight:700;line-height:1.18}
+.pb span{display:block;font-size:48px;letter-spacing:.08em;text-transform:uppercase;color:#bcd2ee;margin-bottom:14px}
+/* Barre du professeur */
+.barre{height:72px;flex:none;display:flex;align-items:center;gap:14px;padding:0 40px;border-top:2px solid #dbe5f0;background:#fff}
+.bt{border:2px solid var(--blue);background:#fff;color:var(--navy);border-radius:10px;min-width:58px;height:50px;padding:0 14px;font:700 22px Luciole,Arial,sans-serif;cursor:pointer}
+.bt:hover{background:var(--lighter)}
+.bt:disabled{opacity:.35;cursor:default}
+.points{display:flex;gap:7px}
+.points button{width:30px;height:20px;border-radius:10px;border:0;background:#d5e0ec;padding:0;cursor:pointer}
+.points button.fait{background:#9fc0e2}
+.points button[aria-current="true"]{background:var(--blue)}
+.compteur{font-size:22px;font-weight:700;color:var(--navy);min-width:80px;text-align:center;font-variant-numeric:tabular-nums}
+.aide{flex:1;font-size:15px;color:var(--grey);text-align:center;line-height:1.35}
+.aide a{color:var(--grey)}
+:focus-visible{outline:5px solid #F0B429;outline-offset:3px}
+
+.band{gap:24px}
+.band .phase{flex:1;text-align:center;color:#fff;font-weight:700}
+.barre .points{gap:5px}
+.barre .points button{width:22px}
+.band .horloge{font-variant-numeric:tabular-nums;color:#bcd2ee;min-width:270px;text-align:right}
+.band .horloge b{color:#fff}
+.ecran.prof{background:#fffdf5}
+/* Écran de conduite */
+.conduite-g{display:grid;grid-template-columns:780px 1fr;gap:36px;flex:1;min-height:0}
+.tl{border-collapse:collapse;width:100%;font-size:20px}
+.tl th{background:var(--navy);color:#fff;text-align:left;padding:4px 8px;font-size:18px}
+.tl td{border-bottom:2px solid #dbe5f0;padding:3px 8px;line-height:1.15}
+.tl td.t{font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;width:90px}
+.aller{border:2px solid var(--blue);background:#fff;color:var(--navy);border-radius:8px;font:700 18px Luciole,Arial,sans-serif;padding:0 8px;cursor:pointer}
+.pile-d h3{font-size:22px;color:var(--navy);margin:0 0 2px}
+.pile-d p{font-size:18px;line-height:1.3;margin:0 0 10px}
+.docs-l a{color:var(--blue);font-weight:700}
+.case{display:inline-flex;gap:10px;align-items:center}
+.case input{width:24px;height:24px}
+.info{font-size:18px;color:var(--grey)}
+/* Documents en diapositive */
+.docs{display:grid;grid-template-columns:1fr 1fr 300px;gap:30px;flex:1;min-height:0;align-items:start}
+.docs figure,.apercu{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:0}
+.docs img{max-width:100%;max-height:560px;border:2px solid #c9d3df;border-radius:8px;background:#fff;box-shadow:0 3px 10px rgba(31,56,100,.1)}
+.docs figcaption,.apercu figcaption{font-size:34px;font-weight:700;color:var(--navy);text-align:center;line-height:1.15}
+.postits{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:40px;font-weight:700;color:var(--navy);text-align:center;align-self:center}
+.deux-l{grid-template-columns:1fr 470px}
+.apercu img{max-height:520px;max-width:100%;border:2px solid #c9d3df;border-radius:8px;background:#fff}
+.apercu figcaption a{color:var(--blue)}
+.apercu figcaption{padding-bottom:10px}
+.pile{display:flex;flex-direction:column;gap:26px;align-items:flex-start}
+.note{font-size:34px;color:var(--grey)}
+.roles-l{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.roles-l li{display:flex;align-items:center;gap:20px;font-size:44px;line-height:1.15;color:var(--navy)}
+.questions-fiche{margin:0;padding-left:64px;font-size:46px;font-weight:700;line-height:1.15;color:var(--navy);display:grid;gap:12px}
+.questions-fiche li::marker{color:var(--blue)}
+.lien{font-size:34px}
+.lien .ext{font-size:30px;color:var(--blue)}
+/* Relances */
+.relances{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+.rel{display:flex;align-items:center;gap:26px;background:#fff;border:4px solid var(--navy);border-radius:20px;padding:0 30px;font-size:52px;font-weight:700;line-height:1.12;color:var(--navy)}
+/* Vos questions / bilan */
+.classe-bar{display:flex;align-items:center;gap:16px;margin-bottom:10px;font-size:28px;font-weight:700;color:var(--navy)}
+.classe-bar input{font:700 28px Luciole,Arial,sans-serif;width:180px;padding:4px 10px;border:3px solid var(--blue);border-radius:10px}
+.colonnes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;background:#fff;border:4px solid var(--c);border-radius:16px;padding:10px 12px;min-height:0;min-width:0}
+.zt{display:flex;align-items:flex-start;gap:10px;font-size:28px;font-weight:700;line-height:1.1;color:var(--navy);padding-bottom:8px;border-bottom:3px solid var(--c);margin-bottom:8px}
+.pastille{flex:none;width:46px;height:26px;border-radius:6px;overflow:hidden;margin-top:2px}
+.pastille svg{display:block;width:100%;height:100%}
+.col ul{list-style:none;margin:0;padding:0;flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.col li{font-size:var(--fq,32px);line-height:1.18;background:var(--lighter);border-radius:10px;padding:6px 10px;display:flex;gap:8px;align-items:flex-start}
+.col li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.col li button{flex:none;border:0;background:transparent;font:700 26px Luciole,Arial,sans-serif;color:#8a1c1c;cursor:pointer;padding:0 4px}
+.col li.ok{background:#e6f4ea}
+.col li .marque{flex:none;width:34px;text-align:center;font-weight:700;color:#1E6B3A;font-size:1.1em}
+.ajout{font:400 24px Luciole,Arial,sans-serif;border:2px dashed #7d8a99;border-radius:10px;padding:6px 10px;margin-top:8px}
+.compte{font-size:36px;color:var(--grey);margin-left:16px}
+.pb-rappel{font-size:28px;color:var(--navy);margin-top:10px}
+[data-mode="bilan"] li{cursor:pointer}
+/* Notes du professeur (touche N) */
+.notes{position:absolute;left:0;right:0;bottom:72px;max-height:62%;overflow:auto;background:#fffdf0;border-top:4px solid #8a6400;box-shadow:0 -6px 18px rgba(0,0,0,.18);padding:14px 40px 18px;display:none;z-index:5}
+.notes.on{display:block}
+.note-e{display:none}.note-e.on{display:block}
+.n-tete{display:flex;gap:24px;align-items:baseline;margin-bottom:6px}
+.n-t{font-size:24px;font-weight:700;color:#5a3b00;background:#FFF1C2;border-radius:8px;padding:2px 12px}
+.n-titre{font-size:22px;color:var(--grey);font-weight:700}
+.n-cols{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.n-cols h4{margin:0 0 4px;font-size:20px;color:var(--navy)}
+.n-cols p{font-size:21px;line-height:1.35}
+.notes q{font-style:italic;color:#0d2b5e}
+.n-table{border-collapse:collapse;width:100%;margin-top:10px;font-size:19px}
+.n-table td,.n-table th{border:1px solid #d9c98f;padding:4px 8px;text-align:left;vertical-align:top}
+.n-table th{background:#f5ecc8}
+
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="band"><span><span class="k">TECHNOLOGIE · 4ᵉ ·</span> P11 · Activité 8</span><span class="phase" id="phase"></span><span class="horloge" id="horloge">Séance <b>—</b></span></div>
+  <main class="ecrans">
+    <section class="ecran prof" id="conduite" data-titre="Conduite de la séance" data-etapes="1" aria-label="Conduite de la séance">
+    <div class="kicker">Conduite de la séance A8 · avant la classe</div>
+    <div class="conduite-g">
+      <table class="tl"><tr><th>Prévu</th><th>Moment</th><th>Étapes</th></tr>
+        <tr><td class="t">0:00</td><td>La lettre du fabricant</td><td><button type="button" class="aller" data-aller="2">2 à 4</button></td></tr><tr><td class="t">1:00</td><td>Les turbines passent de main en main</td><td><button type="button" class="aller" data-aller="5">5</button></td></tr><tr><td class="t">1:30</td><td>Le pari, puis la démonstration</td><td><button type="button" class="aller" data-aller="6">6 à 7</button></td></tr><tr><td class="t">2:00</td><td>Le jeu des questions (3 min)</td><td><button type="button" class="aller" data-aller="8">8 à 9</button></td></tr><tr><td class="t">5:00</td><td>Le tri au tableau (3 min)</td><td><button type="button" class="aller" data-aller="10">10</button></td></tr><tr><td class="t">7:00</td><td>Les 4 familles, relances si besoin</td><td><button type="button" class="aller" data-aller="11">11 à 15</button></td></tr><tr><td class="t">8:00</td><td>La problématique</td><td><button type="button" class="aller" data-aller="16">16</button></td></tr><tr><td class="t">9:00</td><td>Photo du tableau, saisie des questions</td><td><button type="button" class="aller" data-aller="17">17</button></td></tr><tr><td class="t">10:00</td><td>La capsule de méthode</td><td><button type="button" class="aller" data-aller="18">18</button></td></tr><tr><td class="t">14:00</td><td>Fiche élève, fiche repère, rôles</td><td><button type="button" class="aller" data-aller="19">19</button></td></tr><tr><td class="t">16:00</td><td>Partie A · Matériauthèque (20 min)</td><td><button type="button" class="aller" data-aller="20">20</button></td></tr><tr><td class="t">36:00</td><td>Partie B · mini-tableur (10 min)</td><td><button type="button" class="aller" data-aller="21">21</button></td></tr><tr><td class="t">46:00</td><td>Bilan : vos questions</td><td><button type="button" class="aller" data-aller="22">22</button></td></tr>
+      </table>
+      <div class="pile-d">
+        <h3>Avant la classe</h3>
+        <p>Tester le débit (fiche « fabrication et test ») et repérer la manette au ruban. Tracer 4 cadres vierges numérotés 1 à 4 au tableau, sans titre. Aimanter les 4 étiquettes et la problématique <b>face contre le tableau</b>. Ouvrir <code>declencheur.html#1</code> en plein écran (F). Poser les cartes d'amorce (1 jeu par binôme) et les post-its.</p>
+        <h3>Documents</h3>
+        <p class="docs-l"><a href="ressources/a8-declencheur/deroule_professeur.pdf" target="_blank" rel="noopener">Déroulé (2 p.)</a> · <a href="ressources/a8-declencheur/lettre_fabricant.pdf" target="_blank" rel="noopener">Lettre</a> · <a href="ressources/a8-declencheur/lettre_fabricant_FALC.pdf" target="_blank" rel="noopener">Lettre facile à lire</a> · <a href="ressources/a8-declencheur/cartes_amorce.pdf" target="_blank" rel="noopener">Cartes d'amorce</a> · <a href="ressources/a8-declencheur/cartes_amorce_adaptees.pdf" target="_blank" rel="noopener">Cartes adaptées</a> · <a href="ressources/a8-declencheur/plateau_A5.pdf" target="_blank" rel="noopener">Plateau A5</a> · <a href="ressources/a8-declencheur/etiquettes_tableau.pdf" target="_blank" rel="noopener">Étiquettes du tableau</a> · <a href="ressources/a8-declencheur/cartes_relance.pdf" target="_blank" rel="noopener">Relances et sachet</a> · <a href="ressources/a8-declencheur/releve_questions.pdf" target="_blank" rel="noopener">Relevé</a> · <a href="ressources/a8-fiche-repere/fiche-repere_A4.pdf" target="_blank" rel="noopener">Fiche repère</a> · <a href="ressources/a8-declencheur/03_fabrication_et_test.md" target="_blank" rel="noopener">Turbines : fabrication et test</a></p>
+        <h3>Réglages</h3>
+        <p><label class="case"><input type="checkbox" class="js-auto" checked> Minuteurs lancés automatiquement à l'arrivée sur leur écran</label></p>
+        <p><button type="button" class="bt js-seance-raz">Remettre l'horloge de séance à zéro</button> <span class="info">L'horloge démarre à la première page de la lettre.</span></p>
+      </div>
+    </div>
+    </section>
+    <section class="ecran" id="lettre1" data-titre="La lettre (1/3)" data-etapes="1" aria-label="La lettre (1/3)">
+    <div class="kicker">Un message pour la classe</div>
+    <div class="lettre"><div class="entete"><svg viewBox="0 0 120 120" width="64" height="64" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#1F3864"/><path d="M60 18C46 42 36 56 36 70a24 24 0 0 0 48 0c0-14-10-28-24-52z" fill="#fff"/><path d="M42 78q9-8 18 0t18 0" stroke="#2E75B6" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M46 92q7-6 14 0t14 0" stroke="#2E75B6" stroke-width="5" fill="none" stroke-linecap="round"/></svg><span>FONTELAME</span><div class="outils">
+  <button type="button" class="bt-grand js-audio" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 26a14 14 0 1 1 26 7c-3 5-8 7-8 14a8 8 0 0 1-15 3"/><path d="M28 27a5 5 0 1 1 8 4"/></svg><span class="js-audio-txt">Écouter la lettre</span></button>
+  <button type="button" class="bt-grand js-falc" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h48v30H30l-11 11V42H8z"/><path d="M26 21a6 6 0 1 1 8.5 5.4c-1.7.8-2.5 1.8-2.5 3.8"/><circle cx="32" cy="35.5" r="1.6" fill="currentColor"/></svg><span>Facile à lire</span></button></div></div>
+      <div class="texte js-texte"><p>Bonjour à toute la classe,</p><p>Nous fabriquons le robinet automatique que vous connaissez bien. Nous avons un problème, et nous avons besoin de vous.</p><p>Des clients se plaignent : quand on ouvre juste un petit filet d'eau, le robinet ne s'allume pas.</p></div><div class="texte-falc js-texte-falc" hidden><ol class="falc"><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 56V32l14 9v-9l14 9v-9l14 9V12h9v44z"/><path d="M14 48h6M28 48h6M42 48h6"/></svg><span>Nous fabriquons des robinets automatiques.</span></li><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16h26a10 10 0 0 1 10 10v6"/><path d="M6 10v12"/><path d="M38 32h8"/><path d="M42 38v4M42 47v3M42 55v3" stroke-width="2.5"/></svg><span>Avec un petit filet d'eau, le robinet ne s'allume pas.</span></li></ol></div></div>
+    </section>
+    <section class="ecran" id="lettre2" data-titre="La lettre (2/3)" data-etapes="1" aria-label="La lettre (2/3)">
+    <div class="kicker">Un message pour la classe</div>
+    <div class="lettre"><div class="entete"><svg viewBox="0 0 120 120" width="64" height="64" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#1F3864"/><path d="M60 18C46 42 36 56 36 70a24 24 0 0 0 48 0c0-14-10-28-24-52z" fill="#fff"/><path d="M42 78q9-8 18 0t18 0" stroke="#2E75B6" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M46 92q7-6 14 0t14 0" stroke="#2E75B6" stroke-width="5" fill="none" stroke-linecap="round"/></svg><span>FONTELAME</span><div class="outils">
+  <button type="button" class="bt-grand js-audio" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 26a14 14 0 1 1 26 7c-3 5-8 7-8 14a8 8 0 0 1-15 3"/><path d="M28 27a5 5 0 1 1 8 4"/></svg><span class="js-audio-txt">Écouter la lettre</span></button>
+  <button type="button" class="bt-grand js-falc" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h48v30H30l-11 11V42H8z"/><path d="M26 21a6 6 0 1 1 8.5 5.4c-1.7.8-2.5 1.8-2.5 3.8"/><circle cx="32" cy="35.5" r="1.6" fill="currentColor"/></svg><span>Facile à lire</span></button></div></div>
+      <div class="texte js-texte"><p>La turbine que nous utilisons aujourd'hui nous coûte cher. Et nous devons en fabriquer beaucoup, pour beaucoup de robinets.</p><p>Nous vous confions deux turbines d'essai, A et B. <span style="white-space:nowrap">Observez-les</span>, puis faites-les tourner.</p></div><div class="texte-falc js-texte-falc" hidden><ol class="falc"><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="24" cy="48" rx="16" ry="6"/><path d="M8 48v-8M40 48v-8"/><ellipse cx="24" cy="40" rx="16" ry="6"/><path d="M8 40v-8M40 40v-8"/><ellipse cx="24" cy="32" rx="16" ry="6"/><circle cx="48" cy="18" r="11"/><path d="M52 13.5a6 6 0 1 0 0 9M42 16.5h8M42 19.5h8"/></svg><span>La turbine nous coûte cher.</span></li><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="36" width="14" height="14" rx="2"/><rect x="25" y="36" width="14" height="14" rx="2"/><rect x="44" y="36" width="14" height="14" rx="2"/><rect x="15" y="18" width="14" height="14" rx="2"/><rect x="34" y="18" width="14" height="14" rx="2"/><rect x="25" y="2" width="14" height="13" rx="2"/></svg><span>Nous devons fabriquer beaucoup de turbines.</span></li><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="8.32"/><path d="M40.3 32.0 Q51.4 33.9 54.2 45.6"/><path d="M37.9 37.9 Q44.3 47.1 38.1 57.3"/><path d="M32.0 40.3 Q30.1 51.4 18.4 54.2"/><path d="M26.1 37.9 Q16.9 44.3 6.7 38.1"/><path d="M23.7 32.0 Q12.6 30.1 9.8 18.4"/><path d="M26.1 26.1 Q19.7 16.9 25.9 6.7"/><path d="M32.0 23.7 Q33.9 12.6 45.6 9.8"/><path d="M37.9 26.1 Q47.1 19.7 57.3 25.9"/></svg><span>Voici deux turbines : A et B.</span></li></ol></div></div>
+    </section>
+    <section class="ecran" id="lettre3" data-titre="La lettre (3/3)" data-etapes="1" aria-label="La lettre (3/3)">
+    <div class="kicker">Un message pour la classe</div>
+    <div class="lettre"><div class="entete"><svg viewBox="0 0 120 120" width="64" height="64" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#1F3864"/><path d="M60 18C46 42 36 56 36 70a24 24 0 0 0 48 0c0-14-10-28-24-52z" fill="#fff"/><path d="M42 78q9-8 18 0t18 0" stroke="#2E75B6" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M46 92q7-6 14 0t14 0" stroke="#2E75B6" stroke-width="5" fill="none" stroke-linecap="round"/></svg><span>FONTELAME</span><div class="outils">
+  <button type="button" class="bt-grand js-audio" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 26a14 14 0 1 1 26 7c-3 5-8 7-8 14a8 8 0 0 1-15 3"/><path d="M28 27a5 5 0 1 1 8 4"/></svg><span class="js-audio-txt">Écouter la lettre</span></button>
+  <button type="button" class="bt-grand js-falc" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h48v30H30l-11 11V42H8z"/><path d="M26 21a6 6 0 1 1 8.5 5.4c-1.7.8-2.5 1.8-2.5 3.8"/><circle cx="32" cy="35.5" r="1.6" fill="currentColor"/></svg><span>Facile à lire</span></button></div></div>
+      <div class="texte js-texte"><p>Avant de décider quoi que ce soit, nous voulons vos questions. Toutes vos questions !</p><p>Merci d'avance pour votre aide.</p><p class="signe">Le bureau d'études de Fontelame</p></div><div class="texte-falc js-texte-falc" hidden><ol class="falc"><li><svg class="picto " viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h48v30H30l-11 11V42H8z"/><path d="M26 21a6 6 0 1 1 8.5 5.4c-1.7.8-2.5 1.8-2.5 3.8"/><circle cx="32" cy="35.5" r="1.6" fill="currentColor"/></svg><span>Aidez-nous : posez-nous vos questions.</span></li></ol></div></div>
+    </section>
+    <section class="ecran" id="defi" data-titre="Turbine A ou B ?" data-etapes="3" aria-label="Turbine A ou B ?">
+    <div class="kicker">Le défi</div>
+    <h2>Turbine A ou turbine B ?</h2>
+    <div class="duo">
+      <figure><svg class="picto " viewBox="0 0 64 64" width="250" height="250" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="8.32"/><path d="M40.3 32.0 Q51.4 33.9 54.2 45.6"/><path d="M37.9 37.9 Q44.3 47.1 38.1 57.3"/><path d="M32.0 40.3 Q30.1 51.4 18.4 54.2"/><path d="M26.1 37.9 Q16.9 44.3 6.7 38.1"/><path d="M23.7 32.0 Q12.6 30.1 9.8 18.4"/><path d="M26.1 26.1 Q19.7 16.9 25.9 6.7"/><path d="M32.0 23.7 Q33.9 12.6 45.6 9.8"/><path d="M37.9 26.1 Q47.1 19.7 57.3 25.9"/></svg><figcaption>A</figcaption></figure>
+      <figure><svg class="picto " viewBox="0 0 64 64" width="250" height="250" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="8.32"/><path d="M40.3 32.0 Q51.4 33.9 54.2 45.6"/><path d="M37.9 37.9 Q44.3 47.1 38.1 57.3"/><path d="M32.0 40.3 Q30.1 51.4 18.4 54.2"/><path d="M26.1 37.9 Q16.9 44.3 6.7 38.1"/><path d="M23.7 32.0 Q12.6 30.1 9.8 18.4"/><path d="M26.1 26.1 Q19.7 16.9 25.9 6.7"/><path d="M32.0 23.7 Q33.9 12.6 45.6 9.8"/><path d="M37.9 26.1 Q47.1 19.7 57.3 25.9"/></svg><figcaption>B</figcaption></figure>
+    </div>
+    <p class="consigne" data-e="1"><svg class="picto " viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg>Faites-les passer de main en main. Observez.</p>
+    <p class="consigne" data-e="2"><svg class="picto " viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h48v30H30l-11 11V42H8z"/><path d="M26 21a6 6 0 1 1 8.5 5.4c-1.7.8-2.5 1.8-2.5 3.8"/><circle cx="32" cy="35.5" r="1.6" fill="currentColor"/></svg>Pariez : laquelle va tourner sous un petit filet d'eau ? Levez la main : A… ou B ?</p>
+    <p class="consigne" data-e="3"><svg class="picto " viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16h26a10 10 0 0 1 10 10v6"/><path d="M6 10v12"/><path d="M38 32h8"/><path d="M42 38v4M42 47v3M42 55v3" stroke-width="2.5"/></svg>Regardez… et écoutez.</p>
+    </section>
+    <section class="ecran" id="tables" data-titre="Sur vos tables" data-etapes="1" aria-label="Sur vos tables">
+    <div class="kicker">Sur vos tables</div>
+    <div class="docs">
+      <figure><img src="ressources/a8-declencheur/apercus/cartes_amorce_1.png" alt="Planche de 8 cartes d'amorce : Pourquoi, Quel, Comment, Combien, Et si, Qu'est-ce qui, D'où, Est-ce que"><figcaption>Les cartes pour commencer vos questions</figcaption></figure>
+      <figure><img src="ressources/a8-declencheur/apercus/plateau_A5_1.png" alt="Mini-plateau de 4 cases colorées pour ranger ses post-its"><figcaption>Un plateau pour ranger, si vous voulez</figcaption></figure>
+      <div class="postits"><svg class="picto " viewBox="0 0 64 64" width="120" height="120" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><p>Des post-its :<br>une question par post-it</p></div>
+    </div>
+    </section>
+    <section class="ecran" id="questions" data-titre="Le jeu des questions" data-etapes="1" data-minuteur="180" data-relais="90" data-auto="1" aria-label="Le jeu des questions">
+    <div class="kicker">Le jeu des questions</div>
+    <div class="deux">
+      <ol class="regles">
+        <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="36" width="14" height="14" rx="2"/><rect x="25" y="36" width="14" height="14" rx="2"/><rect x="44" y="36" width="14" height="14" rx="2"/><rect x="15" y="18" width="14" height="14" rx="2"/><rect x="34" y="18" width="14" height="14" rx="2"/><rect x="25" y="2" width="14" height="13" rx="2"/></svg><span>Le plus de questions possible.</span></li>
+        <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 34l9 9 15-18"/><path d="M38 24l18 18M56 24L38 42"/></svg><span>On n'y répond pas.</span></li>
+        <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><span>Une question par post-it.</span></li>
+        <li class="petit"><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 42c0-6-9-10-9-21a17 17 0 0 1 34 0c0 11-9 15-9 21z"/><path d="M25 48h14M27 54h10"/></svg><span>Écrire, dire à son binôme, ou dessiner. Les cartes vous aident.</span></li>
+      </ol>
+      <div class="minuteur js-min" role="timer" aria-live="off">
+    <div class="chiffres js-chiffres">3:00</div>
+    <div class="jauge"><div class="js-jauge"></div></div>
+    <div class="etat js-etat">Entrée pour lancer</div>
+    <div class="bt-min"><button type="button" class="bt-grand js-go">Lancer</button><button type="button" class="bt-grand js-raz">Remettre à 3:00</button></div>
+  </div>
+    </div>
+    <p class="roles js-roles">Pilote : écrit · Copilote : propose. <b class="js-relais" hidden>Changez de rôle !</b></p>
+    </section>
+    <section class="ecran" id="tri" data-titre="Le tri" data-etapes="1" data-minuteur="180" data-auto="1" aria-label="Le tri">
+    <div class="kicker">Le tri</div>
+    <div class="deux">
+      <div class="tri-g">
+        <p class="grand">Collez vos post-its au tableau.<br>Rassemblez les questions qui se ressemblent.</p>
+        <div class="zones-vides"><div>1</div><div>2</div><div>3</div><div>4</div></div>
+      </div>
+      <div class="minuteur js-min" role="timer" aria-live="off">
+    <div class="chiffres js-chiffres">3:00</div>
+    <div class="jauge"><div class="js-jauge"></div></div>
+    <div class="etat js-etat">Entrée pour lancer</div>
+    <div class="bt-min"><button type="button" class="bt-grand js-go">Lancer</button><button type="button" class="bt-grand js-raz">Remettre à 3:00</button></div>
+  </div>
+    </div>
+    </section>
+    <section class="ecran" id="revelation" data-titre="Les 4 familles de questions" data-etapes="4" aria-label="Les 4 familles de questions">
+    <div class="kicker">Vos questions, rangées en 4 familles</div>
+    <div class="etiquettes"><div class="etiq" data-e="1" style="--c:#2E75B6"><svg class="motif" aria-hidden="true"><defs><pattern id="z1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#z1)"/></g></svg><div class="etiq-in"><svg class="picto " viewBox="0 0 64 64" width="92" height="92" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="34" width="22" height="22" rx="2"/><circle cx="45" cy="45" r="11"/><path d="M33 29l11-22 11 22z"/></svg><span class="q">Quel matériau ?</span></div></div><div class="etiq" data-e="2" style="--c:#C55A11"><svg class="motif" aria-hidden="true"><defs><pattern id="z2" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#z2)"/></g></svg><div class="etiq-in"><svg class="picto " viewBox="0 0 64 64" width="92" height="92" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 9v45M18 56h28M10 17h44"/><path d="M10 17L4 34h12zM54 17l-6 17h12z"/><path d="M4 34a6 4 0 0 0 12 0M48 34a6 4 0 0 0 12 0"/></svg><span class="q">Pourquoi <span style="white-space:nowrap">celui-là</span> ?</span></div></div><div class="etiq" data-e="3" style="--c:#2E7D32"><svg class="motif" aria-hidden="true"><defs><pattern id="z3" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#z3)"/></g></svg><div class="etiq-in"><svg class="picto " viewBox="0 0 64 64" width="92" height="92" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="58.0,32.0 57.5,37.1 50.5,39.7 48.6,43.1 50.4,50.4 46.4,53.6 39.7,50.5 35.9,51.6 32.0,58.0 26.9,57.5 24.3,50.5 20.9,48.6 13.6,50.4 10.4,46.4 13.5,39.7 12.4,35.9 6.0,32.0 6.5,26.9 13.5,24.3 15.4,20.9 13.6,13.6 17.6,10.4 24.3,13.5 28.1,12.4 32.0,6.0 37.1,6.5 39.7,13.5 43.1,15.4 50.4,13.6 53.6,17.6 50.5,24.3 51.6,28.1"/><circle cx="32" cy="32" r="8"/></svg><span class="q">Comment le fabriquer ?</span></div></div><div class="etiq" data-e="4" style="--c:#6A3D9A"><svg class="motif" aria-hidden="true"><defs><pattern id="z4" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#z4)"/></g></svg><div class="etiq-in"><svg class="picto " viewBox="0 0 64 64" width="92" height="92" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="24"/><path d="M36 14L23 35h10l-5 15 14-22H31z" fill="currentColor" stroke-linejoin="round"/></svg><span class="q"><span style="white-space:nowrap">Qu'a-t-il</span> coûté à fabriquer ?</span></div></div></div>
+    </section>
+    <section class="ecran" id="relances" data-titre="Si une famille reste vide" data-etapes="1" aria-label="Si une famille reste vide">
+    <div class="kicker">Et si on se demandait…</div>
+    <div class="relances">
+      <div class="rel"><svg class="picto " viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 59S13 38 13 25a19 19 0 0 1 38 0c0 13-19 34-19 34z"/><circle cx="32" cy="25" r="7"/></svg><span>D'où vient la matière ?</span></div>
+      <div class="rel"><svg class="picto " viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 59c-13 0-19-9-19-19 0-13 13-17 13-31 8 6 10 15 8 21 4-2 6-6 6-11 7 7 11 13 11 21 0 10-6 19-19 19z"/></svg><span>Qu'a-t-il fallu pour la transformer ?</span></div>
+      <div class="rel"><svg class="picto " viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 56V32l14 9v-9l14 9v-9l14 9V12h9v44z"/><path d="M14 48h6M28 48h6M42 48h6"/></svg><span>Et pour en fabriquer 10 000 ?</span></div>
+      <div class="rel"><svg class="picto " viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30L32 11l26 19M13 25v31h38V25"/><path d="M27 56V42h10v14"/><path d="M32 18v6"/></svg><span>Et pour en fabriquer une seule, ici, au collège ?</span></div>
+    </div>
+    </section>
+    <section class="ecran" id="probleme" data-titre="Notre problématique" data-etapes="1" aria-label="Notre problématique">
+    <div class="kicker">Toutes vos questions, en une seule</div>
+    <div class="pb"><span>Notre problématique</span>Quel matériau choisir pour la turbine du robinet automatique, et quelle énergie a-t-il fallu pour la fabriquer ?</div>
+    </section>
+    <section class="ecran" id="vosquestions" data-titre="Vos questions" data-etapes="1" aria-label="Vos questions">
+    <div class="kicker">Vos questions <span class="js-nom-classe"></span></div>
+    <div class="classe-bar">
+      <label>Classe <input class="js-classe" list="classes-a8" placeholder="4ᵉ …" autocomplete="off"></label>
+      <datalist id="classes-a8"></datalist>
+      <button type="button" class="bt js-copier">Copier le relevé</button>
+      <button type="button" class="bt js-effacer">Effacer cette classe</button>
+      <span class="js-info info"></span>
+    </div>
+    <div class="colonnes js-colonnes" data-mode="saisie"><section class="col" data-z="1" style="--c:#2E75B6"><div class="zt" style="--c:#2E75B6"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q1)"/></g></svg></span><span>1 · Quel matériau ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 1"></section><section class="col" data-z="2" style="--c:#C55A11"><div class="zt" style="--c:#C55A11"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q2" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q2)"/></g></svg></span><span>2 · Pourquoi <span style="white-space:nowrap">celui-là</span> ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 2"></section><section class="col" data-z="3" style="--c:#2E7D32"><div class="zt" style="--c:#2E7D32"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q3" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q3)"/></g></svg></span><span>3 · Comment le fabriquer ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 3"></section><section class="col" data-z="4" style="--c:#6A3D9A"><div class="zt" style="--c:#6A3D9A"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q4" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q4)"/></g></svg></span><span>4 · <span style="white-space:nowrap">Qu'a-t-il</span> coûté à fabriquer ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 4"></section></div>
+    </section>
+    <section class="ecran" id="clip" data-titre="La méthode" data-etapes="1" data-minuteur="240" data-auto="1" aria-label="La méthode">
+    <div class="kicker">Pour répondre : la méthode</div>
+    <div class="deux">
+      <div class="pile">
+        <p class="grand">Une capsule de 8 écrans : ce que vous allez produire, et comment vous y prendre.</p>
+        <a class="bt-grand lien" href="capsule-a8.html#1" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="16" rx="3"/><rect x="24" y="24" width="16" height="16" rx="3"/><rect x="44" y="38" width="16" height="16" rx="3"/><path d="M12 30v8h8M32 44v8h8"/></svg><span>Ouvrir la capsule de méthode</span><span class="ext" aria-hidden="true">↗</span></a>
+        <p class="note">Elle s'ouvre dans un nouvel onglet. Revenez ici à la fin.</p>
+      </div>
+      <div class="minuteur js-min" role="timer" aria-live="off">
+    <div class="chiffres js-chiffres">4:00</div>
+    <div class="jauge"><div class="js-jauge"></div></div>
+    <div class="etat js-etat">Entrée pour lancer</div>
+    <div class="bt-min"><button type="button" class="bt-grand js-go">Lancer</button><button type="button" class="bt-grand js-raz">Remettre à 4:00</button></div>
+  </div>
+    </div>
+    </section>
+    <section class="ecran" id="repere" data-titre="Fiche élève et fiche repère" data-etapes="1" aria-label="Fiche élève et fiche repère">
+    <div class="kicker">Vos documents</div>
+    <div class="deux deux-l">
+      <div class="pile">
+        <p class="grand">La fiche élève A8, et la fiche repère à côté de l'écran.</p>
+        <ul class="roles-l">
+          <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="27" cy="27" r="16"/><path d="M39 39l17 17"/></svg><span><b>Pilote</b> : tient la souris.</span></li>
+          <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 34l9 9 15-18"/><path d="M38 24l18 18M56 24L38 42"/></svg><span><b>Vérificateur</b> : lit la fiche repère, vérifie chaque étape.</span></li>
+          <li><svg class="picto " viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="18" width="11" height="32" rx="2" transform="rotate(-24 14.5 34)"/><rect x="28" y="18" width="11" height="32" rx="2"/><path d="M45 34h13M52 28l6 6-6 6"/></svg><span>On échange à mi-parcours.</span></li>
+        </ul>
+      </div>
+      <figure class="apercu"><img src="ressources/a8-fiche-repere/apercus/fiche-repere_A4_feuille1_recto.png" alt="Aperçu de la fiche repère de la Matériauthèque"><figcaption><a href="ressources/a8-fiche-repere/fiche-repere_A4.pdf" target="_blank" rel="noopener">Fiche repère (PDF)</a></figcaption></figure>
+    </div>
+    </section>
+    <section class="ecran" id="partieA" data-titre="Partie A · Matériauthèque" data-etapes="1" data-minuteur="1200" data-relais="600" data-auto="1" aria-label="Partie A · Matériauthèque">
+    <div class="kicker">Partie A · Je choisis le matériau de la turbine</div>
+    <div class="deux">
+      <div class="pile">
+        <ol class="questions-fiche" start="1">
+          <li>Deux critères, justifiés</li>
+          <li>Mon choix : matériau, famille, sous-famille</li>
+          <li>Une élimination expliquée</li>
+          <li>Deux procédés : 10 000 turbines, une turbine d'essai au collège</li>
+        </ol>
+        <a class="bt-grand lien" href="https://blanchardromain-cyber.github.io/materiautheque/?niveau=4" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="34" width="22" height="22" rx="2"/><circle cx="45" cy="45" r="11"/><path d="M33 29l11-22 11 22z"/></svg><span>Ouvrir la Matériauthèque · niveau 4ᵉ</span><span class="ext" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="minuteur js-min" role="timer" aria-live="off">
+    <div class="chiffres js-chiffres">20:00</div>
+    <div class="jauge"><div class="js-jauge"></div></div>
+    <div class="etat js-etat">Entrée pour lancer</div>
+    <div class="bt-min"><button type="button" class="bt-grand js-go">Lancer</button><button type="button" class="bt-grand js-raz">Remettre à 20:00</button></div>
+  </div>
+    </div>
+    <p class="roles js-roles">Questions 1 à 4 de la fiche. <b class="js-relais" hidden>Changez de rôle !</b></p>
+    </section>
+    <section class="ecran" id="partieB" data-titre="Partie B · mini-tableur" data-etapes="1" data-minuteur="600" data-auto="1" aria-label="Partie B · mini-tableur">
+    <div class="kicker">Partie B · L'énergie grise de ma turbine</div>
+    <div class="deux">
+      <div class="pile">
+        <ol class="questions-fiche" start="5">
+          <li>La bonne définition, à cocher</li>
+          <li>Masse et énergie grise, avec les unités</li>
+          <li>« Combien de fois plus ? », puis l'explication</li>
+        </ol>
+        <a class="bt-grand lien" href="energie-grise.html" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 54V40M32 54V26M50 54V12" stroke-width="9"/><path d="M6 58h52"/></svg><span>Ouvrir le mini-tableur</span><span class="ext" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="minuteur js-min" role="timer" aria-live="off">
+    <div class="chiffres js-chiffres">10:00</div>
+    <div class="jauge"><div class="js-jauge"></div></div>
+    <div class="etat js-etat">Entrée pour lancer</div>
+    <div class="bt-min"><button type="button" class="bt-grand js-go">Lancer</button><button type="button" class="bt-grand js-raz">Remettre à 10:00</button></div>
+  </div>
+    </div>
+    </section>
+    <section class="ecran" id="bilan" data-titre="Bilan : vos questions" data-etapes="1" aria-label="Bilan : vos questions">
+    <div class="kicker">Vos questions ont-elles une réponse ? <span class="js-compte compte"></span></div>
+    <div class="colonnes js-colonnes" data-mode="bilan"><section class="col" data-z="1" style="--c:#2E75B6"><div class="zt" style="--c:#2E75B6"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="b1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#b1)"/></g></svg></span><span>1 · Quel matériau ?</span></div><ul class="js-liste"></ul></section><section class="col" data-z="2" style="--c:#C55A11"><div class="zt" style="--c:#C55A11"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="b2" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#b2)"/></g></svg></span><span>2 · Pourquoi <span style="white-space:nowrap">celui-là</span> ?</span></div><ul class="js-liste"></ul></section><section class="col" data-z="3" style="--c:#2E7D32"><div class="zt" style="--c:#2E7D32"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="b3" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#b3)"/></g></svg></span><span>3 · Comment le fabriquer ?</span></div><ul class="js-liste"></ul></section><section class="col" data-z="4" style="--c:#6A3D9A"><div class="zt" style="--c:#6A3D9A"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="b4" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#b4)"/></g></svg></span><span>4 · <span style="white-space:nowrap">Qu'a-t-il</span> coûté à fabriquer ?</span></div><ul class="js-liste"></ul></section></div>
+    <p class="pb-rappel"><b>Notre problématique :</b> Quel matériau choisir pour la turbine du robinet automatique, et quelle énergie a-t-il fallu pour la fabriquer ?</p>
+    </section>
+  </main>
+  <aside class="notes" id="notes" aria-label="Notes du professeur"><div class="note-e" data-k="0"><div class="n-tete"><span class="n-t">Prévu avant la classe</span><span class="n-titre">Étape 1 · Conduite de la séance</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Tester le débit (fiche « fabrication et test ») et repérer la manette au ruban. Tracer 4 cadres vierges numérotés 1 à 4 au tableau, sans titre. Aimanter les 4 étiquettes et la problématique <b>face contre le tableau</b>. Ouvrir <code>declencheur.html#1</code> en plein écran (F). Poser les cartes d'amorce (1 jeu par binôme) et les post-its.</p></div><div><h4>Phrases exactes</h4><p>—</p></div></div>
+    </div><div class="note-e" data-k="1"><div class="n-tete"><span class="n-t">Prévu 0:00</span><span class="n-titre">Étape 2 · La lettre (1/3)</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lire la lettre, ou la faire écouter (A). Bouton « Facile à lire » (L) si besoin.</p></div><div><h4>Phrases exactes</h4><p><q>Une entreprise nous a écrit. Écoutez bien : elle a un problème.</q></p></div></div>
+    </div><div class="note-e" data-k="2"><div class="n-tete"><span class="n-t">Prévu 0:00</span><span class="n-titre">Étape 3 · La lettre (2/3)</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lire la lettre, ou la faire écouter (A). Bouton « Facile à lire » (L) si besoin.</p></div><div><h4>Phrases exactes</h4><p><q>Une entreprise nous a écrit. Écoutez bien : elle a un problème.</q></p></div></div>
+    </div><div class="note-e" data-k="3"><div class="n-tete"><span class="n-t">Prévu 0:00</span><span class="n-titre">Étape 4 · La lettre (3/3)</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lire la lettre, ou la faire écouter (A). Bouton « Facile à lire » (L) si besoin.</p></div><div><h4>Phrases exactes</h4><p><q>Une entreprise nous a écrit. Écoutez bien : elle a un problème.</q></p></div></div>
+    </div><div class="note-e" data-k="4"><div class="n-tete"><span class="n-t">Prévu 1:00</span><span class="n-titre">Étape 5 · Turbine A ou B ?</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Faire passer A et B de main en main. Ne rien commenter.</p></div><div><h4>Phrases exactes</h4><p><q>Voici les deux turbines d'essai de Fontelame. Prenez-les en main, faites-les passer. Pour l'instant, on ne dit rien.</q></p></div></div>
+    </div><div class="note-e" data-k="5"><div class="n-tete"><span class="n-t">Prévu 1:30</span><span class="n-titre">Étape 6 · Turbine A ou B ?</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Faire parier, puis démonstration au point d'eau, filet repéré : B, puis A. Laisser entendre l'eau.</p></div><div><h4>Phrases exactes</h4><p><q>Pariez : laquelle va tourner sous un petit filet d'eau ? Levez la main pour A… pour B.</q> Puis : <q>Regardez… et écoutez.</q> Puis, sans conclure : <q>Je ne vous explique rien. C'est vous qui allez poser les questions.</q></p></div></div>
+    <table class="n-table"><tr><td><b>A tourne quand même</b></td><td>Réduire le débit jusqu'au repère. Sinon, faire comparer le démarrage : <q>Laquelle démarre la première ?</q> Ne jamais expliquer. Point d'eau inaccessible : sèche-cheveux à air froid (fiche « fabrication et test »).</td></tr></table></div><div class="note-e" data-k="6"><div class="n-tete"><span class="n-t">Prévu 1:30</span><span class="n-titre">Étape 7 · Turbine A ou B ?</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Faire parier, puis démonstration au point d'eau, filet repéré : B, puis A. Laisser entendre l'eau.</p></div><div><h4>Phrases exactes</h4><p><q>Pariez : laquelle va tourner sous un petit filet d'eau ? Levez la main pour A… pour B.</q> Puis : <q>Regardez… et écoutez.</q> Puis, sans conclure : <q>Je ne vous explique rien. C'est vous qui allez poser les questions.</q></p></div></div>
+    <table class="n-table"><tr><td><b>A tourne quand même</b></td><td>Réduire le débit jusqu'au repère. Sinon, faire comparer le démarrage : <q>Laquelle démarre la première ?</q> Ne jamais expliquer. Point d'eau inaccessible : sèche-cheveux à air froid (fiche « fabrication et test »).</td></tr></table></div><div class="note-e" data-k="7"><div class="n-tete"><span class="n-t">Prévu 2:00</span><span class="n-titre">Étape 8 · Sur vos tables</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lancer le minuteur (Entrée). Circuler. À 1 min 30, la page affiche « Changez de rôle ! ». Post-its de la couleur 1.</p></div><div><h4>Phrases exactes</h4><p><q>Par deux, écrivez le plus de questions possible sur ce que vous avez vu et sur la lettre. Une question par post-it. Interdit d'y répondre ! Vous pouvez aussi dire la question à votre binôme, qui l'écrit, ou la dessiner. Les cartes vous aident à commencer.</q> Pendant : <q>Bonne question. Écris-la.</q></p></div></div>
+    <table class="n-table"><tr><td><b>Une classe muette</b></td><td>Lire une carte d'amorce à voix haute : <q>Pourquoi… ? Pourquoi quoi ? Qu'avez-vous vu ?</q> Écrire la première question sous la dictée d'un élève. Refaire passer les turbines, puis donner 30 s de plus. Binôme bloqué : plateau A5 et cartes adaptées.</td></tr><tr><td><b>Un binôme répond au lieu de questionner</b></td><td><q>Bonne idée : transforme-la en question.</q> (« A est plus lourde » → « Pourquoi A est-elle plus lourde ? »)</td></tr></table></div><div class="note-e" data-k="8"><div class="n-tete"><span class="n-t">Prévu 2:00</span><span class="n-titre">Étape 9 · Le jeu des questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lancer le minuteur (Entrée). Circuler. À 1 min 30, la page affiche « Changez de rôle ! ». Post-its de la couleur 1.</p></div><div><h4>Phrases exactes</h4><p><q>Par deux, écrivez le plus de questions possible sur ce que vous avez vu et sur la lettre. Une question par post-it. Interdit d'y répondre ! Vous pouvez aussi dire la question à votre binôme, qui l'écrit, ou la dessiner. Les cartes vous aident à commencer.</q> Pendant : <q>Bonne question. Écris-la.</q></p></div></div>
+    <table class="n-table"><tr><td><b>Une classe muette</b></td><td>Lire une carte d'amorce à voix haute : <q>Pourquoi… ? Pourquoi quoi ? Qu'avez-vous vu ?</q> Écrire la première question sous la dictée d'un élève. Refaire passer les turbines, puis donner 30 s de plus. Binôme bloqué : plateau A5 et cartes adaptées.</td></tr><tr><td><b>Un binôme répond au lieu de questionner</b></td><td><q>Bonne idée : transforme-la en question.</q> (« A est plus lourde » → « Pourquoi A est-elle plus lourde ? »)</td></tr></table></div><div class="note-e" data-k="9"><div class="n-tete"><span class="n-t">Prévu 5:00</span><span class="n-titre">Étape 10 · Le tri</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lancer le minuteur. Les binômes collent leurs post-its dans les 4 cadres, en rassemblant ce qui se ressemble. Le professeur regroupe à voix haute avec la classe.</p></div><div><h4>Phrases exactes</h4><p><q>Venez coller vos questions. Mettez ensemble celles qui se ressemblent.</q> Puis : <q>Ces deux-là parlent de la même chose ? Comment on pourrait appeler ce groupe ?</q></p></div></div>
+    <table class="n-table"><tr><td><b>Une question hors sujet</b></td><td>L'accepter sans la juger : <q>On la garde.</q> La coller dans un « parking » au bord du tableau. On y revient en fin de séquence si on a le temps.</td></tr></table></div><div class="note-e" data-k="10"><div class="n-tete"><span class="n-t">Prévu 7:00</span><span class="n-titre">Étape 11 · Les 4 familles de questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.</p></div><div><h4>Phrases exactes</h4><p><q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q></p></div></div>
+    </div><div class="note-e" data-k="11"><div class="n-tete"><span class="n-t">Prévu 7:00</span><span class="n-titre">Étape 12 · Les 4 familles de questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.</p></div><div><h4>Phrases exactes</h4><p><q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q></p></div></div>
+    </div><div class="note-e" data-k="12"><div class="n-tete"><span class="n-t">Prévu 7:00</span><span class="n-titre">Étape 13 · Les 4 familles de questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.</p></div><div><h4>Phrases exactes</h4><p><q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q></p></div></div>
+    </div><div class="note-e" data-k="13"><div class="n-tete"><span class="n-t">Prévu 7:00</span><span class="n-titre">Étape 14 · Les 4 familles de questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.</p></div><div><h4>Phrases exactes</h4><p><q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q></p></div></div>
+    </div><div class="note-e" data-k="14"><div class="n-tete"><span class="n-t">Prévu 7:00</span><span class="n-titre">Étape 15 · Si une famille reste vide</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.</p></div><div><h4>Phrases exactes</h4><p><q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q></p></div></div>
+    <table class="n-table"><tr><th>Famille</th><th>Questions probables</th><th>Relance si elle reste vide</th></tr><tr><td>1 · Quel matériau ?</td><td>En quoi sont faites les turbines ? · Est-ce que A et B sont dans la même matière ? · On peut faire une turbine en bois ?</td><td>Montrer A et B côte à côte : <q>Elles se ressemblent. Qu'est-ce qui pourrait être différent, sans qu'on le voie ?</q></td></tr><tr><td>2 · Pourquoi celui-là ?</td><td>Pourquoi B tourne et pas A ? · Pourquoi A est plus lourde ? · Laquelle est la meilleure pour le robinet ?</td><td><q>Si vous étiez l'entreprise, laquelle garderiez-vous… et comment vous le justifieriez ?</q></td></tr><tr><td>3 · Comment le fabriquer ?</td><td>Comment on fabrique une turbine ? · Avec quelle machine ? · Combien de temps pour en faire une ?</td><td>Carte <q>Et pour en fabriquer 10 000 ?</q>, puis carte <q>Et pour en fabriquer une seule, ici, au collège ?</q></td></tr><tr><td>4 · Qu'a-t-il coûté à fabriquer ?</td><td>Combien coûte une turbine ? · Est-ce que ça pollue de la fabriquer ? · D'où vient la matière ?</td><td>Sachet <q>D'où vient la matière ?</q> (faire toucher granulés et fil), puis carte <q>Qu'a-t-il fallu pour la transformer ?</q></td></tr></table></div><div class="note-e" data-k="15"><div class="n-tete"><span class="n-t">Prévu 8:00</span><span class="n-titre">Étape 16 · Notre problématique</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner la bande de la problématique.</p></div><div><h4>Phrases exactes</h4><p><q>Toutes vos questions tiennent en une seule. C'est notre problématique pour l'activité 8.</q></p></div></div>
+    </div><div class="note-e" data-k="16"><div class="n-tete"><span class="n-t">Prévu 9:00</span><span class="n-titre">Étape 17 · Vos questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Photographier le tableau (relevé). Enchaîner sur le clip de méthode.</p></div><div><h4>Phrases exactes</h4><p><q>Pour y répondre, on a besoin d'une méthode. Regardez.</q></p></div></div>
+    <table class="n-table"><tr><th>Famille</th><th>Questions probables</th><th>Relance si elle reste vide</th></tr><tr><td>1 · Quel matériau ?</td><td>En quoi sont faites les turbines ? · Est-ce que A et B sont dans la même matière ? · On peut faire une turbine en bois ?</td><td>Montrer A et B côte à côte : <q>Elles se ressemblent. Qu'est-ce qui pourrait être différent, sans qu'on le voie ?</q></td></tr><tr><td>2 · Pourquoi celui-là ?</td><td>Pourquoi B tourne et pas A ? · Pourquoi A est plus lourde ? · Laquelle est la meilleure pour le robinet ?</td><td><q>Si vous étiez l'entreprise, laquelle garderiez-vous… et comment vous le justifieriez ?</q></td></tr><tr><td>3 · Comment le fabriquer ?</td><td>Comment on fabrique une turbine ? · Avec quelle machine ? · Combien de temps pour en faire une ?</td><td>Carte <q>Et pour en fabriquer 10 000 ?</q>, puis carte <q>Et pour en fabriquer une seule, ici, au collège ?</q></td></tr><tr><td>4 · Qu'a-t-il coûté à fabriquer ?</td><td>Combien coûte une turbine ? · Est-ce que ça pollue de la fabriquer ? · D'où vient la matière ?</td><td>Sachet <q>D'où vient la matière ?</q> (faire toucher granulés et fil), puis carte <q>Qu'a-t-il fallu pour la transformer ?</q></td></tr></table></div><div class="note-e" data-k="17"><div class="n-tete"><span class="n-t">Prévu 10:00 · 4 min</span><span class="n-titre">Étape 18 · La méthode</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Projeter la capsule de méthode (<code>capsule-a8.html</code>, 8 écrans), puis revenir au diaporama. Ne rien ajouter sur le matériau.</p></div><div><h4>Phrases exactes</h4><p><q>Voici comment on va s'y prendre. Regardez bien la démarche : vous l'aurez sur votre fiche repère.</q></p></div></div>
+    </div><div class="note-e" data-k="18"><div class="n-tete"><span class="n-t">Prévu 14:00 · 2 min</span><span class="n-titre">Étape 19 · Fiche élève et fiche repère</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Distribuer la fiche élève A8 (1 par élève) et la fiche repère plastifiée (1 par binôme ; version adaptée à qui la veut). Attribuer les rôles.</p></div><div><h4>Phrases exactes</h4><p><q>La fiche repère reste à côté de l'écran pendant toute l'activité. Pilote : il tient la souris. Vérificateur : il lit la fiche et vérifie chaque étape. On échange à mi-parcours.</q></p></div></div>
+    </div><div class="note-e" data-k="19"><div class="n-tete"><span class="n-t">Prévu 16:00 · 20 min</span><span class="n-titre">Étape 20 · Partie A · Matériauthèque</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Minuteur de 20 min (« Changez de rôle ! » à 10 min). Circuler ; renvoyer à la fiche repère plutôt que répondre. Pendant ce temps, saisir 2 ou 3 questions par zone dans l'écran « Vos questions », d'après la photo du tableau.</p></div><div><h4>Phrases exactes</h4><p><q>Partie A : ouvrez la Matériauthèque, niveau 4ᵉ, et faites le parcours jusqu'à l'étape 6, « Je justifie ». Puis complétez les questions 1 à 4 de la fiche. Vous avez 20 minutes.</q></p></div></div>
+    </div><div class="note-e" data-k="20"><div class="n-tete"><span class="n-t">Prévu 36:00 · 10 min</span><span class="n-titre">Étape 21 · Partie B · mini-tableur</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Minuteur de 10 min. Vérifier que chaque binôme recopie les résultats avec leurs unités.</p></div><div><h4>Phrases exactes</h4><p><q>Partie B : ouvrez le mini-tableur de l'énergie grise. D'abord la masse de votre turbine, ensuite son énergie grise. Complétez les questions 5 à 7. 10 minutes.</q></p></div></div>
+    </div><div class="note-e" data-k="21"><div class="n-tete"><span class="n-t">Prévu 46:00 · 4 min</span><span class="n-titre">Étape 22 · Bilan : vos questions</span></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Revenir aux questions de la classe : cocher, avec les élèves, celles qui ont maintenant une réponse. Ne pas corriger ici : la mise en commun suit.</p></div><div><h4>Phrases exactes</h4><p><q>Revenons à vos questions de tout à l'heure. Lesquelles ont maintenant une réponse ? Lesquelles restent ouvertes ?</q></p></div></div>
+    </div></aside>
+  <nav class="barre" aria-label="Navigation du professeur">
+    <button class="bt" id="btPrec" type="button" aria-label="Étape précédente" title="Étape précédente (flèche gauche)">◀</button>
+    <div class="points" id="points"></div>
+    <span class="compteur" id="compteur" aria-live="polite"></span>
+    <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante" title="Étape suivante (espace ou flèche droite)">▶</button>
+    <button class="bt" id="btNotes" type="button" aria-pressed="false" title="Notes du professeur (touche N)">Notes</button>
+    <span class="aide" title="Espace ou → : suivant · ← : précédent · N : notes · Entrée : minuteur · R : remise à zéro · A : audio · L : facile à lire · F : plein écran · Début : conduite">Espace → suivant · N notes · Entrée minuteur · F plein écran<br>
+      R.Blanchard · <a href="./">accueil</a></span>
+    <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
+  </nav>
+</div>
+<audio id="audio" preload="none" src="ressources/a8-declencheur/lettre_fabricant.wav"></audio>
+<script>
+/* ==========================================================================
+   P11 · Activité 8 — Diaporama de conduite
+   L'étape est dans l'adresse (#1 à #22). Minuteurs sur l'horloge (Date.now), affichés par setInterval.
+   Minuteurs automatiques : lancés une seule fois, à la première arrivée sur leur écran (réglage sur l'écran 1).
+   Horloge de séance : démarre à la première page de la lettre, gardée pour l'onglet (sessionStorage).
+   Questions de la classe : localStorage de ce poste, par nom de classe ; la classe affichée n'est gardée que pour l'onglet,
+   un nouvel onglet repart vide (pas de reprise de la classe précédente). Rien n'est envoyé.
+   ========================================================================== */
+(function(){
+  var L = 1600, H = 900;
+  var ETAPES = [[0,1],[1,1],[2,1],[3,1],[4,1],[4,2],[4,3],[5,1],[6,1],[7,1],[8,1],[8,2],[8,3],[8,4],[9,1],[10,1],[11,1],[12,1],[13,1],[14,1],[15,1],[16,1]];
+  var HEURES = ["","0:00","0:00","0:00","1:00","1:30","1:30","2:00","2:00","5:00","7:00","7:00","7:00","7:00","7:00","8:00","9:00","10:00","14:00","16:00","36:00","46:00"];
+  var PHASES = ["Écran du professeur","Prévu 0:00 · La lettre (1/3)","Prévu 0:00 · La lettre (2/3)","Prévu 0:00 · La lettre (3/3)","Prévu 1:00 · Turbine A ou B ?","Prévu 1:30 · Turbine A ou B ?","Prévu 1:30 · Turbine A ou B ?","Prévu 2:00 · Sur vos tables","Prévu 2:00 · Le jeu des questions","Prévu 5:00 · Le tri","Prévu 7:00 · Les 4 familles de questions","Prévu 7:00 · Les 4 familles de questions","Prévu 7:00 · Les 4 familles de questions","Prévu 7:00 · Les 4 familles de questions","Prévu 7:00 · Si une famille reste vide","Prévu 8:00 · Notre problématique","Prévu 9:00 · Vos questions","Prévu 10:00 · La méthode","Prévu 14:00 · Fiche élève et fiche repère","Prévu 16:00 · Partie A · Matériauthèque","Prévu 36:00 · Partie B · mini-tableur","Prévu 46:00 · Bilan : vos questions"];
+  var IDX_LETTRE = 1;
+  var ZONES = ["Quel matériau ?","Pourquoi celui-là ?","Comment le fabriquer ?","Qu'a-t-il coûté à fabriquer ?"];
+  var scene = document.getElementById("scene");
+  var ecrans = Array.prototype.slice.call(document.querySelectorAll(".ecran"));
+  var points = document.getElementById("points");
+  var btPrec = document.getElementById("btPrec"), btSuiv = document.getElementById("btSuiv");
+  var audio = document.getElementById("audio");
+  var notes = document.getElementById("notes"), btNotes = document.getElementById("btNotes");
+  var courant = -1, falcOn = false;
+  var SS = window.sessionStorage, LS = window.localStorage;
+  function lire(st, k, def){ try { var v = st.getItem(k); return v === null ? def : JSON.parse(v); } catch (e) { return def; } }
+  function ecrire(st, k, v){ try { st.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  function ajuster(){
+    var w = window.innerWidth, h = window.innerHeight, s = Math.min(w / L, h / H);
+    scene.style.transform = "translate(" + ((w - L * s) / 2) + "px," + ((h - H * s) / 2) + "px) scale(" + s + ")";
+  }
+  function mmss(ms){ var s = Math.round(Math.abs(ms) / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  function enMs(t){ var p = String(t).split(":"); return p.length === 2 ? (+p[0] * 60 + +p[1]) * 1000 : null; }
+
+  /* ---- Horloge de séance ---- */
+  function majHorloge(){
+    var debut = lire(SS, "a8-seance-debut", null), el = document.getElementById("horloge");
+    if (!debut){ el.innerHTML = "Séance <b>—</b>"; return; }
+    var ecoule = Date.now() - debut, prevu = enMs(HEURES[courant] || "");
+    var txt = "Séance <b>" + mmss(ecoule) + "</b>";
+    if (prevu !== null){ var d = ecoule - prevu; txt += Math.abs(d) < 30000 ? " · à l'heure" : (d > 0 ? " · retard " : " · avance ") + (Math.abs(d) < 30000 ? "" : mmss(d)); }
+    el.innerHTML = txt;
+  }
+  document.querySelector(".js-seance-raz").onclick = function(){ try { SS.removeItem("a8-seance-debut"); } catch (e) {} majHorloge(); };
+  var autoBox = document.querySelector(".js-auto");
+  autoBox.checked = lire(SS, "a8-auto", true);
+  autoBox.onchange = function(){ ecrire(SS, "a8-auto", autoBox.checked); };
+
+  /* ---- Minuteurs ---- */
+  var minuteurs = ecrans.map(function(ec){
+    if (!ec.dataset.minuteur) return null;
+    var d = +ec.dataset.minuteur * 1000;
+    var m = { ec: ec, duree: d, relais: ec.dataset.relais ? +ec.dataset.relais * 1000 : 0, reste: d, fin: 0, marche: false, sonne: false, lance: false };
+    ec.querySelector(".js-go").onclick = function(ev){ basculer(m); if (ev.detail) this.blur(); };
+    ec.querySelector(".js-raz").onclick = function(ev){ raz(m); if (ev.detail) this.blur(); };
+    afficher(m);
+    return m;
+  });
+  function restant(m){ return m.marche ? Math.max(0, m.fin - Date.now()) : m.reste; }
+  function basculer(m){
+    if (restant(m) === 0) raz(m);
+    if (m.marche){ m.reste = restant(m); m.marche = false; }
+    else { m.fin = Date.now() + m.reste; m.marche = true; m.lance = true; }
+    afficher(m);
+  }
+  function raz(m){ m.marche = false; m.reste = m.duree; m.sonne = false; afficher(m); }
+  function afficher(m){
+    var r = restant(m), s = Math.ceil(r / 1000), ec = m.ec;
+    ec.querySelector(".js-chiffres").textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    ec.querySelector(".js-jauge").style.width = (100 * r / m.duree) + "%";
+    var fini = r === 0;
+    ec.querySelector(".js-min").classList.toggle("fini", fini);
+    ec.querySelector(".js-etat").textContent = fini ? "Temps écoulé !" : m.marche ? "En cours…" : (r === m.duree ? "Entrée pour lancer" : "En pause");
+    ec.querySelector(".js-go").textContent = m.marche ? "Pause" : (r === m.duree ? "Lancer" : "Reprendre");
+    var relais = ec.querySelector(".js-relais");
+    if (relais) relais.hidden = !(m.relais && r <= m.duree - m.relais && r > m.duree - m.relais - 15000);
+    if (fini && m.marche){ m.marche = false; m.reste = 0; if (!m.sonne){ m.sonne = true; bip(); } afficher(m); }
+  }
+  setInterval(function(){ minuteurs.forEach(function(m){ if (m && m.marche) afficher(m); }); majHorloge(); }, 250);
+  function bip(){
+    try {
+      var C = window.AudioContext || window.webkitAudioContext, c = new C();
+      [0, .35, .7].forEach(function(t, k){
+        var o = c.createOscillator(), g = c.createGain();
+        o.frequency.value = [660, 660, 880][k]; o.connect(g); g.connect(c.destination);
+        g.gain.setValueAtTime(0.0001, c.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.25, c.currentTime + t + .03);
+        g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + t + .3);
+        o.start(c.currentTime + t); o.stop(c.currentTime + t + .32);
+      });
+    } catch (e) {}
+  }
+
+  /* ---- Lettre : audio et version facile à lire ---- */
+  function majAudio(){
+    var lit = !audio.paused && !audio.ended;
+    document.querySelectorAll(".js-audio").forEach(function(b){ b.setAttribute("aria-pressed", String(lit)); });
+    document.querySelectorAll(".js-audio-txt").forEach(function(t){ t.textContent = lit ? "Arrêter la lecture" : "Écouter la lettre"; });
+  }
+  function basculerAudio(){
+    if (!audio.paused && !audio.ended){ audio.pause(); audio.currentTime = 0; }
+    else { audio.currentTime = 0; var p = audio.play(); if (p && p.catch) p.catch(function(){}); }
+    majAudio();
+  }
+  ["play", "pause", "ended"].forEach(function(ev){ audio.addEventListener(ev, majAudio); });
+  function basculerFalc(){
+    falcOn = !falcOn;
+    document.querySelectorAll(".js-falc").forEach(function(b){ b.setAttribute("aria-pressed", String(falcOn)); });
+    document.querySelectorAll(".js-texte").forEach(function(t){ t.hidden = falcOn; });
+    document.querySelectorAll(".js-texte-falc").forEach(function(t){ t.hidden = !falcOn; });
+  }
+  document.querySelectorAll(".js-audio").forEach(function(b){ b.onclick = function(ev){ basculerAudio(); if (ev.detail) b.blur(); }; });
+  document.querySelectorAll(".js-falc").forEach(function(b){ b.onclick = function(ev){ basculerFalc(); if (ev.detail) b.blur(); }; });
+
+  /* ---- Questions de la classe (saisie et bilan) ---- */
+  var BASE = "a8-questions";
+  function toutes(){ return lire(LS, BASE, {}); }
+  function classe(){ return lire(SS, "a8-classe", ""); }
+  function donnees(){ var c = classe(), t = toutes(); return c && t[c] ? t[c] : {1: [], 2: [], 3: [], 4: []}; }
+  function sauver(d){ var c = classe(); if (!c) return false; var t = toutes(); t[c] = d; ecrire(LS, BASE, t); return true; }
+  function info(t){ document.querySelectorAll(".js-info").forEach(function(e){ e.textContent = t; }); }
+  function rendre(){
+    var d = donnees(), c = classe(), total = 0, ok = 0;
+    document.querySelectorAll(".js-nom-classe").forEach(function(e){ e.textContent = c ? "· " + c : ""; });
+    document.querySelectorAll(".js-classe").forEach(function(e){ if (document.activeElement !== e) e.value = c; });
+    var dl = document.getElementById("classes-a8"); dl.innerHTML = "";
+    Object.keys(toutes()).sort().forEach(function(n){ var o = document.createElement("option"); o.value = n; dl.appendChild(o); });
+    document.querySelectorAll(".js-colonnes").forEach(function(cols){
+      var bilan = cols.dataset.mode === "bilan";
+      cols.querySelectorAll(".col").forEach(function(col){
+        var z = col.dataset.z, ul = col.querySelector(".js-liste"), l = d[z] || [];
+        ul.innerHTML = "";
+        ul.style.setProperty("--fq", l.length > 6 ? "26px" : l.length > 4 ? "29px" : "32px");
+        l.forEach(function(q, i){
+          if (bilan){ total++; if (q.ok) ok++; }
+          var li = document.createElement("li"), s = document.createElement("span");
+          s.textContent = q.t; if (bilan && q.ok) li.className = "ok";
+          if (bilan){
+            var mq = document.createElement("span"); mq.className = "marque"; mq.textContent = q.ok ? "✓" : "?"; mq.title = q.ok ? "Réponse trouvée" : "Pas encore de réponse";
+            li.appendChild(s); li.appendChild(mq); li.tabIndex = 0; li.setAttribute("role", "button");
+            li.setAttribute("aria-pressed", String(!!q.ok)); li.setAttribute("aria-label", q.t + (q.ok ? " : réponse trouvée" : " : pas encore de réponse"));
+            li.onclick = function(){ var dd = donnees(); dd[z][i].ok = !dd[z][i].ok; sauver(dd); rendre(); };
+            li.onkeydown = function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); e.stopPropagation(); li.onclick(); } };
+          } else {
+            var x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.title = "Retirer cette question";
+            x.setAttribute("aria-label", "Retirer : " + q.t);
+            x.onclick = function(){ var dd = donnees(); dd[z].splice(i, 1); sauver(dd); rendre(); };
+            li.appendChild(s); li.appendChild(x);
+          }
+          ul.appendChild(li);
+        });
+      });
+    });
+    document.querySelectorAll(".js-compte").forEach(function(e){ e.textContent = total ? ok + " / " + total + " ont une réponse" : (c ? "" : "(choisir la classe sur l'écran « Vos questions »)"); });
+  }
+  document.querySelectorAll(".js-classe").forEach(function(inp){
+    inp.addEventListener("change", function(){ ecrire(SS, "a8-classe", inp.value.trim()); info(inp.value.trim() ? "" : "Indiquez la classe pour enregistrer."); rendre(); });
+  });
+  document.querySelectorAll(".js-ajout").forEach(function(inp){
+    inp.addEventListener("keydown", function(e){
+      if (e.key !== "Enter") return;
+      e.preventDefault(); e.stopPropagation();
+      var t = inp.value.trim(); if (!t) return;
+      if (!classe()){ info("Indiquez d'abord la classe."); return; }
+      var d = donnees(), z = inp.closest(".col").dataset.z; (d[z] = d[z] || []).push({ t: t, ok: false });
+      sauver(d); inp.value = ""; rendre();
+    });
+  });
+  document.querySelector(".js-copier").onclick = function(){
+    var c = classe(), d = donnees(); if (!c){ info("Indiquez d'abord la classe."); return; }
+    var lignes = ["A8 · questions de la classe " + c + " · " + new Date().toLocaleDateString("fr-FR")];
+    ZONES.forEach(function(q, i){ lignes.push("", (i + 1) + " · " + q); (d[i + 1] || []).forEach(function(x){ lignes.push("- " + x.t + (x.ok ? " (réponse trouvée)" : "")); }); });
+    var txt = lignes.join("\n");
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){ info("Relevé copié."); }, function(){ info("Copie impossible ici."); });
+  };
+  document.querySelector(".js-effacer").onclick = function(){
+    var c = classe(); if (!c) return;
+    if (!confirm("Effacer toutes les questions de la classe " + c + " sur ce poste ?")) return;
+    var t = toutes(); delete t[c]; ecrire(LS, BASE, t); rendre(); info("Classe " + c + " effacée.");
+  };
+
+  /* ---- Notes du professeur ---- */
+  function basculerNotes(){ var on = !notes.classList.contains("on"); notes.classList.toggle("on", on); btNotes.setAttribute("aria-pressed", String(on)); }
+  btNotes.onclick = function(ev){ basculerNotes(); if (ev.detail) btNotes.blur(); };
+
+  /* ---- Navigation ---- */
+  function depuisAdresse(){ var n = parseInt(location.hash.replace("#", ""), 10); return isNaN(n) ? 0 : n - 1; }
+  function aller(n){
+    n = Math.max(0, Math.min(ETAPES.length - 1, n));
+    courant = n;
+    var e = ETAPES[n][0], s = ETAPES[n][1];
+    ecrans.forEach(function(ec, k){
+      ec.classList.toggle("on", k === e);
+      ec.setAttribute("aria-hidden", String(k !== e));
+      ec.inert = k !== e;
+      if (k === e) ec.querySelectorAll("[data-e]").forEach(function(x){
+        var v = +x.dataset.e;
+        x.classList.toggle("on", ec.id === "defi" ? v === s : v <= s);
+      });
+    });
+    document.querySelectorAll(".note-e").forEach(function(x){ x.classList.toggle("on", +x.dataset.k === n); });
+    document.getElementById("phase").textContent = PHASES[n];
+    if (n >= IDX_LETTRE && IDX_LETTRE >= 0 && !lire(SS, "a8-seance-debut", null)) ecrire(SS, "a8-seance-debut", Date.now());
+    var m = minuteurs[e];
+    if (m && ecrans[e].dataset.auto && autoBox.checked && !m.lance) basculer(m);
+    Array.prototype.forEach.call(points.children, function(p, k){ p.className = k < n ? "fait" : ""; p.setAttribute("aria-current", String(k === n)); });
+    document.getElementById("compteur").textContent = (n + 1) + " / " + ETAPES.length;
+    btPrec.disabled = n === 0; btSuiv.disabled = n === ETAPES.length - 1;
+    majHorloge(); rendre();
+    if (location.hash !== "#" + (n + 1)) { try { history.replaceState(null, "", "#" + (n + 1)); } catch (x) { location.hash = "#" + (n + 1); } }
+  }
+  function minuteurCourant(){ return courant < 0 ? null : minuteurs[ETAPES[courant][0]]; }
+  function pleinEcran(){ var d = document.documentElement; if (document.fullscreenElement) document.exitFullscreen(); else if (d.requestFullscreen) d.requestFullscreen(); }
+
+  ETAPES.forEach(function(et, k){
+    var b = document.createElement("button"); b.type = "button";
+    var t = ecrans[et[0]].dataset.titre + (+ecrans[et[0]].dataset.etapes > 1 ? " · " + et[1] : "");
+    b.title = t; b.setAttribute("aria-label", "Étape " + (k + 1) + " : " + t);
+    b.onclick = function(ev){ aller(k); if (ev.detail) b.blur(); };
+    points.appendChild(b);
+  });
+  document.querySelectorAll("[data-aller]").forEach(function(b){ b.onclick = function(ev){ aller(+b.dataset.aller - 1); if (ev.detail) b.blur(); }; });
+  btPrec.onclick = function(ev){ aller(courant - 1); if (ev.detail) btPrec.blur(); };
+  btSuiv.onclick = function(ev){ aller(courant + 1); if (ev.detail) btSuiv.blur(); };
+  document.getElementById("btPlein").onclick = function(ev){ pleinEcran(); if (ev.detail) this.blur(); };
+
+  document.addEventListener("keydown", function(e){
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    var t = e.target, k = e.key;
+    if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) { if (k === "Escape") t.blur(); return; }   // saisie : pas de raccourci
+    var surBouton = t && (/^(A|BUTTON)$/.test(t.tagName) || t.getAttribute("role") === "button");
+    if ((k === " " || k === "Enter") && surBouton) return;
+    var m = minuteurCourant();
+    if (k === " " || k === "ArrowRight" || k === "ArrowDown" || k === "PageDown") aller(courant + 1);
+    else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace") aller(courant - 1);
+    else if (k === "Enter") { if (m) basculer(m); else aller(courant + 1); }
+    else if ((k === "r" || k === "R") && m) raz(m);
+    else if (k === "a" || k === "A") basculerAudio();
+    else if (k === "l" || k === "L") basculerFalc();
+    else if (k === "n" || k === "N") basculerNotes();
+    else if (k === "Home") aller(0);
+    else if (k === "End") aller(ETAPES.length - 1);
+    else if (k === "f" || k === "F") pleinEcran();
+    else return;
+    e.preventDefault();
+  });
+  window.addEventListener("hashchange", function(){ if (depuisAdresse() !== courant) aller(depuisAdresse()); });
+  window.addEventListener("resize", ajuster);
+  document.addEventListener("fullscreenchange", ajuster);
+  ajuster();
+  aller(depuisAdresse());
+})();
+</script>
+</body>
+</html>
