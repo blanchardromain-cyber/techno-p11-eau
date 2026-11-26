@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { picto, ZONES, bandeMotif } from "./pictos.mjs";
 import { PROBLEMATIQUE } from "./texte_lettre.mjs";
+import { CONDUITE, ANTICIPATION, IMPREVUS } from "./conduite.mjs";
 const require = createRequire(`${process.env.USERPROFILE}/Documents/video-technologie/package.json`);
 const { chromium } = require("playwright");
 const ici = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -50,29 +51,6 @@ const pastille = (z, id) => `<span class="pastille">${bandeMotif(z, id)}</span>`
 const zl = (n, id) => { const z = ZONES[n - 1]; return `<span class="zone">${pastille(z, id)}<span>${n} · ${sansCoupe(z.q)}</span></span>`; };
 
 // ------------------------------------------------------------------ Déroulé
-const CONDUITE = [
-  ["avant", "—", "Tester le débit (fiche « fabrication et test ») et repérer la manette au ruban. Tracer 4 cadres vierges numérotés 1 à 4 au tableau, sans titre. Aimanter les 4 étiquettes et la problématique <b>face contre le tableau</b>. Ouvrir <code>declencheur.html#1</code> en plein écran (F). Poser les cartes d'amorce (1 jeu par binôme) et les post-its.", "—"],
-  ["0:00", "1 à 3", "Lire la lettre, ou la faire écouter (A). Bouton « Facile à lire » (L) si besoin.", "<q>Une entreprise nous a écrit. Écoutez bien : elle a un problème.</q>"],
-  ["1:00", "4", "Faire passer A et B de main en main. Ne rien commenter.", "<q>Voici les deux turbines d'essai de Fontelame. Prenez-les en main, faites-les passer. Pour l'instant, on ne dit rien.</q>"],
-  ["1:30", "5 et 6", "Faire parier, puis démonstration au point d'eau, filet repéré : B, puis A. Laisser entendre l'eau.", "<q>Pariez : laquelle va tourner sous un petit filet d'eau ? Levez la main pour A… pour B.</q> Puis : <q>Regardez… et écoutez.</q> Puis, sans conclure : <q>Je ne vous explique rien. C'est vous qui allez poser les questions.</q>"],
-  ["2:00", "7", "Lancer le minuteur (Entrée). Circuler. À 1 min 30, la page affiche « Changez de rôle ! ». Post-its de la couleur 1.", "<q>Par deux, écrivez le plus de questions possible sur ce que vous avez vu et sur la lettre. Une question par post-it. Interdit d'y répondre ! Vous pouvez aussi dire la question à votre binôme, qui l'écrit, ou la dessiner. Les cartes vous aident à commencer.</q> Pendant : <q>Bonne question. Écris-la.</q>"],
-  ["5:00", "8", "Lancer le minuteur. Les binômes collent leurs post-its dans les 4 cadres, en rassemblant ce qui se ressemble. Le professeur regroupe à voix haute avec la classe.", "<q>Venez coller vos questions. Mettez ensemble celles qui se ressemblent.</q> Puis : <q>Ces deux-là parlent de la même chose ? Comment on pourrait appeler ce groupe ?</q>"],
-  ["7:00", "9 à 12", "Retourner les étiquettes une à une au tableau, en même temps qu'à l'écran (espace). Une zone vide : relance (page 2), post-its de la couleur 2.", "<q>Vous avez trouvé 4 familles de questions. Voici comment je les appelle.</q>"],
-  ["8:00", "13", "Retourner la bande de la problématique.", "<q>Toutes vos questions tiennent en une seule. C'est notre problématique pour l'activité 8.</q>"],
-  ["9:00", "—", "Photographier le tableau (relevé). Enchaîner sur le clip de méthode.", "<q>Pour y répondre, on a besoin d'une méthode. Regardez.</q>"],
-];
-const ANTICIPATION = [
-  [1, ["En quoi sont faites les turbines ?", "Est-ce que A et B sont dans la même matière ?", "On peut faire une turbine en bois ?"], "Montrer A et B côte à côte : <q>Elles se ressemblent. Qu'est-ce qui pourrait être différent, sans qu'on le voie ?</q>"],
-  [2, ["Pourquoi B tourne et pas A ?", "Pourquoi A est plus lourde ?", "Laquelle est la meilleure pour le robinet ?"], "<q>Si vous étiez l'entreprise, laquelle garderiez-vous… et comment vous le justifieriez ?</q>"],
-  [3, ["Comment on fabrique une turbine ?", "Avec quelle machine ?", "Combien de temps pour en faire une ?"], "Carte <q>Et pour en fabriquer 10 000 ?</q>, puis carte <q>Et pour en fabriquer une seule, ici, au collège ?</q>"],
-  [4, ["Combien coûte une turbine ?", "Est-ce que ça pollue de la fabriquer ?", "D'où vient la matière ?"], "Sachet <q>D'où vient la matière ?</q> (faire toucher granulés et fil), puis carte <q>Qu'a-t-il fallu pour la transformer ?</q>"],
-];
-const IMPREVUS = [
-  ["A tourne quand même", "Réduire le débit jusqu'au repère. Sinon, faire comparer le démarrage : <q>Laquelle démarre la première ?</q> Ne jamais expliquer. Point d'eau inaccessible : sèche-cheveux à air froid (fiche « fabrication et test »)."],
-  ["Une question hors sujet", "L'accepter sans la juger : <q>On la garde.</q> La coller dans un « parking » au bord du tableau. On y revient en fin de séquence si on a le temps."],
-  ["Une classe muette", "Lire une carte d'amorce à voix haute : <q>Pourquoi… ? Pourquoi quoi ? Qu'avez-vous vu ?</q> Écrire la première question sous la dictée d'un élève. Refaire passer les turbines, puis donner 30 s de plus. Binôme bloqué : plateau A5 et cartes adaptées."],
-  ["Un binôme répond au lieu de questionner", "<q>Bonne idée : transforme-la en question.</q> (« A est plus lourde » → « Pourquoi A est-elle plus lourde ? »)"],
-];
 
 const deroule = page("Déroulé professeur", 210, 297, `
 .p1-entete{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:.6mm solid ${NAVY};padding-bottom:1.5mm;margin-bottom:2mm}
@@ -95,7 +73,7 @@ const deroule = page("Déroulé professeur", 210, 297, `
     <li>Vidéoprojecteur : <code>declencheur.html</code></li></ul></div>
   <h2>${picto("barres", 5.5, 4, NAVY)}Conduite minute par minute</h2>
   <table><tr><th style="width:11mm">Temps</th><th style="width:13mm">Écran</th><th style="width:62mm">Ce que fait le professeur</th><th>Phrases exactes</th></tr>
-  ${CONDUITE.map(([t, e, f, d]) => `<tr><td class="t">${t}</td><td>${e}</td><td>${f}</td><td>${d}</td></tr>`).join("")}</table>
+  ${CONDUITE.map(({ t, ecran: e, fait: f, dit: d }) => `<tr><td class="t">${t}</td><td>${e}</td><td>${f}</td><td>${d}</td></tr>`).join("")}</table>
   <p class="sous" style="margin-top:1.5mm">Clavier : espace ou → = étape suivante · ← = retour · Entrée = lancer / mettre en pause le minuteur · R = remise à 3:00 · A = audio · L = facile à lire · F = plein écran. L'étape est dans l'adresse (<code>#1</code> à <code>#13</code>).</p>
   <h2>${picto("ampoule", 5.5, 4, NAVY)}Pour tous, au choix (CUA)</h2>
   <ul><li>La lettre existe écrite, lue par le professeur, en audio et en version facile à lire. Le phénomène se voit, se touche (turbines en main) et s'entend (l'eau).</li>
@@ -112,6 +90,8 @@ const deroule = page("Déroulé professeur", 210, 297, `
   <table>${IMPREVUS.map(([s, r]) => `<tr><td style="width:44mm;font-weight:700;color:${NAVY}">${s}</td><td>${r}</td></tr>`).join("")}</table>
   <h2>${picto("echantillons", 5.5, 4, NAVY)}La problématique (dernier écran, bande aimantée)</h2>
   <p class="pb cadre">${PROBLEMATIQUE}</p>
+  <h2>${picto("etapes", 5.5, 4, NAVY)}Diaporama de conduite (au choix, à la place de <code>declencheur.html</code>)</h2>
+  <p><code>diaporama-a8.html</code> reprend les mêmes écrans et cette même conduite, puis enchaîne sur le lancement de l'A8 : capsule de méthode, fiche repère, partie A (20 min) et partie B (10 min) minutées, bilan. Notes du professeur à l'écran (touche N : heure prévue, gestes et phrases exactes de ce document) ; horloge de séance avec l'avance ou le retard ; minuteurs lancés automatiquement ; écran « Vos questions » pour saisir les questions de la classe (relevé copiable) et les cocher au bilan.</p>
   <div class="vig" style="margin-top:3mm"><h2>${picto("ouinon", 5.5, 4, "#8a1c1c")}Points de vigilance</h2><ul>
     <li><b>Ne jamais nommer les matériaux</b> de A et B, ni dire « lourde » ou « légère ». Le phénomène suffit.</li>
     <li><b>Ne jamais répondre pendant la phase des questions</b>, même à une question juste : <q>Bonne question. Écris-la.</q></li>
