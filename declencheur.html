@@ -8,6 +8,7 @@
 <style>
 /* Page projetée (salle de 15 m) : scène 1600 × 900 mise à l'échelle de la fenêtre ; texte du contenu ≥ 48 px.
    Aucune dépendance externe : police Luciole locale, audio local, pictogrammes en SVG. */
+
 @font-face{font-family:Luciole;src:url(ressources/a8-declencheur/fonts/Luciole-Regular.woff2) format("woff2");font-weight:400}
 @font-face{font-family:Luciole;src:url(ressources/a8-declencheur/fonts/Luciole-Bold.woff2) format("woff2");font-weight:700}
 :root{--navy:#1F3864;--blue:#2E75B6;--light:#DEEAF6;--lighter:#EAF1FA;--grey:#4d5562}
@@ -34,7 +35,7 @@ p{margin:0}
 .falc{list-style:none;margin:0;padding:0;display:grid;gap:22px}
 .falc li{display:flex;align-items:center;gap:26px;font-size:56px;font-weight:700;line-height:1.15;color:var(--navy)}
 .outils{display:flex;gap:16px;margin-left:auto;letter-spacing:0}
-.bt-grand{display:inline-flex;align-items:center;gap:14px;border:3px solid var(--blue);background:#fff;color:var(--navy);border-radius:14px;padding:8px 24px;font:700 36px Luciole,Arial,sans-serif;cursor:pointer}
+.bt-grand{display:inline-flex;align-items:center;gap:14px;border:3px solid var(--blue);background:#fff;color:var(--navy);border-radius:14px;padding:8px 24px;font:700 36px Luciole,Arial,sans-serif;cursor:pointer;text-decoration:none}
 .bt-grand:hover{background:var(--lighter)}
 .bt-grand[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
 .bt-grand[aria-pressed="true"] .picto{color:#fff}
@@ -87,6 +88,7 @@ p{margin:0}
 .aide{flex:1;font-size:15px;color:var(--grey);text-align:center;line-height:1.35}
 .aide a{color:var(--grey)}
 :focus-visible{outline:5px solid #F0B429;outline-offset:3px}
+
 </style>
 </head>
 <body>
