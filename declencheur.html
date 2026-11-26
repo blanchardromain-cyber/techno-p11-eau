@@ -89,6 +89,14 @@ p{margin:0}
 .aide a{color:var(--grey)}
 :focus-visible{outline:5px solid #F0B429;outline-offset:3px}
 
+/* Clip de méthode */
+.clip{display:flex;flex-direction:column;gap:14px;min-height:0;flex:1}
+.clip video{display:block;width:100%;flex:1;min-height:0;background:#0b1424;border-radius:16px;border:3px solid var(--navy)}
+.clip video::cue{font-family:Luciole,Arial,sans-serif;font-size:110%;background:rgba(0,0,0,.82);color:#fff}
+.clip-bt{display:flex;flex-wrap:wrap;gap:12px;flex:none}
+.clip-bt .bt-grand{font-size:30px;padding:6px 18px}
+.clip-bt .ext{font-size:26px;color:var(--blue)}
+
 </style>
 </head>
 <body>
@@ -168,13 +176,24 @@ p{margin:0}
     <div class="kicker">Toutes vos questions, en une seule</div>
     <div class="pb"><span>Notre problématique</span>Quel matériau choisir pour la turbine du robinet automatique, et quelle énergie a-t-il fallu pour la fabriquer ?</div>
     </section>
+    <section class="ecran" id="video" data-titre="Le clip" data-etapes="1" aria-label="Le clip">
+    <div class="kicker">Pour y répondre : la méthode, en 2 minutes</div>
+    <div class="clip js-clip">
+      <video class="js-clip-video" controls preload="metadata" playsinline src="ressources/a8-declencheur/medias/clip_A8.mp4" aria-label="Clip : comment choisir le matériau d'une pièce ?"></video>
+      <div class="clip-bt">
+        <button type="button" class="bt-grand js-clip-ad" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 42c0-6-9-10-9-21a17 17 0 0 1 34 0c0 11-9 15-9 21z"/><path d="M25 48h14M27 54h10"/></svg><span>Version adaptée</span></button>
+        <button type="button" class="bt-grand js-clip-st" aria-pressed="true"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><span>Sous-titres</span></button>
+        <a class="bt-grand js-clip-lien" href="ressources/a8-declencheur/medias/clip_A8.mp4" target="_blank" rel="noopener" data-mp4="1"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="27" cy="27" r="16"/><path d="M39 39l17 17"/></svg><span>Ouvrir la vidéo seule</span><span class="ext" aria-hidden="true">↗</span></a><a class="bt-grand js-clip-lien" href="ressources/a8-declencheur/medias/clip_A8.html#transcription" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><span>Transcription</span><span class="ext" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    </section>
   </main>
   <nav class="barre" aria-label="Navigation du professeur">
     <button class="bt" id="btPrec" type="button" aria-label="Étape précédente" title="Étape précédente (flèche gauche)">◀</button>
     <div class="points" id="points"></div>
     <span class="compteur" id="compteur" aria-live="polite"></span>
     <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante" title="Étape suivante (espace ou flèche droite)">▶</button>
-    <span class="aide">Espace ou → suivant · ← précédent · Entrée minuteur · R remise à 3:00 · A audio · L facile à lire · F plein écran<br>
+    <span class="aide">Espace ou → suivant · ← précédent · Entrée minuteur · R remise à 3:00 · A audio · L facile à lire · V clip · F plein écran<br>
       R.Blanchard, professeur de Technologie · aucune donnée enregistrée · <a href="./">accueil</a></span>
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
@@ -183,14 +202,14 @@ p{margin:0}
 <script>
 /* ==========================================================================
    P11 · Activité 8 — Situation déclenchante (page projetée)
-   L'étape affichée est dans l'adresse (#1 à #13) : rien n'est enregistré sur le poste,
+   L'étape affichée est dans l'adresse (#1 à #14) : rien n'est enregistré sur le poste,
    un rechargement repart de l'étape de l'adresse (pas de reprise d'un groupe précédent).
    Changement d'étape synchrone : deux appuis rapides s'appliquent dans l'ordre.
    Minuteurs calculés sur l'horloge (Date.now), affichés par setInterval : rien ne dépend de requestAnimationFrame.
    ========================================================================== */
 (function(){
   var L = 1600, H = 900;
-  var ETAPES = [[0,1],[1,1],[2,1],[3,1],[3,2],[3,3],[4,1],[5,1],[6,1],[6,2],[6,3],[6,4],[7,1]];
+  var ETAPES = [[0,1],[1,1],[2,1],[3,1],[3,2],[3,3],[4,1],[5,1],[6,1],[6,2],[6,3],[6,4],[7,1],[8,1]];
   var scene = document.getElementById("scene");
   var ecrans = Array.prototype.slice.call(document.querySelectorAll(".ecran"));
   var points = document.getElementById("points");
@@ -287,6 +306,7 @@ p{margin:0}
     Array.prototype.forEach.call(points.children, function(p, k){ p.className = k < n ? "fait" : ""; p.setAttribute("aria-current", String(k === n)); });
     document.getElementById("compteur").textContent = (n + 1) + " / " + ETAPES.length;
     btPrec.disabled = n === 0; btSuiv.disabled = n === ETAPES.length - 1;
+    A8CLIP.pauseHors(ecrans[e]);   // une vidéo s'arrête quand on quitte son écran
     if (location.hash !== "#" + (n + 1)) { try { history.replaceState(null, "", "#" + (n + 1)); } catch (x) { location.hash = "#" + (n + 1); } }
   }
   function minuteurCourant(){ return courant < 0 ? null : minuteurs[ETAPES[courant][0]]; }
@@ -306,7 +326,9 @@ p{margin:0}
   document.addEventListener("keydown", function(e){
     if (e.ctrlKey || e.altKey || e.metaKey) return;
     var surBouton = e.target && /^(A|BUTTON)$/.test(e.target.tagName), k = e.key;
+    if (e.target && e.target.tagName === "VIDEO") return;     // lecteur actif : espace et flèches pilotent la vidéo
     if ((k === " " || k === "Enter") && surBouton) return;   // le bouton qui a le focus fait son travail
+    if (k === "v" || k === "V") { if (A8CLIP.basculer(ecrans[ETAPES[courant][0]])) e.preventDefault(); return; }
     var m = minuteurCourant();
     if (k === " " || k === "ArrowRight" || k === "ArrowDown" || k === "PageDown") aller(courant + 1);
     else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace") aller(courant - 1);
@@ -323,6 +345,59 @@ p{margin:0}
   window.addEventListener("hashchange", function(){ if (depuisAdresse() !== courant) aller(depuisAdresse()); });
   window.addEventListener("resize", ajuster);
   document.addEventListener("fullscreenchange", ajuster);
+
+  /* ---- Clip de méthode : version standard / adaptée, sous-titres injectés (compatibles file://) ---- */
+  var A8CLIP = (function(){
+    var CLIPS = {"std":{"src":"ressources/a8-declencheur/medias/clip_A8.mp4","dur":117.533,"cues":[[0.74,4,"Un drone de surveillance survole un site."],[4.48,6.04,"Soudain, il tombe."],[6.34,7.54,"Le carter est fendu."],[7.86,8.9,"Mauvais matériau ?"],[9.3,12.17,"Le carter protège tout l'intérieur du drone."],[12.38,15.85,"S'il casse, le drone ne remplit plus sa mission."],[16.29,18.12,"Étape un : j'observe."],[18.56,25.21,"Et toi, que subit le carter ?"],[25.21,28.08,"Des chocs à l'atterrissage, le soleil,"],[28.08,30.58,"des rayures, les vibrations des moteurs."],[30.88,33.47,"On part toujours de ce que subit la pièce."],[33.92,35.74,"Étape deux : je classe."],[36.21,38.73,"Chaque échantillon rejoint sa famille."],[39.18,41.55,"Étape trois : je définis mes critères."],[41.94,45.61,"Résister aux chocs, c'est indispensable : ça élimine."],[45.77,48.6,"Une jolie couleur, c'est souhaitable : ça départage."],[48.6,50.71,"Et ne pas s'abîmer au soleil ?"],[51.02,53.13,"Indispensable ou souhaitable ?"],[57.18,60.74,"Indispensable : le drone vole en plein soleil."],[61.22,62.91,"Étape quatre : je trie."],[63.08,65.92,"Le verre ? Éliminé : il casse au premier choc."],[66.36,68.21,"Parmi ceux qui restent : le meilleur compromis."],[68.78,71.23,"Étape cinq : je choisis le procédé."],[71.62,74.62,"Un matériau ne va jamais sans son procédé."],[74.86,77.6,"Combien de pièces ? En combien de temps ?"],[77.6,80.33,"Selon les réponses, le procédé change."],[80.82,83.16,"Une idée nouvelle : l'énergie grise."],[83.56,87.3,"Avant même de voler, le carter a déjà coûté de l'énergie."],[87.83,90.49,"Extraire la matière, fabriquer la pièce,"],[90.49,93.35,"la transporter, la traiter en fin de vie."],[93.77,95.24,"On compte pour la pièce entière."],[95.55,96.4,"À toi, maintenant."],[96.77,101.23,"Au cœur du robinet automatique, une petite pièce : la turbine."],[101.8,104.89,"Quel matériau choisir pour la turbine du robinet automatique,"],[104.89,108.56,"et quelle énergie a-t-il fallu pour la fabriquer ?"],[108.56,111.78,"Ton outil : la Matériauthèque. En binôme."]]},"ad":{"src":"ressources/a8-declencheur/medias/clip_A8_adapte.mp4","dur":170.276,"cues":[[0.78,4.59,"Un drone de surveillance survole un site."],[5.18,6.99,"Soudain, il tombe."],[7.38,8.76,"Le carter est fendu."],[9.16,10.36,"Mauvais matériau ?"],[10.85,14.2,"Le carter protège tout l'intérieur du drone."],[14.49,18.53,"S'il casse, le drone ne remplit plus sa mission."],[19.08,21.2,"Étape un : j'observe."],[21.75,28.86,"Et toi, que subit le carter ?"],[28.86,32.24,"Des chocs à l'atterrissage, le soleil,"],[32.24,35.16,"des rayures, les vibrations des moteurs."],[35.53,38.56,"On part toujours de ce que subit la pièce."],[39.17,43.2,"Je pars de ce que subit la pièce."],[43.95,46.06,"Étape deux : je classe."],[46.64,49.58,"Chaque échantillon rejoint sa famille."],[50.26,54.96,"Je range chaque matériau dans sa famille."],[55.64,58.39,"Étape trois : je définis mes critères."],[58.88,63.17,"Résister aux chocs, c'est indispensable : ça élimine."],[63.38,66.73,"Une jolie couleur, c'est souhaitable : ça départage."],[66.73,69.17,"Et ne pas s'abîmer au soleil ?"],[69.56,72.02,"Indispensable ou souhaitable ?"],[76.11,80.27,"Indispensable : le drone vole en plein soleil."],[80.94,88.25,"Indispensable : il élimine. Souhaitable : il départage."],[88.97,90.93,"Étape quatre : je trie."],[91.17,94.47,"Le verre ? Éliminé : il casse au premier choc."],[95.01,97.17,"Parmi ceux qui restent : le meilleur compromis."],[97.79,101.5,"Je garde le meilleur compromis."],[102.37,105.23,"Étape cinq : je choisis le procédé."],[105.72,109.22,"Un matériau ne va jamais sans son procédé."],[109.54,112.75,"Combien de pièces ? En combien de temps ?"],[112.75,115.94,"Selon les réponses, le procédé change."],[116.59,121.2,"Un matériau va toujours avec son procédé."],[121.96,124.67,"Une idée nouvelle : l'énergie grise."],[125.18,129.54,"Avant même de voler, le carter a déjà coûté de l'énergie."],[130.19,133.31,"Extraire la matière, fabriquer la pièce,"],[133.31,136.66,"la transporter, la traiter en fin de vie."],[137.19,138.88,"On compte pour la pièce entière."],[139.43,144.81,"Avant de servir, une pièce a déjà coûté de l'énergie."],[145.46,146.43,"À toi, maintenant."],[146.89,152.11,"Au cœur du robinet automatique, une petite pièce : la turbine."],[152.81,156.46,"Quel matériau choisir pour la turbine du robinet automatique,"],[156.46,160.76,"et quelle énergie a-t-il fallu pour la fabriquer ?"],[160.76,164.53,"Ton outil : la Matériauthèque. En binôme."]]}};
+    function remplir(piste, cle){
+      if (piste.cues) while (piste.cues.length) piste.removeCue(piste.cues[0]);
+      CLIPS[cle].cues.forEach(function(c){ try { piste.addCue(new VTTCue(c[0], c[1], c[2])); } catch (e) {} });
+    }
+    function init(){
+      Array.prototype.forEach.call(document.querySelectorAll(".js-clip"), function(box){
+        var v = box.querySelector("video"), btAd = box.querySelector(".js-clip-ad"), btSt = box.querySelector(".js-clip-st");
+        var etat = { cle: "std", st: true }, piste = v.addTextTrack("subtitles", "Français", "fr");
+        remplir(piste, "std"); piste.mode = "showing";
+        box.__etat = etat;
+        function majLiens(){
+          Array.prototype.forEach.call(box.querySelectorAll(".js-clip-lien[data-mp4]"), function(a){ a.href = CLIPS[etat.cle].src; });
+        }
+        btAd.onclick = function(ev){
+          var avant = etat.cle, apres = avant === "std" ? "ad" : "std";
+          var t = v.currentTime || 0, jouait = !v.paused && !v.ended;
+          var cible = Math.min(CLIPS[apres].dur - 0.5, t * CLIPS[apres].dur / CLIPS[avant].dur);
+          etat.cle = apres;
+          btAd.setAttribute("aria-pressed", String(apres === "ad"));
+          v.addEventListener("loadedmetadata", function f(){
+            v.removeEventListener("loadedmetadata", f);
+            try { v.currentTime = Math.max(0, cible); } catch (e) {}
+            if (jouait){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+          });
+          v.src = CLIPS[apres].src; v.load();
+          remplir(piste, apres); piste.mode = etat.st ? "showing" : "hidden";
+          majLiens();
+          if (ev && ev.detail) btAd.blur();
+        };
+        btSt.onclick = function(ev){
+          etat.st = !etat.st; piste.mode = etat.st ? "showing" : "hidden";
+          btSt.setAttribute("aria-pressed", String(etat.st));
+          if (ev && ev.detail) btSt.blur();
+        };
+        majLiens();
+      });
+    }
+    function pauseHors(actif){
+      Array.prototype.forEach.call(document.querySelectorAll(".js-clip video"), function(v){ if (!actif || !actif.contains(v)) v.pause(); });
+    }
+    function basculer(ecran){
+      var v = ecran && ecran.querySelector(".js-clip video"); if (!v) return false;
+      if (v.paused || v.ended){ var p = v.play(); if (p && p.catch) p.catch(function(){}); } else v.pause();
+      return true;
+    }
+    return { init: init, pauseHors: pauseHors, basculer: basculer };
+  })();
+  A8CLIP.init();
+
   ajuster();
   aller(depuisAdresse());
 })();

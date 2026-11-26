@@ -70,11 +70,11 @@ const deroule = page("Déroulé professeur", 210, 297, `
     <li>15 jeux de cartes d'amorce ; 3 ou 4 jeux adaptés ; 4 plateaux A5</li>
     <li>Lettre (1 + 3 ou 4 « facile à lire ») ; audio dans la page</li>
     <li>Sachet « D'où vient la matière ? » (granulés, bobine de fil, étiquette) ; 4 cartes de relance</li>
-    <li>Vidéoprojecteur : <code>declencheur.html</code></li></ul></div>
+    <li>Vidéoprojecteur et haut-parleurs : <code>declencheur.html</code> (clip à la fin)</li></ul></div>
   <h2>${picto("barres", 5.5, 4, NAVY)}Conduite minute par minute</h2>
   <table><tr><th style="width:11mm">Temps</th><th style="width:13mm">Écran</th><th style="width:62mm">Ce que fait le professeur</th><th>Phrases exactes</th></tr>
   ${CONDUITE.map(({ t, ecran: e, fait: f, dit: d }) => `<tr><td class="t">${t}</td><td>${e}</td><td>${f}</td><td>${d}</td></tr>`).join("")}</table>
-  <p class="sous" style="margin-top:1.5mm">Clavier : espace ou → = étape suivante · ← = retour · Entrée = lancer / mettre en pause le minuteur · R = remise à 3:00 · A = audio · L = facile à lire · F = plein écran. L'étape est dans l'adresse (<code>#1</code> à <code>#13</code>).</p>
+  <p class="sous" style="margin-top:1.5mm">Clavier : espace ou → = étape suivante · ← = retour · Entrée = lancer / mettre en pause le minuteur · R = remise à 3:00 · A = audio · L = facile à lire · V = clip · F = plein écran. L'étape est dans l'adresse (<code>#1</code> à <code>#14</code>).</p>
   <h2>${picto("ampoule", 5.5, 4, NAVY)}Pour tous, au choix (CUA)</h2>
   <ul><li>La lettre existe écrite, lue par le professeur, en audio et en version facile à lire. Le phénomène se voit, se touche (turbines en main) et s'entend (l'eau).</li>
   <li>Une question peut s'écrire, se dire à son binôme qui l'écrit, ou se dessiner. Rôles : pilote (écrit) et copilote (propose), inversés à 1 min 30.</li>
@@ -88,10 +88,12 @@ const deroule = page("Déroulé professeur", 210, 297, `
   <p class="sous" style="margin-top:1mm">Les questions des élèves peuvent citer un matériau ou dire « lourde » : ce sont leurs mots. Le professeur les accepte sans les confirmer ni les corriger.</p>
   <h2>${picto("dominos", 5.5, 4, NAVY)}Gestion des imprévus</h2>
   <table>${IMPREVUS.map(([s, r]) => `<tr><td style="width:44mm;font-weight:700;color:${NAVY}">${s}</td><td>${r}</td></tr>`).join("")}</table>
-  <h2>${picto("echantillons", 5.5, 4, NAVY)}La problématique (dernier écran, bande aimantée)</h2>
+  <h2>${picto("echantillons", 5.5, 4, NAVY)}La problématique (écran 13, bande aimantée)</h2>
   <p class="pb cadre">${PROBLEMATIQUE}</p>
+  <h2>${picto("filet", 5.5, 4, NAVY)}Le clip de méthode (écran 14, 2 min)</h2>
+  <p>Touche V : lecture ou pause. Sous-titres actifs par défaut (bouton pour les masquer) ; bouton « Version adaptée » : même clip, plus lent (3 min), la lecture reprend au même endroit. Pour un élève seul, au casque : <code>medias/clip_A8.html</code> (en ligne ou sur le réseau du collège, voir <code>medias/LISEZ-MOI-RESEAU.md</code>), avec la transcription.</p>
   <h2>${picto("etapes", 5.5, 4, NAVY)}Diaporama de conduite (au choix, à la place de <code>declencheur.html</code>)</h2>
-  <p><code>diaporama-a8.html</code> reprend les mêmes écrans et cette même conduite, puis enchaîne sur le lancement de l'A8 : capsule de méthode, fiche repère, partie A (20 min) et partie B (10 min) minutées, bilan. Notes du professeur à l'écran (touche N : heure prévue, gestes et phrases exactes de ce document) ; horloge de séance avec l'avance ou le retard ; minuteurs lancés automatiquement ; écran « Vos questions » pour saisir les questions de la classe (relevé copiable) et les cocher au bilan.</p>
+  <p><code>diaporama-a8.html</code> reprend les mêmes écrans et cette même conduite, puis enchaîne sur le lancement de l'A8 : clip de méthode (capsule au besoin), fiche repère, partie A (20 min) et partie B (10 min) minutées, bilan. Notes du professeur à l'écran (touche N : heure prévue, gestes et phrases exactes de ce document) ; horloge de séance avec l'avance ou le retard ; minuteurs lancés automatiquement ; écran « Vos questions » pour saisir les questions de la classe (relevé copiable) et les cocher au bilan.</p>
   <div class="vig" style="margin-top:3mm"><h2>${picto("ouinon", 5.5, 4, "#8a1c1c")}Points de vigilance</h2><ul>
     <li><b>Ne jamais nommer les matériaux</b> de A et B, ni dire « lourde » ou « légère ». Le phénomène suffit.</li>
     <li><b>Ne jamais répondre pendant la phase des questions</b>, même à une question juste : <q>Bonne question. Écris-la.</q></li>

@@ -2,8 +2,10 @@
 // Une seule source pour les textes affichés : la lettre, les consignes, les 4 familles et la problématique.
 import { P, ZONES, motif } from "./pictos.mjs";
 import { LETTRE, FALC, PROBLEMATIQUE } from "./texte_lettre.mjs";
+import { lecteurClip, CSS_CLIP } from "./clip.mjs";
 
 export const R = "ressources/a8-declencheur";
+export const RM = R + "/medias/";
 export const insec = (s) => s.replace(/ ([?!:;»])/g, " $1").replace(/« /g, "« ");
 export const sansCoupe = (s) => s.replace(/(\S+-\S+)/g, "<span style=\"white-space:nowrap\">$1</span>");
 export const svg = (nom, px, ep = 3.4, cls = "") =>
@@ -78,6 +80,10 @@ export const ECRANS = [
   { id: "probleme", titre: "Notre problématique", conduite: "probleme", html: `
     <div class="kicker">Toutes vos questions, en une seule</div>
     <div class="pb"><span>Notre problématique</span>${PROBLEMATIQUE}</div>` },
+  // id « video » (et non « clip ») : l'étape « clip » du diaporama a sa propre mise en page, avec minuteur et capsule.
+  { id: "video", titre: "Le clip", conduite: "clip", html: `
+    <div class="kicker">Pour y répondre : la méthode, en 2 minutes</div>
+    ${lecteurClip({ chemin: RM, svg, liens: [[RM + "clip_A8.mp4", "Ouvrir la vidéo seule", "loupe"], [RM + "clip_A8.html#transcription", "Transcription", "postit"]] })}` },
 ];
 
 // Feuille de style commune (scène 1600 × 900, texte du contenu ≥ 48 px).
@@ -161,4 +167,4 @@ p{margin:0}
 .aide{flex:1;font-size:15px;color:var(--grey);text-align:center;line-height:1.35}
 .aide a{color:var(--grey)}
 :focus-visible{outline:5px solid #F0B429;outline-offset:3px}
-`;
+${CSS_CLIP}`;

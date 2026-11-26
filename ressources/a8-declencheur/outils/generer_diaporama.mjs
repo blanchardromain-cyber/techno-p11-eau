@@ -4,7 +4,8 @@
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { ECRANS, CSS, R, insec, sansCoupe, svg, bande, minuteur } from "./ecrans_declencheur.mjs";
+import { ECRANS, CSS, R, RM, insec, sansCoupe, svg, bande, minuteur } from "./ecrans_declencheur.mjs";
+import { lecteurClip, JS_CLIP, donneesClip } from "./clip.mjs";
 import { CONDUITE, LANCEMENT, ANTICIPATION, IMPREVUS } from "./conduite.mjs";
 import { ZONES } from "./pictos.mjs";
 import { PROBLEMATIQUE } from "./texte_lettre.mjs";
@@ -53,13 +54,9 @@ const DIAPOS = [
     </div>
     <div class="colonnes js-colonnes" data-mode="saisie">${zonesEntete("q").map((h, i) => `<section class="col" data-z="${i + 1}" style="--c:${ZONES[i].c}">${h}<ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille ${i + 1}"></section>`).join("")}</div>` },
   { id: "clip", titre: "La méthode", t: "10:00", conduite: "clip", minuteur: LANCEMENT[0].duree * 60, auto: true, html: `
-    <div class="kicker">Pour répondre : la méthode</div>
-    <div class="deux">
-      <div class="pile">
-        <p class="grand">Une capsule de 8 écrans : ce que vous allez produire, et comment vous y prendre.</p>
-        ${lien("capsule-a8.html#1", "Ouvrir la capsule de méthode", "etapes")}
-        <p class="note">Elle s'ouvre dans un nouvel onglet. Revenez ici à la fin.</p>
-      </div>
+    <div class="kicker">Pour répondre : la méthode, en 2 minutes</div>
+    <div class="deux deux-clip">
+      ${lecteurClip({ chemin: RM, svg, liens: [["capsule-a8.html#1", "Capsule de méthode", "etapes"], [RM + "clip_A8.mp4", "Vidéo seule", "loupe"], [RM + "clip_A8.html#transcription", "Transcription", "postit"]] })}
       ${minuteur(LANCEMENT[0].duree * 60)}
     </div>` },
   { id: "repere", titre: "Fiche élève et fiche repère", t: "14:00", conduite: "repere", html: `
@@ -136,7 +133,7 @@ DIAPOS[0].html = `
     <div class="kicker">Conduite de la séance A8 · avant la classe</div>
     <div class="conduite-g">
       <table class="tl"><tr><th>Prévu</th><th>Moment</th><th>Étapes</th></tr>
-        ${lignes.map((c) => `<tr><td class="t">${c.t}</td><td>${{ lettre: "La lettre du fabricant", mains: "Les turbines passent de main en main", pari: "Le pari, puis la démonstration", questions: "Le jeu des questions (3 min)", tri: "Le tri au tableau (3 min)", revelation: "Les 4 familles, relances si besoin", probleme: "La problématique", transition: "Photo du tableau, saisie des questions", clip: "La capsule de méthode", repere: "Fiche élève, fiche repère, rôles", partieA: "Partie A · Matériauthèque (20 min)", partieB: "Partie B · mini-tableur (10 min)", bilan: "Bilan : vos questions" }[c.cle]}</td><td><button type="button" class="aller" data-aller="${(OU[c.cle] || [1])[0]}">${plage(OU[c.cle])}</button></td></tr>`).join("")}
+        ${lignes.map((c) => `<tr><td class="t">${c.t}</td><td>${{ lettre: "La lettre du fabricant", mains: "Les turbines passent de main en main", pari: "Le pari, puis la démonstration", questions: "Le jeu des questions (3 min)", tri: "Le tri au tableau (3 min)", revelation: "Les 4 familles, relances si besoin", probleme: "La problématique", transition: "Photo du tableau, saisie des questions", clip: "Le clip de méthode (capsule au besoin)", repere: "Fiche élève, fiche repère, rôles", partieA: "Partie A · Matériauthèque (20 min)", partieB: "Partie B · mini-tableur (10 min)", bilan: "Bilan : vos questions" }[c.cle]}</td><td><button type="button" class="aller" data-aller="${(OU[c.cle] || [1])[0]}">${plage(OU[c.cle])}</button></td></tr>`).join("")}
       </table>
       <div class="pile-d">
         <h3>Avant la classe</h3>
@@ -178,6 +175,10 @@ const CSS_DIAPO = `
 .docs figcaption,.apercu figcaption{font-size:34px;font-weight:700;color:var(--navy);text-align:center;line-height:1.15}
 .postits{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:40px;font-weight:700;color:var(--navy);text-align:center;align-self:center}
 .deux-l{grid-template-columns:1fr 470px}
+.deux-clip{grid-template-columns:1fr 430px;align-items:stretch}
+.deux-clip .clip-bt .bt-grand{font-size:26px;padding:4px 14px}
+.deux-clip .minuteur{align-self:start}
+.deux-clip .chiffres{font-size:150px}
 .apercu img{max-height:520px;max-width:100%;border:2px solid #c9d3df;border-radius:8px;background:#fff}
 .apercu figcaption a{color:var(--blue)}
 .apercu figcaption{padding-bottom:10px}
@@ -253,7 +254,7 @@ ${DIAPOS.map((d) => `    <section class="ecran${d.prof ? " prof" : ""}" id="${d.
     <span class="compteur" id="compteur" aria-live="polite"></span>
     <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante" title="Étape suivante (espace ou flèche droite)">▶</button>
     <button class="bt" id="btNotes" type="button" aria-pressed="false" title="Notes du professeur (touche N)">Notes</button>
-    <span class="aide" title="Espace ou → : suivant · ← : précédent · N : notes · Entrée : minuteur · R : remise à zéro · A : audio · L : facile à lire · F : plein écran · Début : conduite">Espace → suivant · N notes · Entrée minuteur · F plein écran<br>
+    <span class="aide" title="Espace ou → : suivant · ← : précédent · N : notes · Entrée : minuteur · R : remise à zéro · A : audio · L : facile à lire · V : clip · F : plein écran · Début : conduite">Espace → suivant · N notes · Entrée minuteur · V clip · F plein écran<br>
       R.Blanchard · <a href="./">accueil</a></span>
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
@@ -468,6 +469,7 @@ ${DIAPOS.map((d) => `    <section class="ecran${d.prof ? " prof" : ""}" id="${d.
     document.getElementById("compteur").textContent = (n + 1) + " / " + ETAPES.length;
     btPrec.disabled = n === 0; btSuiv.disabled = n === ETAPES.length - 1;
     majHorloge(); rendre();
+    A8CLIP.pauseHors(ecrans[e]);   // une vidéo s'arrête quand on quitte son écran
     if (location.hash !== "#" + (n + 1)) { try { history.replaceState(null, "", "#" + (n + 1)); } catch (x) { location.hash = "#" + (n + 1); } }
   }
   function minuteurCourant(){ return courant < 0 ? null : minuteurs[ETAPES[courant][0]]; }
@@ -490,7 +492,9 @@ ${DIAPOS.map((d) => `    <section class="ecran${d.prof ? " prof" : ""}" id="${d.
     var t = e.target, k = e.key;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) { if (k === "Escape") t.blur(); return; }   // saisie : pas de raccourci
     var surBouton = t && (/^(A|BUTTON)$/.test(t.tagName) || t.getAttribute("role") === "button");
+    if (t && t.tagName === "VIDEO") return;     // lecteur actif : espace et flèches pilotent la vidéo
     if ((k === " " || k === "Enter") && surBouton) return;
+    if (k === "v" || k === "V") { if (A8CLIP.basculer(ecrans[ETAPES[courant][0]])) e.preventDefault(); return; }
     var m = minuteurCourant();
     if (k === " " || k === "ArrowRight" || k === "ArrowDown" || k === "PageDown") aller(courant + 1);
     else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace") aller(courant - 1);
@@ -508,6 +512,7 @@ ${DIAPOS.map((d) => `    <section class="ecran${d.prof ? " prof" : ""}" id="${d.
   window.addEventListener("hashchange", function(){ if (depuisAdresse() !== courant) aller(depuisAdresse()); });
   window.addEventListener("resize", ajuster);
   document.addEventListener("fullscreenchange", ajuster);
+${JS_CLIP(donneesClip(RM))}
   ajuster();
   aller(depuisAdresse());
 })();

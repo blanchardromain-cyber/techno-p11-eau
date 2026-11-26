@@ -7,6 +7,7 @@ import path from "node:path";
 import fs from "node:fs";
 const require = createRequire(`${process.env.USERPROFILE}/Documents/video-technologie/package.json`);
 const { chromium } = require("playwright");
+import { lancerChrome, testerClip } from "./tester_clip_commun.mjs";
 const ici = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const page_ = pathToFileURL(path.resolve(ici, "..", "..", "declencheur.html")).href;
 const APE = path.join(ici, "apercus", "declencheur"); fs.mkdirSync(APE, { recursive: true });
@@ -15,7 +16,7 @@ const nav = await chromium.launch();
 let alertes = 0; const ko = (s) => { alertes++; console.log("ALERTE", s); };
 const p = await nav.newPage({ viewport: { width: 1600, height: 900 } });
 const erreurs = []; p.on("pageerror", (e) => erreurs.push(e.message)); p.on("console", (m) => m.type() === "error" && erreurs.push(m.text()));
-p.on("requestfailed", (r) => erreurs.push("requête échouée " + r.url()));
+p.on("requestfailed", (r) => { if (!/\.(mp4|wav)$/.test(r.url())) erreurs.push("requête échouée " + r.url()); });   // mp4 : le Chromium de Playwright ne lit pas le H.264 (essai du clip dans Chrome, plus bas)
 const requetes = []; p.on("request", (r) => requetes.push(r.url()));
 await p.goto(page_ + "#1"); await p.evaluate(() => document.fonts.ready);
 const n = await p.evaluate(() => document.querySelectorAll("#points button").length);
@@ -28,7 +29,7 @@ const mesure = () => p.evaluate(() => {
     const cs = getComputedStyle(el); if (cs.display === "none" || cs.visibility === "hidden" || el.closest("[hidden]")) return;
     const r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
     if (r.bottom > r0.bottom + 1 || r.right > r0.right + 1 || r.left < r0.left - 1) res.push(`déborde de l'écran : <${el.tagName.toLowerCase()} ${el.className.baseVal ?? el.className}> « ${(el.textContent || "").trim().slice(0, 30)} »`);
-    if (!el.closest("button") && [...el.childNodes].some((x) => x.nodeType === 3 && x.textContent.trim())) {
+    if (!el.closest("button,a.bt-grand,video") && [...el.childNodes].some((x) => x.nodeType === 3 && x.textContent.trim())) {
       const f = parseFloat(cs.fontSize); if (f < min) { min = f; minTxt = el.textContent.trim().slice(0, 30); }
     }
   });
@@ -99,6 +100,11 @@ for (const k of [1, 2, iQ, n]) {
 const echelle = await p2.evaluate(() => document.getElementById("scene").getBoundingClientRect().width / 1600);
 console.log(`50 % : échelle ${echelle.toFixed(2)} → texte du contenu ≥ ${(48 * echelle).toFixed(0)} px à l'écran`);
 await nav.close();
+// Clip (écran « Le clip ») et page autonome medias/clip_A8.html, dans Chrome (H.264)
+const chrome = await lancerChrome(chromium);
+await testerClip(chrome, page_ + "#1", "video", ko, APE, "declencheur");
+await testerClip(chrome, pathToFileURL(path.join(ici, "medias", "clip_A8.html")).href, null, ko, APE, "page_autonome");
+await chrome.close();
 const ext = requetes.filter((u) => !u.startsWith("file:") && !u.startsWith("data:"));
 if (ext.length) ko("requêtes externes : " + ext.join(", "));
 erreurs.forEach((e) => ko("console : " + e));

@@ -4,7 +4,9 @@
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { ECRANS, CSS, R, insec } from "./ecrans_declencheur.mjs";
+import { ECRANS, CSS, R, RM, insec } from "./ecrans_declencheur.mjs";
+import { JS_CLIP, donneesClip, ecrireVtt } from "./clip.mjs";
+ecrireVtt();
 
 const ici = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const racine = path.resolve(ici, "..", "..");            // techno-p11-eau
@@ -38,7 +40,7 @@ ${ECRANS.map((e) => `    <section class="ecran" id="${e.id}" data-titre="${e.tit
     <div class="points" id="points"></div>
     <span class="compteur" id="compteur" aria-live="polite"></span>
     <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante" title="Étape suivante (espace ou flèche droite)">▶</button>
-    <span class="aide">Espace ou → suivant · ← précédent · Entrée minuteur · R remise à 3:00 · A audio · L facile à lire · F plein écran<br>
+    <span class="aide">Espace ou → suivant · ← précédent · Entrée minuteur · R remise à 3:00 · A audio · L facile à lire · V clip · F plein écran<br>
       R.Blanchard, professeur de Technologie · aucune donnée enregistrée · <a href="./">accueil</a></span>
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
@@ -151,6 +153,7 @@ ${ECRANS.map((e) => `    <section class="ecran" id="${e.id}" data-titre="${e.tit
     Array.prototype.forEach.call(points.children, function(p, k){ p.className = k < n ? "fait" : ""; p.setAttribute("aria-current", String(k === n)); });
     document.getElementById("compteur").textContent = (n + 1) + " / " + ETAPES.length;
     btPrec.disabled = n === 0; btSuiv.disabled = n === ETAPES.length - 1;
+    A8CLIP.pauseHors(ecrans[e]);   // une vidéo s'arrête quand on quitte son écran
     if (location.hash !== "#" + (n + 1)) { try { history.replaceState(null, "", "#" + (n + 1)); } catch (x) { location.hash = "#" + (n + 1); } }
   }
   function minuteurCourant(){ return courant < 0 ? null : minuteurs[ETAPES[courant][0]]; }
@@ -170,7 +173,9 @@ ${ECRANS.map((e) => `    <section class="ecran" id="${e.id}" data-titre="${e.tit
   document.addEventListener("keydown", function(e){
     if (e.ctrlKey || e.altKey || e.metaKey) return;
     var surBouton = e.target && /^(A|BUTTON)$/.test(e.target.tagName), k = e.key;
+    if (e.target && e.target.tagName === "VIDEO") return;     // lecteur actif : espace et flèches pilotent la vidéo
     if ((k === " " || k === "Enter") && surBouton) return;   // le bouton qui a le focus fait son travail
+    if (k === "v" || k === "V") { if (A8CLIP.basculer(ecrans[ETAPES[courant][0]])) e.preventDefault(); return; }
     var m = minuteurCourant();
     if (k === " " || k === "ArrowRight" || k === "ArrowDown" || k === "PageDown") aller(courant + 1);
     else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace") aller(courant - 1);
@@ -187,6 +192,7 @@ ${ECRANS.map((e) => `    <section class="ecran" id="${e.id}" data-titre="${e.tit
   window.addEventListener("hashchange", function(){ if (depuisAdresse() !== courant) aller(depuisAdresse()); });
   window.addEventListener("resize", ajuster);
   document.addEventListener("fullscreenchange", ajuster);
+${JS_CLIP(donneesClip(RM))}
   ajuster();
   aller(depuisAdresse());
 })();

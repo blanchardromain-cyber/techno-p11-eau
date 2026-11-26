@@ -89,6 +89,14 @@ p{margin:0}
 .aide a{color:var(--grey)}
 :focus-visible{outline:5px solid #F0B429;outline-offset:3px}
 
+/* Clip de méthode */
+.clip{display:flex;flex-direction:column;gap:14px;min-height:0;flex:1}
+.clip video{display:block;width:100%;flex:1;min-height:0;background:#0b1424;border-radius:16px;border:3px solid var(--navy)}
+.clip video::cue{font-family:Luciole,Arial,sans-serif;font-size:110%;background:rgba(0,0,0,.82);color:#fff}
+.clip-bt{display:flex;flex-wrap:wrap;gap:12px;flex:none}
+.clip-bt .bt-grand{font-size:30px;padding:6px 18px}
+.clip-bt .ext{font-size:26px;color:var(--blue)}
+
 .band{gap:24px}
 .band .phase{flex:1;text-align:center;color:#fff;font-weight:700}
 .barre .points{gap:5px}
@@ -116,6 +124,10 @@ p{margin:0}
 .docs figcaption,.apercu figcaption{font-size:34px;font-weight:700;color:var(--navy);text-align:center;line-height:1.15}
 .postits{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:40px;font-weight:700;color:var(--navy);text-align:center;align-self:center}
 .deux-l{grid-template-columns:1fr 470px}
+.deux-clip{grid-template-columns:1fr 430px;align-items:stretch}
+.deux-clip .clip-bt .bt-grand{font-size:26px;padding:4px 14px}
+.deux-clip .minuteur{align-self:start}
+.deux-clip .chiffres{font-size:150px}
 .apercu img{max-height:520px;max-width:100%;border:2px solid #c9d3df;border-radius:8px;background:#fff}
 .apercu figcaption a{color:var(--blue)}
 .apercu figcaption{padding-bottom:10px}
@@ -173,7 +185,7 @@ p{margin:0}
     <div class="kicker">Conduite de la séance A8 · avant la classe</div>
     <div class="conduite-g">
       <table class="tl"><tr><th>Prévu</th><th>Moment</th><th>Étapes</th></tr>
-        <tr><td class="t">0:00</td><td>La lettre du fabricant</td><td><button type="button" class="aller" data-aller="2">2 à 4</button></td></tr><tr><td class="t">1:00</td><td>Les turbines passent de main en main</td><td><button type="button" class="aller" data-aller="5">5</button></td></tr><tr><td class="t">1:30</td><td>Le pari, puis la démonstration</td><td><button type="button" class="aller" data-aller="6">6 à 7</button></td></tr><tr><td class="t">2:00</td><td>Le jeu des questions (3 min)</td><td><button type="button" class="aller" data-aller="8">8 à 9</button></td></tr><tr><td class="t">5:00</td><td>Le tri au tableau (3 min)</td><td><button type="button" class="aller" data-aller="10">10</button></td></tr><tr><td class="t">7:00</td><td>Les 4 familles, relances si besoin</td><td><button type="button" class="aller" data-aller="11">11 à 15</button></td></tr><tr><td class="t">8:00</td><td>La problématique</td><td><button type="button" class="aller" data-aller="16">16</button></td></tr><tr><td class="t">9:00</td><td>Photo du tableau, saisie des questions</td><td><button type="button" class="aller" data-aller="17">17</button></td></tr><tr><td class="t">10:00</td><td>La capsule de méthode</td><td><button type="button" class="aller" data-aller="18">18</button></td></tr><tr><td class="t">14:00</td><td>Fiche élève, fiche repère, rôles</td><td><button type="button" class="aller" data-aller="19">19</button></td></tr><tr><td class="t">16:00</td><td>Partie A · Matériauthèque (20 min)</td><td><button type="button" class="aller" data-aller="20">20</button></td></tr><tr><td class="t">36:00</td><td>Partie B · mini-tableur (10 min)</td><td><button type="button" class="aller" data-aller="21">21</button></td></tr><tr><td class="t">46:00</td><td>Bilan : vos questions</td><td><button type="button" class="aller" data-aller="22">22</button></td></tr>
+        <tr><td class="t">0:00</td><td>La lettre du fabricant</td><td><button type="button" class="aller" data-aller="2">2 à 4</button></td></tr><tr><td class="t">1:00</td><td>Les turbines passent de main en main</td><td><button type="button" class="aller" data-aller="5">5</button></td></tr><tr><td class="t">1:30</td><td>Le pari, puis la démonstration</td><td><button type="button" class="aller" data-aller="6">6 à 7</button></td></tr><tr><td class="t">2:00</td><td>Le jeu des questions (3 min)</td><td><button type="button" class="aller" data-aller="8">8 à 9</button></td></tr><tr><td class="t">5:00</td><td>Le tri au tableau (3 min)</td><td><button type="button" class="aller" data-aller="10">10</button></td></tr><tr><td class="t">7:00</td><td>Les 4 familles, relances si besoin</td><td><button type="button" class="aller" data-aller="11">11 à 15</button></td></tr><tr><td class="t">8:00</td><td>La problématique</td><td><button type="button" class="aller" data-aller="16">16</button></td></tr><tr><td class="t">9:00</td><td>Photo du tableau, saisie des questions</td><td><button type="button" class="aller" data-aller="17">17</button></td></tr><tr><td class="t">10:00</td><td>Le clip de méthode (capsule au besoin)</td><td><button type="button" class="aller" data-aller="18">18</button></td></tr><tr><td class="t">14:00</td><td>Fiche élève, fiche repère, rôles</td><td><button type="button" class="aller" data-aller="19">19</button></td></tr><tr><td class="t">16:00</td><td>Partie A · Matériauthèque (20 min)</td><td><button type="button" class="aller" data-aller="20">20</button></td></tr><tr><td class="t">36:00</td><td>Partie B · mini-tableur (10 min)</td><td><button type="button" class="aller" data-aller="21">21</button></td></tr><tr><td class="t">46:00</td><td>Bilan : vos questions</td><td><button type="button" class="aller" data-aller="22">22</button></td></tr>
       </table>
       <div class="pile-d">
         <h3>Avant la classe</h3>
@@ -288,13 +300,16 @@ p{margin:0}
     <div class="colonnes js-colonnes" data-mode="saisie"><section class="col" data-z="1" style="--c:#2E75B6"><div class="zt" style="--c:#2E75B6"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q1)"/></g></svg></span><span>1 · Quel matériau ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 1"></section><section class="col" data-z="2" style="--c:#C55A11"><div class="zt" style="--c:#C55A11"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q2" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q2)"/></g></svg></span><span>2 · Pourquoi <span style="white-space:nowrap">celui-là</span> ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 2"></section><section class="col" data-z="3" style="--c:#2E7D32"><div class="zt" style="--c:#2E7D32"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q3" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q3)"/></g></svg></span><span>3 · Comment le fabriquer ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 3"></section><section class="col" data-z="4" style="--c:#6A3D9A"><div class="zt" style="--c:#6A3D9A"><span class="pastille"><svg class="motif" aria-hidden="true"><defs><pattern id="q4" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(2)"><rect width="2000" height="2000" fill="url(#q4)"/></g></svg></span><span>4 · <span style="white-space:nowrap">Qu'a-t-il</span> coûté à fabriquer ?</span></div><ul class="js-liste"></ul><input class="ajout js-ajout" placeholder="Ajouter… (Entrée)" aria-label="Ajouter une question dans la famille 4"></section></div>
     </section>
     <section class="ecran" id="clip" data-titre="La méthode" data-etapes="1" data-minuteur="240" data-auto="1" aria-label="La méthode">
-    <div class="kicker">Pour répondre : la méthode</div>
-    <div class="deux">
-      <div class="pile">
-        <p class="grand">Une capsule de 8 écrans : ce que vous allez produire, et comment vous y prendre.</p>
-        <a class="bt-grand lien" href="capsule-a8.html#1" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="16" rx="3"/><rect x="24" y="24" width="16" height="16" rx="3"/><rect x="44" y="38" width="16" height="16" rx="3"/><path d="M12 30v8h8M32 44v8h8"/></svg><span>Ouvrir la capsule de méthode</span><span class="ext" aria-hidden="true">↗</span></a>
-        <p class="note">Elle s'ouvre dans un nouvel onglet. Revenez ici à la fin.</p>
+    <div class="kicker">Pour répondre : la méthode, en 2 minutes</div>
+    <div class="deux deux-clip">
+      <div class="clip js-clip">
+      <video class="js-clip-video" controls preload="metadata" playsinline src="ressources/a8-declencheur/medias/clip_A8.mp4" aria-label="Clip : comment choisir le matériau d'une pièce ?"></video>
+      <div class="clip-bt">
+        <button type="button" class="bt-grand js-clip-ad" aria-pressed="false"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 42c0-6-9-10-9-21a17 17 0 0 1 34 0c0 11-9 15-9 21z"/><path d="M25 48h14M27 54h10"/></svg><span>Version adaptée</span></button>
+        <button type="button" class="bt-grand js-clip-st" aria-pressed="true"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><span>Sous-titres</span></button>
+        <a class="bt-grand js-clip-lien" href="capsule-a8.html#1" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="16" rx="3"/><rect x="24" y="24" width="16" height="16" rx="3"/><rect x="44" y="38" width="16" height="16" rx="3"/><path d="M12 30v8h8M32 44v8h8"/></svg><span>Capsule de méthode</span><span class="ext" aria-hidden="true">↗</span></a><a class="bt-grand js-clip-lien" href="ressources/a8-declencheur/medias/clip_A8.mp4" target="_blank" rel="noopener" data-mp4="1"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="27" cy="27" r="16"/><path d="M39 39l17 17"/></svg><span>Vidéo seule</span><span class="ext" aria-hidden="true">↗</span></a><a class="bt-grand js-clip-lien" href="ressources/a8-declencheur/medias/clip_A8.html#transcription" target="_blank" rel="noopener"><svg class="picto " viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><span>Transcription</span><span class="ext" aria-hidden="true">↗</span></a>
       </div>
+    </div>
       <div class="minuteur js-min" role="timer" aria-live="off">
     <div class="chiffres js-chiffres">4:00</div>
     <div class="jauge"><div class="js-jauge"></div></div>
@@ -396,9 +411,9 @@ p{margin:0}
     <table class="n-table"><tr><th>Famille</th><th>Questions probables</th><th>Relance si elle reste vide</th></tr><tr><td>1 · Quel matériau ?</td><td>En quoi sont faites les turbines ? · Est-ce que A et B sont dans la même matière ? · On peut faire une turbine en bois ?</td><td>Montrer A et B côte à côte : <q>Elles se ressemblent. Qu'est-ce qui pourrait être différent, sans qu'on le voie ?</q></td></tr><tr><td>2 · Pourquoi celui-là ?</td><td>Pourquoi B tourne et pas A ? · Pourquoi A est plus lourde ? · Laquelle est la meilleure pour le robinet ?</td><td><q>Si vous étiez l'entreprise, laquelle garderiez-vous… et comment vous le justifieriez ?</q></td></tr><tr><td>3 · Comment le fabriquer ?</td><td>Comment on fabrique une turbine ? · Avec quelle machine ? · Combien de temps pour en faire une ?</td><td>Carte <q>Et pour en fabriquer 10 000 ?</q>, puis carte <q>Et pour en fabriquer une seule, ici, au collège ?</q></td></tr><tr><td>4 · Qu'a-t-il coûté à fabriquer ?</td><td>Combien coûte une turbine ? · Est-ce que ça pollue de la fabriquer ? · D'où vient la matière ?</td><td>Sachet <q>D'où vient la matière ?</q> (faire toucher granulés et fil), puis carte <q>Qu'a-t-il fallu pour la transformer ?</q></td></tr></table></div><div class="note-e" data-k="15"><div class="n-tete"><span class="n-t">Prévu 8:00</span><span class="n-titre">Étape 16 · Notre problématique</span></div>
     <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Retourner la bande de la problématique.</p></div><div><h4>Phrases exactes</h4><p><q>Toutes vos questions tiennent en une seule. C'est notre problématique pour l'activité 8.</q></p></div></div>
     </div><div class="note-e" data-k="16"><div class="n-tete"><span class="n-t">Prévu 9:00</span><span class="n-titre">Étape 17 · Vos questions</span></div>
-    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Photographier le tableau (relevé). Enchaîner sur le clip de méthode.</p></div><div><h4>Phrases exactes</h4><p><q>Pour y répondre, on a besoin d'une méthode. Regardez.</q></p></div></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Photographier le tableau (relevé). Écran « Le clip » : V pour le lancer.</p></div><div><h4>Phrases exactes</h4><p><q>Pour y répondre, on a besoin d'une méthode. Regardez.</q></p></div></div>
     <table class="n-table"><tr><th>Famille</th><th>Questions probables</th><th>Relance si elle reste vide</th></tr><tr><td>1 · Quel matériau ?</td><td>En quoi sont faites les turbines ? · Est-ce que A et B sont dans la même matière ? · On peut faire une turbine en bois ?</td><td>Montrer A et B côte à côte : <q>Elles se ressemblent. Qu'est-ce qui pourrait être différent, sans qu'on le voie ?</q></td></tr><tr><td>2 · Pourquoi celui-là ?</td><td>Pourquoi B tourne et pas A ? · Pourquoi A est plus lourde ? · Laquelle est la meilleure pour le robinet ?</td><td><q>Si vous étiez l'entreprise, laquelle garderiez-vous… et comment vous le justifieriez ?</q></td></tr><tr><td>3 · Comment le fabriquer ?</td><td>Comment on fabrique une turbine ? · Avec quelle machine ? · Combien de temps pour en faire une ?</td><td>Carte <q>Et pour en fabriquer 10 000 ?</q>, puis carte <q>Et pour en fabriquer une seule, ici, au collège ?</q></td></tr><tr><td>4 · Qu'a-t-il coûté à fabriquer ?</td><td>Combien coûte une turbine ? · Est-ce que ça pollue de la fabriquer ? · D'où vient la matière ?</td><td>Sachet <q>D'où vient la matière ?</q> (faire toucher granulés et fil), puis carte <q>Qu'a-t-il fallu pour la transformer ?</q></td></tr></table></div><div class="note-e" data-k="17"><div class="n-tete"><span class="n-t">Prévu 10:00 · 4 min</span><span class="n-titre">Étape 18 · La méthode</span></div>
-    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Projeter la capsule de méthode (<code>capsule-a8.html</code>, 8 écrans), puis revenir au diaporama. Ne rien ajouter sur le matériau.</p></div><div><h4>Phrases exactes</h4><p><q>Voici comment on va s'y prendre. Regardez bien la démarche : vous l'aurez sur votre fiche repère.</q></p></div></div>
+    <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Lancer le clip de méthode (V, 2 min), sous-titres actifs ; « Version adaptée » si besoin. Ne rien ajouter sur le matériau. S'il reste des doutes sur une étape, ouvrir la capsule (<code>capsule-a8.html</code>) sur cette étape. Le clip est aussi sur le réseau pour un visionnage individuel (casque).</p></div><div><h4>Phrases exactes</h4><p><q>Voici comment on va s'y prendre, en 2 minutes. Regardez bien la démarche : vous l'aurez sur votre fiche repère.</q> Après : <q>Quelle est la première étape ? Et la dernière ?</q></p></div></div>
     </div><div class="note-e" data-k="18"><div class="n-tete"><span class="n-t">Prévu 14:00 · 2 min</span><span class="n-titre">Étape 19 · Fiche élève et fiche repère</span></div>
     <div class="n-cols"><div><h4>Ce que fait le professeur</h4><p>Distribuer la fiche élève A8 (1 par élève) et la fiche repère plastifiée (1 par binôme ; version adaptée à qui la veut). Attribuer les rôles.</p></div><div><h4>Phrases exactes</h4><p><q>La fiche repère reste à côté de l'écran pendant toute l'activité. Pilote : il tient la souris. Vérificateur : il lit la fiche et vérifie chaque étape. On échange à mi-parcours.</q></p></div></div>
     </div><div class="note-e" data-k="19"><div class="n-tete"><span class="n-t">Prévu 16:00 · 20 min</span><span class="n-titre">Étape 20 · Partie A · Matériauthèque</span></div>
@@ -414,7 +429,7 @@ p{margin:0}
     <span class="compteur" id="compteur" aria-live="polite"></span>
     <button class="bt" id="btSuiv" type="button" aria-label="Étape suivante" title="Étape suivante (espace ou flèche droite)">▶</button>
     <button class="bt" id="btNotes" type="button" aria-pressed="false" title="Notes du professeur (touche N)">Notes</button>
-    <span class="aide" title="Espace ou → : suivant · ← : précédent · N : notes · Entrée : minuteur · R : remise à zéro · A : audio · L : facile à lire · F : plein écran · Début : conduite">Espace → suivant · N notes · Entrée minuteur · F plein écran<br>
+    <span class="aide" title="Espace ou → : suivant · ← : précédent · N : notes · Entrée : minuteur · R : remise à zéro · A : audio · L : facile à lire · V : clip · F : plein écran · Début : conduite">Espace → suivant · N notes · Entrée minuteur · V clip · F plein écran<br>
       R.Blanchard · <a href="./">accueil</a></span>
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
@@ -629,6 +644,7 @@ p{margin:0}
     document.getElementById("compteur").textContent = (n + 1) + " / " + ETAPES.length;
     btPrec.disabled = n === 0; btSuiv.disabled = n === ETAPES.length - 1;
     majHorloge(); rendre();
+    A8CLIP.pauseHors(ecrans[e]);   // une vidéo s'arrête quand on quitte son écran
     if (location.hash !== "#" + (n + 1)) { try { history.replaceState(null, "", "#" + (n + 1)); } catch (x) { location.hash = "#" + (n + 1); } }
   }
   function minuteurCourant(){ return courant < 0 ? null : minuteurs[ETAPES[courant][0]]; }
@@ -651,7 +667,9 @@ p{margin:0}
     var t = e.target, k = e.key;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) { if (k === "Escape") t.blur(); return; }   // saisie : pas de raccourci
     var surBouton = t && (/^(A|BUTTON)$/.test(t.tagName) || t.getAttribute("role") === "button");
+    if (t && t.tagName === "VIDEO") return;     // lecteur actif : espace et flèches pilotent la vidéo
     if ((k === " " || k === "Enter") && surBouton) return;
+    if (k === "v" || k === "V") { if (A8CLIP.basculer(ecrans[ETAPES[courant][0]])) e.preventDefault(); return; }
     var m = minuteurCourant();
     if (k === " " || k === "ArrowRight" || k === "ArrowDown" || k === "PageDown") aller(courant + 1);
     else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace") aller(courant - 1);
@@ -669,6 +687,59 @@ p{margin:0}
   window.addEventListener("hashchange", function(){ if (depuisAdresse() !== courant) aller(depuisAdresse()); });
   window.addEventListener("resize", ajuster);
   document.addEventListener("fullscreenchange", ajuster);
+
+  /* ---- Clip de méthode : version standard / adaptée, sous-titres injectés (compatibles file://) ---- */
+  var A8CLIP = (function(){
+    var CLIPS = {"std":{"src":"ressources/a8-declencheur/medias/clip_A8.mp4","dur":117.533,"cues":[[0.74,4,"Un drone de surveillance survole un site."],[4.48,6.04,"Soudain, il tombe."],[6.34,7.54,"Le carter est fendu."],[7.86,8.9,"Mauvais matériau ?"],[9.3,12.17,"Le carter protège tout l'intérieur du drone."],[12.38,15.85,"S'il casse, le drone ne remplit plus sa mission."],[16.29,18.12,"Étape un : j'observe."],[18.56,25.21,"Et toi, que subit le carter ?"],[25.21,28.08,"Des chocs à l'atterrissage, le soleil,"],[28.08,30.58,"des rayures, les vibrations des moteurs."],[30.88,33.47,"On part toujours de ce que subit la pièce."],[33.92,35.74,"Étape deux : je classe."],[36.21,38.73,"Chaque échantillon rejoint sa famille."],[39.18,41.55,"Étape trois : je définis mes critères."],[41.94,45.61,"Résister aux chocs, c'est indispensable : ça élimine."],[45.77,48.6,"Une jolie couleur, c'est souhaitable : ça départage."],[48.6,50.71,"Et ne pas s'abîmer au soleil ?"],[51.02,53.13,"Indispensable ou souhaitable ?"],[57.18,60.74,"Indispensable : le drone vole en plein soleil."],[61.22,62.91,"Étape quatre : je trie."],[63.08,65.92,"Le verre ? Éliminé : il casse au premier choc."],[66.36,68.21,"Parmi ceux qui restent : le meilleur compromis."],[68.78,71.23,"Étape cinq : je choisis le procédé."],[71.62,74.62,"Un matériau ne va jamais sans son procédé."],[74.86,77.6,"Combien de pièces ? En combien de temps ?"],[77.6,80.33,"Selon les réponses, le procédé change."],[80.82,83.16,"Une idée nouvelle : l'énergie grise."],[83.56,87.3,"Avant même de voler, le carter a déjà coûté de l'énergie."],[87.83,90.49,"Extraire la matière, fabriquer la pièce,"],[90.49,93.35,"la transporter, la traiter en fin de vie."],[93.77,95.24,"On compte pour la pièce entière."],[95.55,96.4,"À toi, maintenant."],[96.77,101.23,"Au cœur du robinet automatique, une petite pièce : la turbine."],[101.8,104.89,"Quel matériau choisir pour la turbine du robinet automatique,"],[104.89,108.56,"et quelle énergie a-t-il fallu pour la fabriquer ?"],[108.56,111.78,"Ton outil : la Matériauthèque. En binôme."]]},"ad":{"src":"ressources/a8-declencheur/medias/clip_A8_adapte.mp4","dur":170.276,"cues":[[0.78,4.59,"Un drone de surveillance survole un site."],[5.18,6.99,"Soudain, il tombe."],[7.38,8.76,"Le carter est fendu."],[9.16,10.36,"Mauvais matériau ?"],[10.85,14.2,"Le carter protège tout l'intérieur du drone."],[14.49,18.53,"S'il casse, le drone ne remplit plus sa mission."],[19.08,21.2,"Étape un : j'observe."],[21.75,28.86,"Et toi, que subit le carter ?"],[28.86,32.24,"Des chocs à l'atterrissage, le soleil,"],[32.24,35.16,"des rayures, les vibrations des moteurs."],[35.53,38.56,"On part toujours de ce que subit la pièce."],[39.17,43.2,"Je pars de ce que subit la pièce."],[43.95,46.06,"Étape deux : je classe."],[46.64,49.58,"Chaque échantillon rejoint sa famille."],[50.26,54.96,"Je range chaque matériau dans sa famille."],[55.64,58.39,"Étape trois : je définis mes critères."],[58.88,63.17,"Résister aux chocs, c'est indispensable : ça élimine."],[63.38,66.73,"Une jolie couleur, c'est souhaitable : ça départage."],[66.73,69.17,"Et ne pas s'abîmer au soleil ?"],[69.56,72.02,"Indispensable ou souhaitable ?"],[76.11,80.27,"Indispensable : le drone vole en plein soleil."],[80.94,88.25,"Indispensable : il élimine. Souhaitable : il départage."],[88.97,90.93,"Étape quatre : je trie."],[91.17,94.47,"Le verre ? Éliminé : il casse au premier choc."],[95.01,97.17,"Parmi ceux qui restent : le meilleur compromis."],[97.79,101.5,"Je garde le meilleur compromis."],[102.37,105.23,"Étape cinq : je choisis le procédé."],[105.72,109.22,"Un matériau ne va jamais sans son procédé."],[109.54,112.75,"Combien de pièces ? En combien de temps ?"],[112.75,115.94,"Selon les réponses, le procédé change."],[116.59,121.2,"Un matériau va toujours avec son procédé."],[121.96,124.67,"Une idée nouvelle : l'énergie grise."],[125.18,129.54,"Avant même de voler, le carter a déjà coûté de l'énergie."],[130.19,133.31,"Extraire la matière, fabriquer la pièce,"],[133.31,136.66,"la transporter, la traiter en fin de vie."],[137.19,138.88,"On compte pour la pièce entière."],[139.43,144.81,"Avant de servir, une pièce a déjà coûté de l'énergie."],[145.46,146.43,"À toi, maintenant."],[146.89,152.11,"Au cœur du robinet automatique, une petite pièce : la turbine."],[152.81,156.46,"Quel matériau choisir pour la turbine du robinet automatique,"],[156.46,160.76,"et quelle énergie a-t-il fallu pour la fabriquer ?"],[160.76,164.53,"Ton outil : la Matériauthèque. En binôme."]]}};
+    function remplir(piste, cle){
+      if (piste.cues) while (piste.cues.length) piste.removeCue(piste.cues[0]);
+      CLIPS[cle].cues.forEach(function(c){ try { piste.addCue(new VTTCue(c[0], c[1], c[2])); } catch (e) {} });
+    }
+    function init(){
+      Array.prototype.forEach.call(document.querySelectorAll(".js-clip"), function(box){
+        var v = box.querySelector("video"), btAd = box.querySelector(".js-clip-ad"), btSt = box.querySelector(".js-clip-st");
+        var etat = { cle: "std", st: true }, piste = v.addTextTrack("subtitles", "Français", "fr");
+        remplir(piste, "std"); piste.mode = "showing";
+        box.__etat = etat;
+        function majLiens(){
+          Array.prototype.forEach.call(box.querySelectorAll(".js-clip-lien[data-mp4]"), function(a){ a.href = CLIPS[etat.cle].src; });
+        }
+        btAd.onclick = function(ev){
+          var avant = etat.cle, apres = avant === "std" ? "ad" : "std";
+          var t = v.currentTime || 0, jouait = !v.paused && !v.ended;
+          var cible = Math.min(CLIPS[apres].dur - 0.5, t * CLIPS[apres].dur / CLIPS[avant].dur);
+          etat.cle = apres;
+          btAd.setAttribute("aria-pressed", String(apres === "ad"));
+          v.addEventListener("loadedmetadata", function f(){
+            v.removeEventListener("loadedmetadata", f);
+            try { v.currentTime = Math.max(0, cible); } catch (e) {}
+            if (jouait){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+          });
+          v.src = CLIPS[apres].src; v.load();
+          remplir(piste, apres); piste.mode = etat.st ? "showing" : "hidden";
+          majLiens();
+          if (ev && ev.detail) btAd.blur();
+        };
+        btSt.onclick = function(ev){
+          etat.st = !etat.st; piste.mode = etat.st ? "showing" : "hidden";
+          btSt.setAttribute("aria-pressed", String(etat.st));
+          if (ev && ev.detail) btSt.blur();
+        };
+        majLiens();
+      });
+    }
+    function pauseHors(actif){
+      Array.prototype.forEach.call(document.querySelectorAll(".js-clip video"), function(v){ if (!actif || !actif.contains(v)) v.pause(); });
+    }
+    function basculer(ecran){
+      var v = ecran && ecran.querySelector(".js-clip video"); if (!v) return false;
+      if (v.paused || v.ended){ var p = v.play(); if (p && p.catch) p.catch(function(){}); } else v.pause();
+      return true;
+    }
+    return { init: init, pauseHors: pauseHors, basculer: basculer };
+  })();
+  A8CLIP.init();
+
   ajuster();
   aller(depuisAdresse());
 })();

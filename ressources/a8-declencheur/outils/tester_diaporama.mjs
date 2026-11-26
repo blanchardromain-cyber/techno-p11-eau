@@ -7,6 +7,7 @@ import path from "node:path";
 import fs from "node:fs";
 const require = createRequire(`${process.env.USERPROFILE}/Documents/video-technologie/package.json`);
 const { chromium } = require("playwright");
+import { lancerChrome, testerClip } from "./tester_clip_commun.mjs";
 const ici = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const URL_ = pathToFileURL(path.resolve(ici, "..", "..", "diaporama-a8.html")).href;
 const APE = path.join(ici, "apercus", "diaporama"); fs.rmSync(APE, { recursive: true, force: true }); fs.mkdirSync(APE, { recursive: true });
@@ -19,7 +20,7 @@ const ctx = await nav.newContext({ viewport: { width: 1600, height: 900 }, permi
 const p = await ctx.newPage();
 const erreurs = []; p.on("pageerror", (e) => erreurs.push(e.message)); p.on("console", (m) => m.type() === "error" && erreurs.push(m.text()));
 const requetes = []; p.on("request", (r) => requetes.push(r.url()));
-p.on("requestfailed", (r) => { if (!r.url().endsWith(".wav")) erreurs.push("requête échouée " + r.url()); });
+p.on("requestfailed", (r) => { if (!/\.(wav|mp4)$/.test(r.url())) erreurs.push("requête échouée " + r.url()); });
 await p.goto(URL_ + "#1"); await p.evaluate(() => document.fonts.ready);
 const n = await p.evaluate(() => document.querySelectorAll("#points button").length);
 
@@ -122,6 +123,10 @@ for (const id of ["lettre1", "questions", "partieA", "bilan"]) {
   await p3.screenshot({ path: path.join(APE, `reduit50_${id}.png`) });
 }
 await nav.close();
+// Clip de l'étape « La méthode », dans Chrome (H.264)
+const chrome = await lancerChrome(chromium);
+await testerClip(chrome, URL_ + "#1", "clip", ko, APE, "diaporama");
+await chrome.close();
 const ext = requetes.filter((u) => !u.startsWith("file:") && !u.startsWith("data:"));
 if (ext.length) ko("requêtes externes : " + [...new Set(ext)].join(", "));
 erreurs.forEach((e) => ko("console : " + e));
