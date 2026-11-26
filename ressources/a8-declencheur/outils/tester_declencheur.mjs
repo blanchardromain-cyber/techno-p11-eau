@@ -66,7 +66,6 @@ for (let k = 1; k <= n; k++) {
 await p.goto(page_ + "#1"); await p.reload(); await p.waitForTimeout(400);
 await p.keyboard.press("l"); await p.waitForTimeout(300);
 for (const k of [1, 2, 3]) { await p.goto(page_ + "#" + k); await p.waitForTimeout(350); const mf = await mesure(); mf.res.forEach((s) => ko("FALC " + k + " : " + s)); console.log(`FALC écran ${k} : plus petit texte ${mf.min}px`); await p.screenshot({ path: path.join(APE, `lettre_falc_${k}.png`) }); } await p.goto(page_ + "#1"); await p.waitForTimeout(300);
-await p.screenshot({ path: path.join(APE, "lettre_falc.png") });
 await p.keyboard.press("l");
 // Audio : la source répond et lit
 await p.keyboard.press("a"); await p.waitForTimeout(800);
