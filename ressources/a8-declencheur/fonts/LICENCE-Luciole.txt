@@ -1,0 +1,7 @@
+Luciole — police conçue pour les personnes malvoyantes et les lecteurs dyslexiques.
+Auteurs : Laurent Bourcellier et Jonathan Perez, pour le Centre Technique Régional
+pour la Déficience Visuelle (CTRDV), avec le studio typographies.fr.
+Source : https://luciole-vision.com/ (archive Luciole_webfonts.zip, téléchargée le 2026-10-15).
+Licence : Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+Fichiers repris tels quels : Luciole-Regular.woff2, Luciole-Bold.woff2.
