@@ -1,0 +1,53 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Cartes de relance et étiquette du sachet</title><style>
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Bold.woff2) format("woff2");font-weight:700}
+@page{size:210mm 297mm;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:Luciole,Arial,sans-serif;color:#14213d;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.feuille{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;break-after:page}
+.feuille:last-child{page-break-after:auto;break-after:auto}
+.sig{font-size:7pt;color:#4d5562;letter-spacing:.01em}
+.picto{flex:none;display:block}
+svg.bande{display:block;width:100%;height:100%}
+.trait{position:absolute;background:#9aa3ad}
+.coupe-h{position:absolute;height:0;border-top:.25mm dashed #9aa3ad}
+.coupe-v{position:absolute;width:0;border-left:.25mm dashed #9aa3ad}
+.ciseaux{position:absolute;font-size:8pt;color:#4d5562}
+
+.rel{position:absolute;left:0;width:210mm;height:148.5mm;padding:12mm 14mm}
+.rel .cadre{height:108mm;border:1mm solid #1F3864;border-radius:5mm;display:flex;align-items:center;gap:10mm;padding:0 12mm}
+.rel .t{font-size:32pt;font-weight:700;line-height:1.15;color:#1F3864}
+.aide{display:flex;align-items:center;gap:3mm;margin-top:3.5mm;font-size:10pt;color:#4d5562}
+.pastille{width:14mm;height:6mm;border-radius:1.5mm;overflow:hidden;flex:none}
+.rel .sig{position:absolute;right:14mm;bottom:6.5mm}
+@page paysage{size:297mm 210mm;margin:0}
+.sach{page:paysage}
+.s-titre{position:absolute;left:12mm;top:12mm;right:12mm;display:flex;align-items:center;gap:5mm;font-size:30pt;font-weight:700;color:#1F3864}
+.cols{position:absolute;left:12mm;right:12mm;top:42mm;bottom:20mm;display:grid;grid-template-columns:repeat(3,1fr)}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6mm;padding:6mm 6mm 0;border:.8mm solid #1F3864;border-radius:4mm;margin:0 3.5mm}
+.vis{height:78mm;width:100%;display:flex;align-items:center;justify-content:center}
+.photo{width:100%;height:78mm;object-fit:cover;object-position:46% 50%;border-radius:3mm}
+.col .l{font-size:22pt;font-weight:700;text-align:center;line-height:1.2;color:#1F3864}
+.col .num{font-size:14pt;font-weight:700;color:#4d5562}
+.credit{position:absolute;left:15mm;bottom:9mm;font-size:7pt;color:#4d5562;max-width:150mm}
+.sach .sig{position:absolute;right:14mm;bottom:9mm}
+</style></head><body><div class="feuille"><div class="rel" style="top:0mm">
+  <div class="cadre"><svg class="picto " viewBox="0 0 64 64" style="width:46mm;height:46mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 59S13 38 13 25a19 19 0 0 1 38 0c0 13-19 34-19 34z"/><circle cx="32" cy="25" r="7"/></svg><div class="t">D'où vient la matière ?</div></div>
+  <div class="aide"><span class="pastille"><svg class="bande " aria-hidden="true"><defs><pattern id="r40origine" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(1)"><rect width="4000" height="4000" fill="url(#r40origine)"/></g></svg></span>Relance du professeur si la zone « Qu'a-t-il coûté à fabriquer ? » (vagues) reste vide</div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div><div class="rel" style="top:148.5mm">
+  <div class="cadre"><svg class="picto " viewBox="0 0 64 64" style="width:46mm;height:46mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 59c-13 0-19-9-19-19 0-13 13-17 13-31 8 6 10 15 8 21 4-2 6-6 6-11 7 7 11 13 11 21 0 10-6 19-19 19z"/></svg><div class="t">Qu'a-t-il fallu pour la transformer ?</div></div>
+  <div class="aide"><span class="pastille"><svg class="bande " aria-hidden="true"><defs><pattern id="r41flamme" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(1)"><rect width="4000" height="4000" fill="url(#r41flamme)"/></g></svg></span>Relance du professeur si la zone « Qu'a-t-il coûté à fabriquer ? » (vagues) reste vide</div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div><div class="coupe-h" style="left:4mm;right:4mm;top:148.5mm"></div></div>
+<div class="feuille"><div class="rel" style="top:0mm">
+  <div class="cadre"><svg class="picto " viewBox="0 0 64 64" style="width:46mm;height:46mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 56V32l14 9v-9l14 9v-9l14 9V12h9v44z"/><path d="M14 48h6M28 48h6M42 48h6"/></svg><div class="t">Et pour en fabriquer 10 000 ?</div></div>
+  <div class="aide"><span class="pastille"><svg class="bande " aria-hidden="true"><defs><pattern id="r30usine" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(1)"><rect width="4000" height="4000" fill="url(#r30usine)"/></g></svg></span>Relance du professeur si la zone « Comment le fabriquer ? » (damier) reste vide</div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div><div class="rel" style="top:148.5mm">
+  <div class="cadre"><svg class="picto " viewBox="0 0 64 64" style="width:46mm;height:46mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30L32 11l26 19M13 25v31h38V25"/><path d="M27 56V42h10v14"/><path d="M32 18v6"/></svg><div class="t">Et pour en fabriquer une seule, ici, au collège ?</div></div>
+  <div class="aide"><span class="pastille"><svg class="bande " aria-hidden="true"><defs><pattern id="r31ecole" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(1)"><rect width="4000" height="4000" fill="url(#r31ecole)"/></g></svg></span>Relance du professeur si la zone « Comment le fabriquer ? » (damier) reste vide</div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div><div class="coupe-h" style="left:4mm;right:4mm;top:148.5mm"></div></div>
+<div class="feuille sach" style="width:297mm;height:210mm">
+  <div class="s-titre"><svg class="picto " viewBox="0 0 64 64" style="width:18mm;height:18mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 59S13 38 13 25a19 19 0 0 1 38 0c0 13-19 34-19 34z"/><circle cx="32" cy="25" r="7"/></svg>D'où vient la matière ?</div>
+  <div class="cols"><div class="col"><span class="num">1</span><div class="vis"><img class="photo" src="../medias/minerai.jpg" alt="Photo d'une roche extraite du sous-sol"></div><div class="l">Roche du <span style="white-space:nowrap">sous-sol</span></div></div><div class="col"><span class="num">2</span><div class="vis"><svg class="picto " viewBox="0 0 64 64" style="width:66mm;height:66mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10C12 22 8 29 8 36a10 10 0 0 0 20 0c0-7-4-14-10-26z" fill="currentColor"/><path d="M34 56c0-18 9-30 24-32 0 18-9 30-24 32z"/><path d="M34 56l16-22"/></svg></div><div class="l">Pétrole ou plante</div></div><div class="col"><span class="num">3</span><div class="vis"><svg class="picto " viewBox="0 0 64 64" style="width:66mm;height:66mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="48" r="5"/><circle cx="24" cy="52" r="5"/><circle cx="18" cy="39" r="5"/><circle cx="30" cy="42" r="5"/><circle cx="8" cy="57" r="4"/><ellipse cx="46" cy="16" rx="12" ry="5"/><path d="M34 16v26M58 16v26"/><ellipse cx="46" cy="42" rx="12" ry="5"/><path d="M36 24c6 3 14 3 20 0M36 32c6 3 14 3 20 0"/></svg></div><div class="l">Matière prête à mettre en forme</div></div></div>
+  <div class="credit">Photo n° 1 : Daderot, Natural History Museum (Londres), Wikimedia Commons, domaine public (CC0).</div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div></body></html>
