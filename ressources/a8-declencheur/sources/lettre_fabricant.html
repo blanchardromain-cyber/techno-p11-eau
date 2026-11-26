@@ -1,0 +1,35 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Lettre du fabricant</title><style>
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Bold.woff2) format("woff2");font-weight:700}
+@page{size:210mm 297mm;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:Luciole,Arial,sans-serif;color:#14213d;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.feuille{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;break-after:page}
+.feuille:last-child{page-break-after:auto;break-after:auto}
+.sig{font-size:7pt;color:#4d5562;letter-spacing:.01em}
+.picto{flex:none;display:block}
+svg.bande{display:block;width:100%;height:100%}
+.trait{position:absolute;background:#9aa3ad}
+.coupe-h{position:absolute;height:0;border-top:.25mm dashed #9aa3ad}
+.coupe-v{position:absolute;width:0;border-left:.25mm dashed #9aa3ad}
+.ciseaux{position:absolute;font-size:8pt;color:#4d5562}
+
+.entete{position:absolute;left:20mm;top:16mm;right:20mm;display:flex;align-items:center;gap:5mm;border-bottom:.6mm solid #1F3864;padding-bottom:5mm}
+.nom{font-size:24pt;font-weight:700;color:#1F3864;letter-spacing:.12em}
+.slogan{font-size:11pt;color:#4d5562}
+.dest{position:absolute;right:20mm;top:52mm;text-align:right;font-size:12pt}
+.corps{position:absolute;left:24mm;right:24mm;top:72mm;font-size:15pt;line-height:1.6}
+.corps p{margin:0 0 5mm}
+.signe{margin-top:9mm;font-weight:700;color:#1F3864}
+.pied{position:absolute;left:20mm;right:20mm;bottom:12mm;display:flex;justify-content:space-between;border-top:.3mm solid #c9d3df;padding-top:2.5mm;font-size:8pt;color:#4d5562}
+</style></head><body><div class="feuille">
+  <div class="entete"><svg viewBox="0 0 120 120" style="width:24mm;height:24mm" aria-hidden="true">
+  <circle cx="60" cy="60" r="56" fill="#1F3864"/>
+  <path d="M60 18C46 42 36 56 36 70a24 24 0 0 0 48 0c0-14-10-28-24-52z" fill="#fff"/>
+  <path d="M42 78q9-8 18 0t18 0" stroke="#2E75B6" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M46 92q7-6 14 0t14 0" stroke="#2E75B6" stroke-width="5" fill="none" stroke-linecap="round"/></svg><div><div class="nom">FONTELAME</div><div class="slogan">Robinets sans contact · bureau d'études</div></div></div>
+  <div class="dest">À la classe de 4ᵉ<br>Technologie</div>
+  <div class="corps"><p>Bonjour à toute la classe,</p><p>Nous fabriquons le robinet automatique que vous connaissez bien. Nous avons un problème, et nous avons besoin de vous.</p><p>Des clients se plaignent : quand on ouvre juste un petit filet d'eau, le robinet ne s'allume pas.</p><p>La turbine que nous utilisons aujourd'hui nous coûte cher. Et nous devons en fabriquer beaucoup, pour beaucoup de robinets.</p><p>Nous vous confions deux turbines d'essai, A et B. <span style="white-space:nowrap">Observez-les</span>, puis faites-les tourner.</p><p>Avant de décider quoi que ce soit, nous voulons vos questions. Toutes vos questions !</p><p>Merci d'avance pour votre aide.</p><div class="signe">Le bureau d'études de Fontelame</div></div>
+  <div class="pied"><span>Fontelame est une entreprise imaginaire, inventée pour la classe.</span><span>R.Blanchard, professeur de Technologie</span></div>
+</div></body></html>
