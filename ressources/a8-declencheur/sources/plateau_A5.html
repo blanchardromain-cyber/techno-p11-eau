@@ -1,0 +1,36 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Mini-plateau A5</title><style>
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Luciole;src:url(../fonts/Luciole-Bold.woff2) format("woff2");font-weight:700}
+@page{size:210mm 297mm;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:Luciole,Arial,sans-serif;color:#14213d;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.feuille{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;break-after:page}
+.feuille:last-child{page-break-after:auto;break-after:auto}
+.sig{font-size:7pt;color:#4d5562;letter-spacing:.01em}
+.picto{flex:none;display:block}
+svg.bande{display:block;width:100%;height:100%}
+.trait{position:absolute;background:#9aa3ad}
+.coupe-h{position:absolute;height:0;border-top:.25mm dashed #9aa3ad}
+.coupe-v{position:absolute;width:0;border-left:.25mm dashed #9aa3ad}
+.ciseaux{position:absolute;font-size:8pt;color:#4d5562}
+
+.plat{position:absolute;left:0;width:210mm;height:148.5mm;padding:9mm 10mm 8mm}
+.tete{display:flex;align-items:center;gap:4mm;height:16mm}
+.tete p{margin:0;font-size:14pt;font-weight:700;color:#1F3864;line-height:1.25}
+.tete span{font-size:10.5pt;font-weight:400;color:#4d5562}
+.cases{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4mm;height:110mm;margin-top:2mm}
+.case{position:relative;border-radius:4mm;overflow:hidden}
+.bord{position:absolute;inset:0}
+.int{position:absolute;inset:5mm;background:#fff;border-radius:2mm}
+.n{position:absolute;left:3mm;top:1.5mm;font-size:16pt;font-weight:700;color:#1F3864}
+.m{position:absolute;right:3mm;bottom:1.5mm;font-size:9pt;color:#4d5562}
+.plat .sig{position:absolute;right:10mm;bottom:6.5mm}
+</style></head><body><div class="feuille"><div class="plat" style="top:0mm">
+  <div class="tete"><svg class="picto " viewBox="0 0 64 64" style="width:11mm;height:11mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><p>Posez ensemble les questions qui se ressemblent.<br><span>Une case par groupe. On peut empiler les post-its.</span></p></div>
+  <div class="cases"><div class="case" style="--c:#2E75B6"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p01" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p01)"/></g></svg></div><div class="int"><span class="n">1</span><span class="m">rayures</span></div></div><div class="case" style="--c:#C55A11"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p02" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p02)"/></g></svg></div><div class="int"><span class="n">2</span><span class="m">pois</span></div></div><div class="case" style="--c:#2E7D32"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p03" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p03)"/></g></svg></div><div class="int"><span class="n">3</span><span class="m">damier</span></div></div><div class="case" style="--c:#6A3D9A"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p04" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p04)"/></g></svg></div><div class="int"><span class="n">4</span><span class="m">vagues</span></div></div></div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div><div class="plat" style="top:148.5mm">
+  <div class="tete"><svg class="picto " viewBox="0 0 64 64" style="width:11mm;height:11mm;color:#1F3864" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h44v34L40 56H10z"/><path d="M54 42H40v14"/><path d="M18 20h26M18 29h22"/></svg><p>Posez ensemble les questions qui se ressemblent.<br><span>Une case par groupe. On peut empiler les post-its.</span></p></div>
+  <div class="cases"><div class="case" style="--c:#2E75B6"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p11" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2E75B6"/><rect width="4" height="10" fill="#fff" opacity=".55"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p11)"/></g></svg></div><div class="int"><span class="n">1</span><span class="m">rayures</span></div></div><div class="case" style="--c:#C55A11"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p12" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#C55A11"/><circle cx="6" cy="6" r="2.6" fill="#fff" opacity=".7"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p12)"/></g></svg></div><div class="int"><span class="n">2</span><span class="m">pois</span></div></div><div class="case" style="--c:#2E7D32"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p13" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2E7D32"/><rect width="6" height="6" fill="#fff" opacity=".5"/><rect x="6" y="6" width="6" height="6" fill="#fff" opacity=".5"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p13)"/></g></svg></div><div class="int"><span class="n">3</span><span class="m">damier</span></div></div><div class="case" style="--c:#6A3D9A"><div class="bord"><svg class="bande " aria-hidden="true"><defs><pattern id="p14" width="16" height="10" patternUnits="userSpaceOnUse"><rect width="16" height="10" fill="#6A3D9A"/><path d="M0 5q4-5 8 0t8 0" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/></pattern></defs><g transform="scale(1.4)"><rect width="4000" height="4000" fill="url(#p14)"/></g></svg></div><div class="int"><span class="n">4</span><span class="m">vagues</span></div></div></div>
+  <span class="sig">R.Blanchard, professeur de Technologie</span></div>
+<div class="coupe-h" style="left:4mm;right:4mm;top:148.5mm"></div><span class="ciseaux" style="left:7mm;top:145mm">couper ✂</span></div></body></html>
