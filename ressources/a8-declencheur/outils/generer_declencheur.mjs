@@ -4,7 +4,7 @@
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { ECRANS, CSS, R, RM, insec } from "./ecrans_declencheur.mjs";
+import { ECRANS, CSS, R, RM, insec, AUDIO_LETTRE } from "./ecrans_declencheur.mjs";
 import { JS_CLIP, donneesClip, ecrireVtt } from "./clip.mjs";
 ecrireVtt();
 
@@ -45,7 +45,7 @@ ${ECRANS.map((e) => `    <section class="ecran" id="${e.id}" data-titre="${e.tit
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
 </div>
-<audio id="audio" preload="none" src="${R}/lettre_fabricant.wav"></audio>
+<audio id="audio" preload="none" src="${AUDIO_LETTRE}"></audio>
 <script>
 /* ==========================================================================
    P11 · Activité 8 — Situation déclenchante (page projetée)
