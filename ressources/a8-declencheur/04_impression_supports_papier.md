@@ -8,7 +8,7 @@ Imprimer en couleur, **taille réelle (100 %, sans « ajuster à la page »)**, 
 |---|---|---|---|
 | `lettre_fabricant.pdf` | classe (lecture, affichage) | 1 par binôme si vous la distribuez, sinon 1 | — |
 | `lettre_fabricant_FALC.pdf` | version facile à lire, au choix de l'élève | 3 ou 4 | — |
-| `lettre_fabricant.wav` | audio de la lettre (40 s, −16 LUFS, voix de synthèse Piper) | — | — |
+| `lettre_fabricant.wav` | audio de la lettre lue par le professeur (53 s, −16 LUFS) | — | — |
 | `cartes_amorce.pdf` | binômes : 8 amorces avec un exemple sur un autre objet | **15** (un jeu par binôme) | massicot sur les repères de coupe (3 coupes verticales, 5 horizontales) |
 | `cartes_amorce_adaptees.pdf` | version adaptée : 4 amorces, grand pictogramme, sans exemple | 3 ou 4 | 1 coupe en croix |
 | `plateau_A5.pdf` | version adaptée : mini-plateau de 4 cases | 2 feuilles = 4 plateaux | couper au milieu |
@@ -36,5 +36,5 @@ Les cases du mini-plateau sont numérotées 1 à 4 avec les mêmes couleurs et m
 ## Pour modifier un texte
 
 Les textes sont dans `outils/generer_papier.mjs` (lettre : `outils/texte_lettre.mjs`). Pour régénérer, lancer depuis le dossier `a8-declencheur` :
-`node outils/generer_papier.mjs` (PDF et aperçus) et `node outils/generer_audio.mjs` (audio, si la lettre change).
+`node outils/generer_papier.mjs` (PDF et aperçus) et `node outils/generer_audio.mjs` (audio : retraite l'enregistrement du professeur sur le Drive). Si le texte de la lettre change, il faut réenregistrer la lecture (ou, en dépannage, `--piper` pour la voix de synthèse).
 Node se trouve dans `ClaudeConfig\nodejs\node-v24.18.0-win-x64\node.exe` ; Playwright et Piper sont pris dans `Documents\video-technologie`.
