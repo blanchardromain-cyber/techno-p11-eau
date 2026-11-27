@@ -4,7 +4,7 @@
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { ECRANS, CSS, R, RM, insec, sansCoupe, svg, bande, minuteur } from "./ecrans_declencheur.mjs";
+import { ECRANS, CSS, R, RM, insec, sansCoupe, svg, bande, minuteur, AUDIO_LETTRE } from "./ecrans_declencheur.mjs";
 import { lecteurClip, JS_CLIP, donneesClip } from "./clip.mjs";
 import { CONDUITE, LANCEMENT, ANTICIPATION, IMPREVUS } from "./conduite.mjs";
 import { ZONES } from "./pictos.mjs";
@@ -259,7 +259,7 @@ ${DIAPOS.map((d) => `    <section class="ecran${d.prof ? " prof" : ""}" id="${d.
     <button class="bt" id="btPlein" type="button" title="Plein écran (touche F)">⛶</button>
   </nav>
 </div>
-<audio id="audio" preload="none" src="${R}/lettre_fabricant.wav"></audio>
+<audio id="audio" preload="none" src="${AUDIO_LETTRE}"></audio>
 <script>
 /* ==========================================================================
    P11 · Activité 8 — Diaporama de conduite

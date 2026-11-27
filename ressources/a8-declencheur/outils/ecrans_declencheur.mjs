@@ -6,6 +6,13 @@ import { lecteurClip, CSS_CLIP } from "./clip.mjs";
 
 export const R = "ressources/a8-declencheur";
 export const RM = R + "/medias/";
+
+// Adresse de l'audio de la lettre avec l'empreinte du fichier : un nouvel enregistrement change l'adresse,
+// donc aucun navigateur ne rejoue l'ancien depuis son cache (GitHub Pages : max-age=600, Chrome garde les médias plus longtemps).
+import fs from "node:fs";
+import crypto from "node:crypto";
+const WAV = new URL("../lettre_fabricant.wav", import.meta.url);
+export const AUDIO_LETTRE = `${R}/lettre_fabricant.wav?v=${crypto.createHash("sha1").update(fs.readFileSync(WAV)).digest("hex").slice(0, 10)}`;
 export const insec = (s) => s.replace(/ ([?!:;»])/g, " $1").replace(/« /g, "« ");
 export const sansCoupe = (s) => s.replace(/(\S+-\S+)/g, "<span style=\"white-space:nowrap\">$1</span>");
 export const svg = (nom, px, ep = 3.4, cls = "") =>
